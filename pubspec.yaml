@@ -35,6 +35,11 @@ dependencies:
   flutter_smart_dialog: ^4.9.2 #各种弹窗 Toast/Dialog/Popup
   sticky_headers: ^0.3.0+2 #吸顶
   lottie: ^3.3.2 #lottie动画
+  flex_seed_scheme: ^4.0.1
+  # 防抖节流
+  easy_debounce: ^2.0.3
+
+  rxdart: ^0.28.0
 
   #系统交互
   package_info_plus: ^9.0.0 #包信息

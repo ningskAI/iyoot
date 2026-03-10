@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
@@ -20,6 +21,8 @@ class Utils {
   static DateFormat dateFormat = DateFormat("MM-dd HH:mm");
   static DateFormat dateFormatWithYear = DateFormat("yyyy-MM-dd HH:mm");
   static DateFormat timeFormat = DateFormat("HH:mm:ss");
+
+  static const jsonEncoder = JsonEncoder.withIndent('    ');
 
   /// 处理时间
   static String parseTime(DateTime? dt) {
@@ -513,5 +516,16 @@ class Utils {
       return "${(size / 1024 / 1024).toStringAsFixed(2)} MB";
     }
     return "${(size / 1024 / 1024 / 1024).toStringAsFixed(2)} GB";
+  }
+
+  static Future<void> copyText(
+      String text, {
+        bool needToast = true,
+        String? toastText,
+      }) {
+    if (needToast) {
+      SmartDialog.showToast(toastText ?? '已复制');
+    }
+    return Clipboard.setData(ClipboardData(text: text));
   }
 }

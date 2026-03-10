@@ -212,6 +212,12 @@
       "languageVersion": "2.16"
     },
     {
+      "name": "easy_debounce",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/easy_debounce-2.0.3",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "extended_image",
       "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/extended_image-10.0.1",
       "packageUri": "lib/",
@@ -252,6 +258,12 @@
       "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/fixnum-1.1.1",
       "packageUri": "lib/",
       "languageVersion": "3.1"
+    },
+    {
+      "name": "flex_seed_scheme",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/flex_seed_scheme-4.0.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.6"
     },
     {
       "name": "floating",
@@ -798,6 +810,12 @@
       "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/remixicon-1.4.1",
       "packageUri": "lib/",
       "languageVersion": "3.0"
+    },
+    {
+      "name": "rxdart",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/rxdart-0.28.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
     },
     {
       "name": "safe_local_storage",

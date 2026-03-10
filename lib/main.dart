@@ -9,14 +9,20 @@ import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:iyoot/app/app_style.dart';
-import 'package:iyoot/app/controller/app_settings_controller.dart';
 import 'package:iyoot/app/log.dart';
 import 'package:iyoot/app/utils.dart';
 import 'package:iyoot/common/core_log.dart';
-import 'package:iyoot/modules/other/debug_log_page.dart';
+import 'package:iyoot/models/common/theme/theme_color_type.dart';
+import 'package:iyoot/pages/other/debug_log_page.dart';
 import 'package:iyoot/routes/app_pages.dart';
 import 'package:iyoot/routes/route_path.dart';
-import 'package:iyoot/services/local_storage_service.dart';
+import 'package:iyoot/utils/extension/theme_ext.dart';
+import 'package:iyoot/utils/path_utils.dart';
+import 'package:iyoot/utils/platform_utils.dart';
+import 'package:iyoot/utils/storage.dart';
+import 'package:iyoot/utils/storage_key.dart';
+import 'package:iyoot/utils/storage_pref.dart';
+import 'package:iyoot/utils/theme_utils.dart';
 import 'package:iyoot/widgets/status/app_loadding_widget.dart';
 import 'package:logger/logger.dart';
 import 'package:media_kit/media_kit.dart';
@@ -30,16 +36,20 @@ import 'package:iyoot/utils/listen_fourth_button.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await migrateData();
-  await initWindow();
+  await _initAppPath();
+  try {
+    await GSStorage.init();
+  } catch(e) {
+    await Utils.copyText(e.toString());
+    if (kReleaseMode) {
+      debugPrint('GStorage init error: $e');
+      exit(0);
+    }
+  }
+  await Future.wait([_initDownPath(), _initTmpPath()]);
+  await _initWindow();
   MediaKit.ensureInitialized();
-  await Hive.initFlutter(
-    (!Platform.isAndroid && !Platform.isIOS)
-        ? (await getApplicationSupportDirectory()).path
-        : null,
-  );
-  //初始化服务
-  await initServices();
+  _initCoreLog();
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
   //设置状态栏为透明
   SystemUiOverlayStyle systemUiOverlayStyle = const SystemUiOverlayStyle(
@@ -51,48 +61,48 @@ void main() async {
   runApp(const MyApp());
 }
 
-/// 将Hive数据迁移到Application Support
-Future migrateData() async {
-  if (Platform.isAndroid || Platform.isIOS) {
-    return;
-  }
-  var hiveFileList = [
-    "followuser",
-    //旧版本写错成hostiry了
-    "hostiry",
-    "followusertag",
-    "localstorage",
-    "danmushield",
-  ];
-  try {
-    var newDir = await getApplicationSupportDirectory();
-    var hiveFile = File(p.join(newDir.path, "followuser.hive"));
-    if (await hiveFile.exists()) {
-      return;
-    }
-
-    var oldDir = await getApplicationDocumentsDirectory();
-    for (var element in hiveFileList) {
-      var oldFile = File(p.join(oldDir.path, "$element.hive"));
-      if (await oldFile.exists()) {
-        var fileName = "$element.hive";
-        if (element == "hostiry") {
-          fileName = "history.hive";
+Future<void> _initDownPath() async {
+  if (PlatformUtils.isDesktop) {
+    final customDownPath = Pref.downloadPath;
+    if (customDownPath != null && customDownPath.isNotEmpty) {
+      try {
+        final dir = Directory(customDownPath);
+        if (!dir.existsSync()) {
+          await dir.create(recursive: true);
         }
-        await oldFile.copy(p.join(newDir.path, fileName));
-        await oldFile.delete();
+        downloadPath = customDownPath;
+      } catch (e) {
+        downloadPath = defDownloadPath;
+        await GSStorage.setting.delete(SettingBoxKey.downloadPath);
+        if (kDebugMode) {
+          debugPrint('download path error: $e');
+        }
       }
-      var lockFile = File(p.join(oldDir.path, "$element.lock"));
-      if (await lockFile.exists()) {
-        await lockFile.delete();
-      }
+    } else {
+      downloadPath = defDownloadPath;
     }
-  } catch (e) {
-    Log.logPrint(e);
+  } else if (Platform.isAndroid) {
+    final externalStorageDirPath = (await getExternalStorageDirectory())?.path;
+    downloadPath = externalStorageDirPath != null
+        ? p.join(externalStorageDirPath, PathUtils.downloadDir)
+        : defDownloadPath;
+  } else {
+    downloadPath = defDownloadPath;
   }
 }
 
-Future initWindow() async {
+Future<void> _initTmpPath() async {
+  tmpDirPath = (await getTemporaryDirectory()).path;
+}
+
+Future<void> _initAppPath() async {
+  appSupportDirPath = (await getApplicationSupportDirectory()).path;
+}
+
+
+
+
+Future _initWindow() async {
   if (!(Platform.isMacOS || Platform.isWindows || Platform.isLinux)) {
     return;
   }
@@ -108,24 +118,11 @@ Future initWindow() async {
   });
 }
 
-Future initServices() async {
 
-  //包信息
-  Utils.packageInfo = await PackageInfo.fromPlatform();
-  //本地存储
-  Log.d("Init LocalStorage Service");
-  await Get.put(LocalStorageService()).init();
-  //初始化设置控制器
-  Get.put(AppSettingsController());
-
-
-  initCoreLog();
-}
-
-void initCoreLog() {
+void _initCoreLog() {
   //日志信息
   CoreLog.enableLog =
-      !kReleaseMode || AppSettingsController.instance.logEnable.value;
+      !kReleaseMode || Pref.enableLog;
   CoreLog.requestLogType = RequestLogType.short;
   CoreLog.onPrintLog = (level, msg) {
     switch (level) {
@@ -150,121 +147,142 @@ void initCoreLog() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
+  static ColorScheme? _light, _dark;
+
+  static ThemeData? darkThemeData;
+
+  static void _onBack() {
+    if (SmartDialog.checkExist()) {
+      SmartDialog.dismiss();
+      return;
+    }
+
+    final route = Get.routing.route;
+    if (route is GetPageRoute) {
+      if (route.popDisposition == .doNotPop) {
+        route.onPopInvokedWithResult(false, null);
+        return;
+      }
+    }
+
+    final navigator = Get.key.currentState;
+    if (navigator?.canPop() ?? false) {
+      navigator!.pop();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    bool isDynamicColor = AppSettingsController.instance.isDynamic.value;
-    Color styleColor = Color(AppSettingsController.instance.styleColor.value);
-    return DynamicColorBuilder(
-        builder: ((ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
-          ColorScheme? lightColorScheme;
-          ColorScheme? darkColorScheme;
-          if (lightDynamic != null && darkDynamic != null && isDynamicColor) {
-            lightColorScheme = lightDynamic;
-            darkColorScheme = darkDynamic;
-          } else {
-            lightColorScheme = ColorScheme.fromSeed(
-              seedColor: styleColor,
-              brightness: Brightness.light,
-            );
-            darkColorScheme = ColorScheme.fromSeed(
-                seedColor: styleColor, brightness: Brightness.dark);
-          }
-          return GetMaterialApp(
-            title: "iYooT",
-            theme: AppStyle.lightTheme.copyWith(colorScheme: lightColorScheme),
-            darkTheme: AppStyle.darkTheme.copyWith(colorScheme: darkColorScheme),
-            themeMode:
-            ThemeMode.values[Get.find<AppSettingsController>().themeMode.value],
-            initialRoute: RoutePath.kIndex,
-            getPages: AppPages.routes,
-            //国际化
-            locale: const Locale("zh", "CN"),
-            localizationsDelegates: const [
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-              GlobalCupertinoLocalizations.delegate,
-            ],
-            supportedLocales: const [Locale("zh", "CN")],
-            logWriterCallback: (text, {bool? isError}) {
-              Log.addDebugLog(text, (isError ?? false) ? Colors.red : Colors.grey);
-              Log.writeLog(text, (isError ?? false) ? Level.error : Level.info);
-            },
-            //debugShowCheckedModeBanner: false,
-            navigatorObservers: [FlutterSmartDialog.observer],
-            builder: FlutterSmartDialog.init(
-              loadingBuilder: ((msg) => const AppLoaddingWidget()),
-              //字体大小不跟随系统变化
-              builder: (context, child) => MediaQuery(
-                data: MediaQuery.of(context)
-                    .copyWith(textScaler: const TextScaler.linear(1.0)),
-                child: Stack(
-                  children: [
-                    //侧键返回
-                    RawGestureDetector(
-                      excludeFromSemantics: true,
-                      gestures: <Type, GestureRecognizerFactory>{
-                        FourthButtonTapGestureRecognizer:
-                        GestureRecognizerFactoryWithHandlers<
-                            FourthButtonTapGestureRecognizer>(
-                              () => FourthButtonTapGestureRecognizer(),
-                              (FourthButtonTapGestureRecognizer instance) {
-                            instance.onTapDown = (TapDownDetails details) async {
-                              //如果处于全屏状态，退出全屏
-                              if (!Platform.isAndroid && !Platform.isIOS) {
-                                if (await windowManager.isFullScreen()) {
-                                  await windowManager.setFullScreen(false);
-                                  return;
-                                }
-                              }
-                              Get.back();
-                            };
-                          },
-                        ),
-                      },
-                      child: KeyboardListener(
-                        focusNode: FocusNode(),
-                        onKeyEvent: (KeyEvent event) async {
-                          if (event is KeyDownEvent &&
-                              event.logicalKey == LogicalKeyboardKey.escape) {
-                            // ESC退出全屏
-                            // 如果处于全屏状态，退出全屏
-                            if (!Platform.isAndroid && !Platform.isIOS) {
-                              if (await windowManager.isFullScreen()) {
-                                await windowManager.setFullScreen(false);
-                                return;
-                              }
-                            }
+    final dynamicColor = Pref.dynamicColor && _light != null && _dark != null;
+    late final brandColor = colorThemeTypes[Pref.customColor].color;
+    late final variant = Pref.schemeVariant;
+    return GetMaterialApp(
+      title: "iYooT",
+      theme: ThemeUtils.getThemeData(
+        colorScheme: dynamicColor
+            ? _light!
+            : brandColor.asColorSchemeSeed(variant, .light),
+        isDynamic: dynamicColor,
+      ),
+      darkTheme: ThemeUtils.getThemeData(
+        isDark: true,
+        colorScheme: dynamicColor
+            ? _dark!
+            : brandColor.asColorSchemeSeed(variant, .dark),
+        isDynamic: dynamicColor,
+      ),
+      themeMode:Pref.themeMode,
+      initialRoute: RoutePath.kIndex,
+      getPages: AppPages.routes,
+      //国际化
+      locale: const Locale("zh", "CN"),
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [Locale("zh", "CN")],
+      logWriterCallback: (text, {bool? isError}) {
+        Log.addDebugLog(text, (isError ?? false) ? Colors.red : Colors.grey);
+        Log.writeLog(text, (isError ?? false) ? Level.error : Level.info);
+      },
+      //debugShowCheckedModeBanner: false,
+      navigatorObservers: [FlutterSmartDialog.observer],
+      builder: FlutterSmartDialog.init(
+        loadingBuilder: ((msg) => const AppLoaddingWidget()),
+        //字体大小不跟随系统变化
+        builder: (context, child) => MediaQuery(
+          data: MediaQuery.of(context)
+              .copyWith(textScaler: const TextScaler.linear(1.0)),
+          child: Stack(
+            children: [
+              //侧键返回
+              RawGestureDetector(
+                excludeFromSemantics: true,
+                gestures: <Type, GestureRecognizerFactory>{
+                  FourthButtonTapGestureRecognizer:
+                  GestureRecognizerFactoryWithHandlers<
+                      FourthButtonTapGestureRecognizer>(
+                        () => FourthButtonTapGestureRecognizer(),
+                        (FourthButtonTapGestureRecognizer instance) {
+                      instance.onTapDown = (TapDownDetails details) async {
+                        //如果处于全屏状态，退出全屏
+                        if (!Platform.isAndroid && !Platform.isIOS) {
+                          if (await windowManager.isFullScreen()) {
+                            await windowManager.setFullScreen(false);
+                            return;
                           }
-                        },
-                        child: child!,
-                      ),
-                    ),
-
-                    //查看DEBUG日志按钮
-                    //只在Debug、Profile模式显示
-                    Visibility(
-                      visible: !kReleaseMode,
-                      child: Positioned(
-                        right: 12,
-                        bottom: 100 + context.mediaQueryViewPadding.bottom,
-                        child: Opacity(
-                          opacity: 0.4,
-                          child: ElevatedButton(
-                            child: const Text("DEBUG LOG"),
-                            onPressed: () {
-                              Get.bottomSheet(
-                                const DebugLogPage(),
-                              );
-                            },
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
+                        }
+                        Get.back();
+                      };
+                    },
+                  ),
+                },
+                child: KeyboardListener(
+                  focusNode: FocusNode(),
+                  onKeyEvent: (KeyEvent event) async {
+                    if (event is KeyDownEvent &&
+                        event.logicalKey == LogicalKeyboardKey.escape) {
+                      // ESC退出全屏
+                      // 如果处于全屏状态，退出全屏
+                      if (!Platform.isAndroid && !Platform.isIOS) {
+                        if (await windowManager.isFullScreen()) {
+                          await windowManager.setFullScreen(false);
+                          return;
+                        }
+                      }
+                    }
+                  },
+                  child: child!,
                 ),
               ),
-            ),
-          );
-        }));
+
+              //查看DEBUG日志按钮
+              //只在Debug、Profile模式显示
+              Visibility(
+                visible: !kReleaseMode,
+                child: Positioned(
+                  right: 12,
+                  bottom: 100 + context.mediaQueryViewPadding.bottom,
+                  child: Opacity(
+                    opacity: 0.4,
+                    child: ElevatedButton(
+                      child: const Text("DEBUG LOG"),
+                      onPressed: () {
+                        Get.bottomSheet(
+                          const DebugLogPage(),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
   }
+
 }
