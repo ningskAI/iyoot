@@ -19,15 +19,32 @@ class IndexedPage extends GetView<IndexedController>{
                           () => NavigationRail(
                               selectedIndex: controller.index.value,
                               onDestinationSelected: controller.setIndex,
-                              labelType: NavigationRailLabelType.none,
-                            destinations: controller.items
-                              .map(
-                                (item) =>  NavigationRailDestination(
-                                    icon: Icon(item.iconData),
-                                    label: Text(item.title),
-                                    padding: AppStyle.edgeInsetsV8
+                              labelType: NavigationRailLabelType.all,
+                              leading: Padding(
+                                padding: AppStyle.edgeInsetsV8,
+                                child: Column(
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: AppStyle.radius8,
+                                      child: Image.asset(
+                                        'assets/images/logo.png',
+                                        width: 48,
+                                        height: 48,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                    AppStyle.vGap8
+                                  ],
+                                ),
+                              ),
+                              destinations: controller.items
+                                .map(
+                                  (item) =>  NavigationRailDestination(
+                                      icon: Icon(item.iconData),
+                                      label: Text(item.title),
+                                      padding: AppStyle.edgeInsetsV8
+                                  )
                                 )
-                              )
                               .toList()
                             ,
                           )

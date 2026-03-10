@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:iyoot/app/app_style.dart';
 import 'package:iyoot/app/utils.dart';
 import 'package:iyoot/modules/mine/mine_controller.dart';
+import 'package:iyoot/routes/route_path.dart';
 import 'package:remixicon/remixicon.dart';
 
 class MinePage extends GetView<MineController>{
@@ -134,7 +135,7 @@ class MinePage extends GetView<MineController>{
                       color: Colors.grey,
                     ),
                     onTap: () {
-
+                      Get.toNamed(RoutePath.kAppStyleSetting);
                     },
                   ),
                   ListTile(
