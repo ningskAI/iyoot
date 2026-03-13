@@ -21,6 +21,15 @@ abstract final class SettingBoxKey {
   static const darkVideoPage = 'darkVideoPage';
   static const customColor = 'customColor';
   static const schemeVariant = 'schemeVariant';
+  static const badCertificateCallback = 'badCertificateCallback';
+  static const refreshDisplacement = 'refreshDisplacement';
+  static const defaultToastOp = 'defaultToastOp';
+  static const enableHA = 'enableHA';
+  static const autoPlayEnable = 'autoPlayEnable';
+  static const enableQuickDouble = 'enableQuickDouble';
+  static const enableShowDanmaku = 'enableShowDanmaku';
+  static const autoClearCache = 'autoClearCache';
+  static const maxCacheSize = 'maxCacheSize';
 }
 
 

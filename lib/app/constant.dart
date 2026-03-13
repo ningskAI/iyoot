@@ -8,10 +8,10 @@ class Constant {
         title: "首页",
         index: 0
       ),
-      "duanju": HomePageItem(
-        iconData: Remix.play_line,
-        title: "短剧",
-        index: 1
+      "music": HomePageItem(
+          iconData: RemixIcons.music_line,
+          title: "音乐",
+          index: 1
       ),
       "live": HomePageItem(
         iconData: Remix.live_line,

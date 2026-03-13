@@ -1,0 +1,33 @@
+import 'package:flutter/material.dart';
+import 'package:iyoot/pages/settings/models/privacy_settings.dart';
+
+class PrivacySetting extends StatefulWidget {
+  const PrivacySetting({super.key, this.showAppBar = true});
+
+  final bool showAppBar;
+
+  @override
+  State<PrivacySetting> createState() => _PrivacySettingState();
+}
+
+class _PrivacySettingState extends State<PrivacySetting> {
+
+
+  @override
+  Widget build(BuildContext context) {
+    final showAppBar = widget.showAppBar;
+    final padding = MediaQuery.viewPaddingOf(context);
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      appBar: showAppBar ? AppBar(title: const Text('隐私设置')) : null,
+      body: ListView(
+        padding: EdgeInsets.only(
+          left: showAppBar ? padding.left : 0,
+          right: showAppBar ? padding.right : 0,
+          bottom: padding.bottom + 100,
+        ),
+        children: privacySettings.map((item) => item.widget).toList(),
+      ),
+    );
+  }
+}

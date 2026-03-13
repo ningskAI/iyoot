@@ -24,9 +24,9 @@ abstract final class GSStorage {
       }
     ).then((res) => localCache = res);
     // 设置
-    Hive.openBox('setting').then((res) => setting = res);
+    setting = await Hive.openBox('setting');
     // 视频设置
-    Hive.openBox('video').then((res) => video = res);
+    video = await Hive.openBox('video');
     if (Pref.saveReply) {
       reply = await Hive.openBox<Uint8List>(
         'reply',

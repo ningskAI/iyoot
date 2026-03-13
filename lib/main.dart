@@ -15,7 +15,6 @@ import 'package:iyoot/common/core_log.dart';
 import 'package:iyoot/models/common/theme/theme_color_type.dart';
 import 'package:iyoot/pages/other/debug_log_page.dart';
 import 'package:iyoot/routes/app_pages.dart';
-import 'package:iyoot/routes/route_path.dart';
 import 'package:iyoot/utils/extension/theme_ext.dart';
 import 'package:iyoot/utils/path_utils.dart';
 import 'package:iyoot/utils/platform_utils.dart';
@@ -26,12 +25,10 @@ import 'package:iyoot/utils/theme_utils.dart';
 import 'package:iyoot/widgets/status/app_loadding_widget.dart';
 import 'package:logger/logger.dart';
 import 'package:media_kit/media_kit.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:window_manager/window_manager.dart';
 
 import 'package:path/path.dart' as p;
-import 'package:dynamic_color/dynamic_color.dart';
 import 'package:iyoot/utils/listen_fourth_button.dart';
 
 void main() async {
@@ -192,7 +189,7 @@ class MyApp extends StatelessWidget {
         isDynamic: dynamicColor,
       ),
       themeMode:Pref.themeMode,
-      initialRoute: RoutePath.kIndex,
+      initialRoute: '/',
       getPages: AppPages.routes,
       //国际化
       locale: const Locale("zh", "CN"),

@@ -278,6 +278,12 @@
       "languageVersion": "3.8"
     },
     {
+      "name": "flutter_cache_manager",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/flutter_cache_manager-3.4.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
       "name": "flutter_easyrefresh",
       "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/flutter_easyrefresh-2.2.2",
       "packageUri": "lib/",
@@ -954,6 +960,36 @@
       "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/source_span-1.10.2",
       "packageUri": "lib/",
       "languageVersion": "3.1"
+    },
+    {
+      "name": "sqflite",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/sqflite-2.4.2",
+      "packageUri": "lib/",
+      "languageVersion": "3.7"
+    },
+    {
+      "name": "sqflite_android",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/sqflite_android-2.4.2+3",
+      "packageUri": "lib/",
+      "languageVersion": "3.10"
+    },
+    {
+      "name": "sqflite_common",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/sqflite_common-2.5.6",
+      "packageUri": "lib/",
+      "languageVersion": "3.8"
+    },
+    {
+      "name": "sqflite_darwin",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/sqflite_darwin-2.4.2",
+      "packageUri": "lib/",
+      "languageVersion": "3.7"
+    },
+    {
+      "name": "sqflite_platform_interface",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/sqflite_platform_interface-2.4.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.5"
     },
     {
       "name": "sse",

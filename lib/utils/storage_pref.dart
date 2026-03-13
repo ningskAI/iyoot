@@ -1,8 +1,10 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:iyoot/models/common/theme/theme_type.dart';
+import 'package:iyoot/utils/platform_utils.dart';
 import 'package:iyoot/utils/storage.dart';
 import 'package:iyoot/utils/storage_key.dart';
 import 'package:flex_seed_scheme/flex_seed_scheme.dart' show FlexSchemeVariant;
@@ -56,4 +58,35 @@ abstract final class Pref {
 
   static bool get isFirstRun =>
       _setting.get(SettingBoxKey.isFirstRun, defaultValue: true);
+
+  static bool get badCertificateCallback =>
+      _setting.get(SettingBoxKey.badCertificateCallback, defaultValue: false);
+
+  static double get refreshDisplacement => _setting.get(
+    SettingBoxKey.refreshDisplacement,
+    defaultValue: PlatformUtils.isMobile ? 20.0 : 40.0,
+  );
+
+  static double get defaultToastOp =>
+      _setting.get(SettingBoxKey.defaultToastOp, defaultValue: 1.0);
+
+  static bool get enableHA =>
+      _setting.get(SettingBoxKey.enableHA, defaultValue: true);
+
+  static bool get enableShowDanmaku =>
+      _setting.get(SettingBoxKey.enableShowDanmaku, defaultValue: true);
+
+
+  static bool get autoPlayEnable =>
+      _setting.get(SettingBoxKey.autoPlayEnable, defaultValue: false);
+
+  static bool get enableQuickDouble =>
+      _setting.get(SettingBoxKey.enableQuickDouble, defaultValue: true);
+
+  static bool get autoClearCache =>
+      _setting.get(SettingBoxKey.autoClearCache, defaultValue: false);
+
+  static num get maxCacheSize =>
+      _setting.get(SettingBoxKey.maxCacheSize) ?? pow(1024, 3);
+
 }

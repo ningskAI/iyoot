@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:iyoot/app/app_style.dart';
 import 'package:iyoot/app/utils.dart';
 import 'package:iyoot/pages/mine/mine_controller.dart';
-import 'package:iyoot/routes/route_path.dart';
 import 'package:remixicon/remixicon.dart';
 
 class MinePage extends GetView<MineController>{
@@ -124,76 +123,16 @@ class MinePage extends GetView<MineController>{
                 endIndent: 12,
                 color: Colors.grey.withAlpha(25),
               ),
-              _buildCard(
-                context,
-                children: [
-                  ListTile(
-                    leading: const Icon(Remix.moon_line),
-                    title: const Text("外观设置"),
-                    trailing: const Icon(
+              ListTile(
+                  leading: const Icon(Remix.settings_line),
+                  title: const Text("设置"),
+                  trailing: const Icon(
                       Icons.chevron_right,
-                      color: Colors.grey,
-                    ),
-                    onTap: () {
-                      Get.toNamed(RoutePath.kAppStyleSetting);
-                    },
+                      color: Colors.grey
                   ),
-                  ListTile(
-                    leading: const Icon(Remix.home_2_line),
-                    title: const Text("主页设置"),
-                    trailing: const Icon(
-                      Icons.chevron_right,
-                      color: Colors.grey,
-                    ),
-                    onTap: () {
-
-                    },
-                  ),
-                  ListTile(
-                    leading: const Icon(Remix.play_circle_line),
-                    title: const Text("直播设置"),
-                    trailing: const Icon(
-                      Icons.chevron_right,
-                      color: Colors.grey,
-                    ),
-                    onTap: () {
-
-                    },
-                  ),
-                  ListTile(
-                    leading: const Icon(Remix.heart_line),
-                    title: const Text("关注设置"),
-                    trailing: const Icon(
-                      Icons.chevron_right,
-                      color: Colors.grey,
-                    ),
-                    onTap: () {
-
-                    },
-                  ),
-                  ListTile(
-                    leading: const Icon(Remix.timer_2_line),
-                    title: const Text("定时关闭"),
-                    trailing: const Icon(
-                      Icons.chevron_right,
-                      color: Colors.grey,
-                    ),
-                    onTap: () {
-
-                    },
-                  ),
-                  ListTile(
-                    leading: const Icon(Remix.apps_line),
-                    title: const Text("其他设置"),
-                    trailing: const Icon(
-                      Icons.chevron_right,
-                      color: Colors.grey,
-                    ),
-                    onTap: () {
-
-                    },
-                  ),
-                ],
+                  onTap: () {
+                    Get.toNamed('/setting');
+                  }
               ),
               Divider(
                 indent: 12,

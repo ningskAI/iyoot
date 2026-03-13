@@ -19,6 +19,7 @@ class IndexedPage extends GetView<IndexedController>{
                           () => NavigationRail(
                               selectedIndex: controller.index.value,
                               onDestinationSelected: controller.setIndex,
+                              groupAlignment: 0,
                               labelType: NavigationRailLabelType.all,
                               leading: Padding(
                                 padding: AppStyle.edgeInsetsV8,

@@ -4,14 +4,14 @@ import 'package:iyoot/app/constant.dart';
 import 'package:iyoot/app/event_bus.dart';
 import 'package:iyoot/app/utils.dart';
 import 'package:iyoot/models/home_page_item.dart';
-import 'package:iyoot/pages/duanju/duanju_controller.dart';
-import 'package:iyoot/pages/duanju/duanju_page.dart';
 import 'package:iyoot/pages//home/home_controller.dart';
 import 'package:iyoot/pages/home/home_page.dart';
 import 'package:iyoot/pages/live/live_controller.dart';
 import 'package:iyoot/pages/live/live_page.dart';
 import 'package:iyoot/pages/mine/mine_controller.dart';
 import 'package:iyoot/pages/mine/mine_page.dart';
+import 'package:iyoot/pages/music/view.dart';
+import 'package:iyoot/pages/settings/view.dart';
 import 'package:iyoot/utils/storage.dart';
 import 'package:iyoot/utils/storage_key.dart';
 import 'package:iyoot/utils/storage_pref.dart';
@@ -36,12 +36,11 @@ class IndexedController extends GetxController{
           pages[i] = const HomePage();
           break;
         case 1:
-          Get.put(DuanjuController());
-          pages[i] = const DuanjuPage();
-          break;
-        case 2:
           Get.put(LiveController());
           pages[i] = const LivePage();
+          break;
+        case 2:
+          pages[i] = const MusicPage();
           break;
         case 3:
           Get.put(MineController());
@@ -61,7 +60,7 @@ class IndexedController extends GetxController{
   @override
   void onInit() {
     Future.delayed(Duration.zero, showFirstRun);
-    items.value = ['recommend', 'duanju', 'live', 'mine']
+    items.value = ['recommend','music','live', 'mine']
       .map((key) => Constant.allHomePages[key]!)
       .toList();
     setIndex(0);

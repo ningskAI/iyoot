@@ -38,6 +38,7 @@ dependencies:
   flex_seed_scheme: ^4.0.1
   # 防抖节流
   easy_debounce: ^2.0.3
+  flutter_cache_manager: any
 
   rxdart: ^0.28.0
 

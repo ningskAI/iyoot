@@ -9,10 +9,12 @@ import 'dart:io'; // flutter_ignore: dart_io_import.
 import 'package:file_picker/file_picker.dart' as file_picker;
 import 'package:flutter_inappwebview_android/flutter_inappwebview_android.dart' as flutter_inappwebview_android;
 import 'package:path_provider_android/path_provider_android.dart' as path_provider_android;
+import 'package:sqflite_android/sqflite_android.dart' as sqflite_android;
 import 'package:url_launcher_android/url_launcher_android.dart' as url_launcher_android;
 import 'package:file_picker/file_picker.dart' as file_picker;
 import 'package:flutter_inappwebview_ios/flutter_inappwebview_ios.dart' as flutter_inappwebview_ios;
 import 'package:path_provider_foundation/path_provider_foundation.dart' as path_provider_foundation;
+import 'package:sqflite_darwin/sqflite_darwin.dart' as sqflite_darwin;
 import 'package:url_launcher_ios/url_launcher_ios.dart' as url_launcher_ios;
 import 'package:connectivity_plus/connectivity_plus.dart' as connectivity_plus;
 import 'package:device_info_plus/device_info_plus.dart' as device_info_plus;
@@ -26,6 +28,7 @@ import 'package:wakelock_plus/wakelock_plus.dart' as wakelock_plus;
 import 'package:file_picker/file_picker.dart' as file_picker;
 import 'package:flutter_inappwebview_macos/flutter_inappwebview_macos.dart' as flutter_inappwebview_macos;
 import 'package:path_provider_foundation/path_provider_foundation.dart' as path_provider_foundation;
+import 'package:sqflite_darwin/sqflite_darwin.dart' as sqflite_darwin;
 import 'package:url_launcher_macos/url_launcher_macos.dart' as url_launcher_macos;
 import 'package:wakelock_plus/wakelock_plus.dart' as wakelock_plus;
 import 'package:device_info_plus/device_info_plus.dart' as device_info_plus;
@@ -72,6 +75,15 @@ class _PluginRegistrant {
       }
 
       try {
+        sqflite_android.SqfliteAndroid.registerWith();
+      } catch (err) {
+        print(
+          '`sqflite_android` threw an error: $err. '
+          'The app may not function as expected until you remove this plugin from pubspec.yaml'
+        );
+      }
+
+      try {
         url_launcher_android.UrlLauncherAndroid.registerWith();
       } catch (err) {
         print(
@@ -104,6 +116,15 @@ class _PluginRegistrant {
       } catch (err) {
         print(
           '`path_provider_foundation` threw an error: $err. '
+          'The app may not function as expected until you remove this plugin from pubspec.yaml'
+        );
+      }
+
+      try {
+        sqflite_darwin.SqfliteDarwin.registerWith();
+      } catch (err) {
+        print(
+          '`sqflite_darwin` threw an error: $err. '
           'The app may not function as expected until you remove this plugin from pubspec.yaml'
         );
       }
@@ -223,6 +244,15 @@ class _PluginRegistrant {
       } catch (err) {
         print(
           '`path_provider_foundation` threw an error: $err. '
+          'The app may not function as expected until you remove this plugin from pubspec.yaml'
+        );
+      }
+
+      try {
+        sqflite_darwin.SqfliteDarwin.registerWith();
+      } catch (err) {
+        print(
+          '`sqflite_darwin` threw an error: $err. '
           'The app may not function as expected until you remove this plugin from pubspec.yaml'
         );
       }
