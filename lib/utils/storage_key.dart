@@ -30,6 +30,9 @@ abstract final class SettingBoxKey {
   static const enableShowDanmaku = 'enableShowDanmaku';
   static const autoClearCache = 'autoClearCache';
   static const maxCacheSize = 'maxCacheSize';
+  static const tabBarSort = 'tabBarSort';
+  static const touchSlopH = 'touchSlopH';
+  static const springDescription = 'springDescription';
 }
 
 

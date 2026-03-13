@@ -80,6 +80,9 @@ abstract final class Pref {
   static bool get autoPlayEnable =>
       _setting.get(SettingBoxKey.autoPlayEnable, defaultValue: false);
 
+  static bool get enableSearchWord =>
+      _setting.get(SettingBoxKey.enableSearchWord, defaultValue: false);
+
   static bool get enableQuickDouble =>
       _setting.get(SettingBoxKey.enableQuickDouble, defaultValue: true);
 
@@ -89,4 +92,10 @@ abstract final class Pref {
   static num get maxCacheSize =>
       _setting.get(SettingBoxKey.maxCacheSize) ?? pow(1024, 3);
 
+  static double get touchSlopH =>
+      _setting.get(SettingBoxKey.touchSlopH, defaultValue: 24.0);
+  static List<double> get springDescription => List<double>.from(
+    _setting.get(SettingBoxKey.springDescription) ??
+        [0.5, 100.0, 2.2 * sqrt(50)], // [mass, stiffness, damping]
+  );
 }
