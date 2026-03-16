@@ -5,10 +5,10 @@ import 'dart:isolate';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:iyoot/utils/platform.dart';
 import 'package:logger/logger.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:iyoot/utils/platform.dart';
 import 'package:logging/logging.dart' as logging;
 
 final _loggingToLoggerLevel = {
@@ -37,7 +37,7 @@ class AppLogger {
   static void _initInternalPackageLoggers() {
     if (!kDebugMode) return;
     logging.hierarchicalLoggingEnabled = true;
-    logging.Logger('iYooT')
+    logging.Logger('iyoot')
       ..level = logging.Level.SEVERE
       ..onRecord.listen(
             (record) {

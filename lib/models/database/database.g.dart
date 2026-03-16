@@ -93,6 +93,16 @@ class $PreferencesTableTable extends PreferencesTable
       defaultConstraints: GeneratedColumn.constraintIsAlways(
           'CHECK ("enable_open_h_a" IN (0, 1))'),
       defaultValue: const Constant(false));
+  static const VerificationMeta _layoutModeMeta =
+      const VerificationMeta('layoutMode');
+  @override
+  late final GeneratedColumnWithTypeConverter<LayoutMode, String> layoutMode =
+      GeneratedColumn<String>('layout_mode', aliasedName, false,
+              type: DriftSqlType.string,
+              requiredDuringInsert: false,
+              defaultValue: Constant(LayoutMode.auto.name))
+          .withConverter<LayoutMode>(
+              $PreferencesTableTable.$converterlayoutMode);
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -103,7 +113,8 @@ class $PreferencesTableTable extends PreferencesTable
         downloadLocation,
         defaultToastOp,
         enableAutoPlay,
-        enableOpenHA
+        enableOpenHA,
+        layoutMode
       ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -162,6 +173,7 @@ class $PreferencesTableTable extends PreferencesTable
           enableOpenHA.isAcceptableOrUnknown(
               data['enable_open_h_a']!, _enableOpenHAMeta));
     }
+    context.handle(_layoutModeMeta, const VerificationResult.success());
     return context;
   }
 
@@ -190,6 +202,9 @@ class $PreferencesTableTable extends PreferencesTable
           .read(DriftSqlType.bool, data['${effectivePrefix}enable_auto_play'])!,
       enableOpenHA: attachedDatabase.typeMapping
           .read(DriftSqlType.bool, data['${effectivePrefix}enable_open_h_a'])!,
+      layoutMode: $PreferencesTableTable.$converterlayoutMode.fromSql(
+          attachedDatabase.typeMapping.read(
+              DriftSqlType.string, data['${effectivePrefix}layout_mode'])!),
     );
   }
 
@@ -200,6 +215,8 @@ class $PreferencesTableTable extends PreferencesTable
 
   static JsonTypeConverter2<ThemeMode, String, String> $converterthemeMode =
       const EnumNameConverter<ThemeMode>(ThemeMode.values);
+  static JsonTypeConverter2<LayoutMode, String, String> $converterlayoutMode =
+      const EnumNameConverter<LayoutMode>(LayoutMode.values);
 }
 
 class PreferencesTableData extends DataClass
@@ -229,6 +246,9 @@ class PreferencesTableData extends DataClass
 
   /// 是否开启硬件加速
   final bool enableOpenHA;
+
+  /// 首页布局模式
+  final LayoutMode layoutMode;
   const PreferencesTableData(
       {required this.id,
       required this.isFirstRun,
@@ -238,7 +258,8 @@ class PreferencesTableData extends DataClass
       required this.downloadLocation,
       required this.defaultToastOp,
       required this.enableAutoPlay,
-      required this.enableOpenHA});
+      required this.enableOpenHA,
+      required this.layoutMode});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -254,6 +275,10 @@ class PreferencesTableData extends DataClass
     map['default_toast_op'] = Variable<double>(defaultToastOp);
     map['enable_auto_play'] = Variable<bool>(enableAutoPlay);
     map['enable_open_h_a'] = Variable<bool>(enableOpenHA);
+    {
+      map['layout_mode'] = Variable<String>(
+          $PreferencesTableTable.$converterlayoutMode.toSql(layoutMode));
+    }
     return map;
   }
 
@@ -268,6 +293,7 @@ class PreferencesTableData extends DataClass
       defaultToastOp: Value(defaultToastOp),
       enableAutoPlay: Value(enableAutoPlay),
       enableOpenHA: Value(enableOpenHA),
+      layoutMode: Value(layoutMode),
     );
   }
 
@@ -285,6 +311,8 @@ class PreferencesTableData extends DataClass
       defaultToastOp: serializer.fromJson<double>(json['defaultToastOp']),
       enableAutoPlay: serializer.fromJson<bool>(json['enableAutoPlay']),
       enableOpenHA: serializer.fromJson<bool>(json['enableOpenHA']),
+      layoutMode: $PreferencesTableTable.$converterlayoutMode
+          .fromJson(serializer.fromJson<String>(json['layoutMode'])),
     );
   }
   @override
@@ -301,6 +329,8 @@ class PreferencesTableData extends DataClass
       'defaultToastOp': serializer.toJson<double>(defaultToastOp),
       'enableAutoPlay': serializer.toJson<bool>(enableAutoPlay),
       'enableOpenHA': serializer.toJson<bool>(enableOpenHA),
+      'layoutMode': serializer.toJson<String>(
+          $PreferencesTableTable.$converterlayoutMode.toJson(layoutMode)),
     };
   }
 
@@ -313,7 +343,8 @@ class PreferencesTableData extends DataClass
           String? downloadLocation,
           double? defaultToastOp,
           bool? enableAutoPlay,
-          bool? enableOpenHA}) =>
+          bool? enableOpenHA,
+          LayoutMode? layoutMode}) =>
       PreferencesTableData(
         id: id ?? this.id,
         isFirstRun: isFirstRun ?? this.isFirstRun,
@@ -324,6 +355,7 @@ class PreferencesTableData extends DataClass
         defaultToastOp: defaultToastOp ?? this.defaultToastOp,
         enableAutoPlay: enableAutoPlay ?? this.enableAutoPlay,
         enableOpenHA: enableOpenHA ?? this.enableOpenHA,
+        layoutMode: layoutMode ?? this.layoutMode,
       );
   PreferencesTableData copyWithCompanion(PreferencesTableCompanion data) {
     return PreferencesTableData(
@@ -347,6 +379,8 @@ class PreferencesTableData extends DataClass
       enableOpenHA: data.enableOpenHA.present
           ? data.enableOpenHA.value
           : this.enableOpenHA,
+      layoutMode:
+          data.layoutMode.present ? data.layoutMode.value : this.layoutMode,
     );
   }
 
@@ -361,7 +395,8 @@ class PreferencesTableData extends DataClass
           ..write('downloadLocation: $downloadLocation, ')
           ..write('defaultToastOp: $defaultToastOp, ')
           ..write('enableAutoPlay: $enableAutoPlay, ')
-          ..write('enableOpenHA: $enableOpenHA')
+          ..write('enableOpenHA: $enableOpenHA, ')
+          ..write('layoutMode: $layoutMode')
           ..write(')'))
         .toString();
   }
@@ -376,7 +411,8 @@ class PreferencesTableData extends DataClass
       downloadLocation,
       defaultToastOp,
       enableAutoPlay,
-      enableOpenHA);
+      enableOpenHA,
+      layoutMode);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -389,7 +425,8 @@ class PreferencesTableData extends DataClass
           other.downloadLocation == this.downloadLocation &&
           other.defaultToastOp == this.defaultToastOp &&
           other.enableAutoPlay == this.enableAutoPlay &&
-          other.enableOpenHA == this.enableOpenHA);
+          other.enableOpenHA == this.enableOpenHA &&
+          other.layoutMode == this.layoutMode);
 }
 
 class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
@@ -402,6 +439,7 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
   final Value<double> defaultToastOp;
   final Value<bool> enableAutoPlay;
   final Value<bool> enableOpenHA;
+  final Value<LayoutMode> layoutMode;
   const PreferencesTableCompanion({
     this.id = const Value.absent(),
     this.isFirstRun = const Value.absent(),
@@ -412,6 +450,7 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
     this.defaultToastOp = const Value.absent(),
     this.enableAutoPlay = const Value.absent(),
     this.enableOpenHA = const Value.absent(),
+    this.layoutMode = const Value.absent(),
   });
   PreferencesTableCompanion.insert({
     this.id = const Value.absent(),
@@ -423,6 +462,7 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
     this.defaultToastOp = const Value.absent(),
     this.enableAutoPlay = const Value.absent(),
     this.enableOpenHA = const Value.absent(),
+    this.layoutMode = const Value.absent(),
   });
   static Insertable<PreferencesTableData> custom({
     Expression<int>? id,
@@ -434,6 +474,7 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
     Expression<double>? defaultToastOp,
     Expression<bool>? enableAutoPlay,
     Expression<bool>? enableOpenHA,
+    Expression<String>? layoutMode,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -445,6 +486,7 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
       if (defaultToastOp != null) 'default_toast_op': defaultToastOp,
       if (enableAutoPlay != null) 'enable_auto_play': enableAutoPlay,
       if (enableOpenHA != null) 'enable_open_h_a': enableOpenHA,
+      if (layoutMode != null) 'layout_mode': layoutMode,
     });
   }
 
@@ -457,7 +499,8 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
       Value<String>? downloadLocation,
       Value<double>? defaultToastOp,
       Value<bool>? enableAutoPlay,
-      Value<bool>? enableOpenHA}) {
+      Value<bool>? enableOpenHA,
+      Value<LayoutMode>? layoutMode}) {
     return PreferencesTableCompanion(
       id: id ?? this.id,
       isFirstRun: isFirstRun ?? this.isFirstRun,
@@ -468,6 +511,7 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
       defaultToastOp: defaultToastOp ?? this.defaultToastOp,
       enableAutoPlay: enableAutoPlay ?? this.enableAutoPlay,
       enableOpenHA: enableOpenHA ?? this.enableOpenHA,
+      layoutMode: layoutMode ?? this.layoutMode,
     );
   }
 
@@ -502,6 +546,10 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
     if (enableOpenHA.present) {
       map['enable_open_h_a'] = Variable<bool>(enableOpenHA.value);
     }
+    if (layoutMode.present) {
+      map['layout_mode'] = Variable<String>(
+          $PreferencesTableTable.$converterlayoutMode.toSql(layoutMode.value));
+    }
     return map;
   }
 
@@ -516,7 +564,8 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
           ..write('downloadLocation: $downloadLocation, ')
           ..write('defaultToastOp: $defaultToastOp, ')
           ..write('enableAutoPlay: $enableAutoPlay, ')
-          ..write('enableOpenHA: $enableOpenHA')
+          ..write('enableOpenHA: $enableOpenHA, ')
+          ..write('layoutMode: $layoutMode')
           ..write(')'))
         .toString();
   }
@@ -545,6 +594,7 @@ typedef $$PreferencesTableTableCreateCompanionBuilder
   Value<double> defaultToastOp,
   Value<bool> enableAutoPlay,
   Value<bool> enableOpenHA,
+  Value<LayoutMode> layoutMode,
 });
 typedef $$PreferencesTableTableUpdateCompanionBuilder
     = PreferencesTableCompanion Function({
@@ -557,6 +607,7 @@ typedef $$PreferencesTableTableUpdateCompanionBuilder
   Value<double> defaultToastOp,
   Value<bool> enableAutoPlay,
   Value<bool> enableOpenHA,
+  Value<LayoutMode> layoutMode,
 });
 
 class $$PreferencesTableTableFilterComposer
@@ -599,6 +650,11 @@ class $$PreferencesTableTableFilterComposer
 
   ColumnFilters<bool> get enableOpenHA => $composableBuilder(
       column: $table.enableOpenHA, builder: (column) => ColumnFilters(column));
+
+  ColumnWithTypeConverterFilters<LayoutMode, LayoutMode, String>
+      get layoutMode => $composableBuilder(
+          column: $table.layoutMode,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
 }
 
 class $$PreferencesTableTableOrderingComposer
@@ -640,6 +696,9 @@ class $$PreferencesTableTableOrderingComposer
   ColumnOrderings<bool> get enableOpenHA => $composableBuilder(
       column: $table.enableOpenHA,
       builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get layoutMode => $composableBuilder(
+      column: $table.layoutMode, builder: (column) => ColumnOrderings(column));
 }
 
 class $$PreferencesTableTableAnnotationComposer
@@ -677,6 +736,10 @@ class $$PreferencesTableTableAnnotationComposer
 
   GeneratedColumn<bool> get enableOpenHA => $composableBuilder(
       column: $table.enableOpenHA, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<LayoutMode, String> get layoutMode =>
+      $composableBuilder(
+          column: $table.layoutMode, builder: (column) => column);
 }
 
 class $$PreferencesTableTableTableManager extends RootTableManager<
@@ -716,6 +779,7 @@ class $$PreferencesTableTableTableManager extends RootTableManager<
             Value<double> defaultToastOp = const Value.absent(),
             Value<bool> enableAutoPlay = const Value.absent(),
             Value<bool> enableOpenHA = const Value.absent(),
+            Value<LayoutMode> layoutMode = const Value.absent(),
           }) =>
               PreferencesTableCompanion(
             id: id,
@@ -727,6 +791,7 @@ class $$PreferencesTableTableTableManager extends RootTableManager<
             defaultToastOp: defaultToastOp,
             enableAutoPlay: enableAutoPlay,
             enableOpenHA: enableOpenHA,
+            layoutMode: layoutMode,
           ),
           createCompanionCallback: ({
             Value<int> id = const Value.absent(),
@@ -738,6 +803,7 @@ class $$PreferencesTableTableTableManager extends RootTableManager<
             Value<double> defaultToastOp = const Value.absent(),
             Value<bool> enableAutoPlay = const Value.absent(),
             Value<bool> enableOpenHA = const Value.absent(),
+            Value<LayoutMode> layoutMode = const Value.absent(),
           }) =>
               PreferencesTableCompanion.insert(
             id: id,
@@ -749,6 +815,7 @@ class $$PreferencesTableTableTableManager extends RootTableManager<
             defaultToastOp: defaultToastOp,
             enableAutoPlay: enableAutoPlay,
             enableOpenHA: enableOpenHA,
+            layoutMode: layoutMode,
           ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))

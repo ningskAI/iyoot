@@ -11,15 +11,9 @@ import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:iyoot/app/log.dart';
-import 'package:iyoot/app/utils.dart';
-import 'package:iyoot/common/core_log.dart';
-import 'package:iyoot/extensions/theme.dart';
-import 'package:iyoot/models/common/theme/theme_color_type.dart';
 import 'package:iyoot/models/database/database.dart';
-import 'package:iyoot/pages/other/debug_log_page.dart';
-import 'package:iyoot/provider/database/database.dart';
-import 'package:iyoot/provider/user_preferences/user_preferences_provider.dart';
+import 'package:iyoot/provider/database.dart';
+import 'package:iyoot/provider/user_preferences_provider.dart';
 import 'package:iyoot/routes/routes.dart';
 import 'package:iyoot/services/logger/logger.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
@@ -35,15 +29,15 @@ void main() async {
       observers: const [
         AppLoggerProviderObserver(),
       ],
-      child: IYoot(),
+      child: iyoot(),
     ),
   );
 }
 
 
-class IYoot extends HookConsumerWidget {
+class iyoot extends HookConsumerWidget {
 
-  const IYoot({super.key});
+  const iyoot({super.key});
 
 
   @override
@@ -53,7 +47,7 @@ class IYoot extends HookConsumerWidget {
     return ShadcnApp.router(
       routerConfig: router.config(),
       debugShowCheckedModeBanner: false,
-      title: 'iYooT',
+      title: 'iyoot',
       builder: (context, child) {
         child = ScrollConfiguration(
           behavior: ScrollConfiguration.of(context).copyWith(

@@ -13,7 +13,7 @@ class Constant {
           title: "音乐",
           index: 1
       ),
-      "live": HomePageItem(
+      "bookshelf": HomePageItem(
         iconData: Remix.live_line,
         title: "直播",
         index: 2

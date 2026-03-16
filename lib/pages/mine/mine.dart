@@ -33,7 +33,7 @@ class MinePage extends HookConsumerWidget{
                   height: 56,
                 ),
                 title: const Text(
-                  "iYooT",
+                  "iyoot",
                   style: TextStyle(height: 1.0)
                 ),
                 subtitle: const Text("但行好事，莫问前程"),
@@ -45,7 +45,7 @@ class MinePage extends HookConsumerWidget{
                       width: 48,
                       height: 48,
                     ),
-                    applicationName: "iYooT",
+                    applicationName: "iyoot",
                     applicationVersion: "但行好事，莫问前程",
                     applicationLegalese: "Ver ${Utils.packageInfo.version}",
                   ));

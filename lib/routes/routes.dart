@@ -2,7 +2,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:iyoot/routes/routes.gr.dart';
-
 final rootNavigatorKey = GlobalKey<NavigatorState>();
 
 @AutoRouterConfig(replaceInRouteName: 'Screen|Page,Route')
@@ -24,12 +23,12 @@ class AppRouter extends RootStackRouter {
           initial: true
         ),
         AutoRoute(
-          path: "music",
-          page: MusicRoute.page,
+          path: "bookshelf",
+          page: BookshelfRoute.page,
         ),
         AutoRoute(
-          path: "live",
-          page: LiveRoute.page
+          path: "statistics",
+          page: StatisticsRoute.page
         ),
         AutoRoute(
           path: "mine",

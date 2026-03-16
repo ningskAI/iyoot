@@ -9,14 +9,33 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:auto_route/auto_route.dart' as _i6;
-import 'package:iyoot/pages/home/home.dart' as _i1;
-import 'package:iyoot/pages/live/live.dart' as _i2;
+import 'package:iyoot/pages/bookshelf/bookshelf.dart' as _i1;
+import 'package:iyoot/pages/home/home.dart' as _i2;
 import 'package:iyoot/pages/mine/mine.dart' as _i3;
-import 'package:iyoot/pages/music/music.dart' as _i4;
-import 'package:iyoot/pages/root/root.dart' as _i5;
+import 'package:iyoot/pages/root/root.dart' as _i4;
+import 'package:iyoot/pages/statistics/statistics.dart' as _i5;
 
 /// generated route for
-/// [_i1.HomePage]
+/// [_i1.BookshelfPage]
+class BookshelfRoute extends _i6.PageRouteInfo<void> {
+  const BookshelfRoute({List<_i6.PageRouteInfo>? children})
+      : super(
+          BookshelfRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'BookshelfRoute';
+
+  static _i6.PageInfo page = _i6.PageInfo(
+    name,
+    builder: (data) {
+      return const _i1.BookshelfPage();
+    },
+  );
+}
+
+/// generated route for
+/// [_i2.HomePage]
 class HomeRoute extends _i6.PageRouteInfo<void> {
   const HomeRoute({List<_i6.PageRouteInfo>? children})
       : super(
@@ -29,26 +48,7 @@ class HomeRoute extends _i6.PageRouteInfo<void> {
   static _i6.PageInfo page = _i6.PageInfo(
     name,
     builder: (data) {
-      return const _i1.HomePage();
-    },
-  );
-}
-
-/// generated route for
-/// [_i2.LivePage]
-class LiveRoute extends _i6.PageRouteInfo<void> {
-  const LiveRoute({List<_i6.PageRouteInfo>? children})
-      : super(
-          LiveRoute.name,
-          initialChildren: children,
-        );
-
-  static const String name = 'LiveRoute';
-
-  static _i6.PageInfo page = _i6.PageInfo(
-    name,
-    builder: (data) {
-      return const _i2.LivePage();
+      return const _i2.HomePage();
     },
   );
 }
@@ -73,26 +73,7 @@ class MineRoute extends _i6.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [_i4.MusicPage]
-class MusicRoute extends _i6.PageRouteInfo<void> {
-  const MusicRoute({List<_i6.PageRouteInfo>? children})
-      : super(
-          MusicRoute.name,
-          initialChildren: children,
-        );
-
-  static const String name = 'MusicRoute';
-
-  static _i6.PageInfo page = _i6.PageInfo(
-    name,
-    builder: (data) {
-      return const _i4.MusicPage();
-    },
-  );
-}
-
-/// generated route for
-/// [_i5.RootPage]
+/// [_i4.RootPage]
 class RootRoute extends _i6.PageRouteInfo<void> {
   const RootRoute({List<_i6.PageRouteInfo>? children})
       : super(
@@ -105,7 +86,26 @@ class RootRoute extends _i6.PageRouteInfo<void> {
   static _i6.PageInfo page = _i6.PageInfo(
     name,
     builder: (data) {
-      return const _i5.RootPage();
+      return const _i4.RootPage();
+    },
+  );
+}
+
+/// generated route for
+/// [_i5.StatisticsPage]
+class StatisticsRoute extends _i6.PageRouteInfo<void> {
+  const StatisticsRoute({List<_i6.PageRouteInfo>? children})
+      : super(
+          StatisticsRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'StatisticsRoute';
+
+  static _i6.PageInfo page = _i6.PageInfo(
+    name,
+    builder: (data) {
+      return const _i5.StatisticsPage();
     },
   );
 }

@@ -27,5 +27,5 @@ abstract final class StyleString {
 }
 
 abstract final class Constants {
-  static const appName = 'iYooT';
+  static const appName = 'iyoot';
 }

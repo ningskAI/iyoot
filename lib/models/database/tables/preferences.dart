@@ -1,5 +1,11 @@
 part of '../database.dart';
 
+enum LayoutMode {
+  auto, /// 支持横竖屏
+  sidebar, /// 仅支持侧边栏
+  bottomBar /// 仅支持底边栏
+}
+
 class PreferencesTable extends Table {
   IntColumn get id => integer().autoIncrement()();
   /// 是否首次启动
@@ -19,5 +25,6 @@ class PreferencesTable extends Table {
   BoolColumn get enableAutoPlay => boolean().withDefault(const Constant(false))();
   /// 是否开启硬件加速
   BoolColumn get enableOpenHA => boolean().withDefault(const Constant(false))();
-
+  /// 首页布局模式
+  TextColumn get layoutMode => textEnum<LayoutMode>().withDefault(Constant(LayoutMode.auto.name))();
 }
