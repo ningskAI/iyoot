@@ -22,7 +22,7 @@ abstract final class StyleString {
       horizontal: -2,
       vertical: -1.25,
     ),
-    tapTargetSize: .shrinkWrap,
+    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
   );
 }
 
