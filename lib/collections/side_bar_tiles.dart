@@ -36,50 +36,15 @@ List<SideBarTiles> getNavbarTileList() => [
       route: const BookshelfRoute(),
       icon: NextIcons.bookshelf,
       selectedIcon: NextIcons.bookshelfSelected,
-      title: "书架"
+      title: "书库"
   ),
   SideBarTiles(
-      id: "statistics",
-      pathPrefix: "/statistics",
-      route: const StatisticsRoute(),
-      icon: NextIcons.statistics,
-      selectedIcon: NextIcons.statisticsSelected,
-      title: "分析"
-  ),
-  SideBarTiles(
-      id: "mine",
-      pathPrefix: "/mine",
-      route: const MineRoute(),
-      icon: NextIcons.mine,
-      selectedIcon: NextIcons.mineSelected,
-      title: "我的"
-  )
-];
-
-List<SideBarTiles> getSideBarTileList() => [
-  SideBarTiles(
-      id: "home",
-      pathPrefix: "/home",
-      route: const HomeRoute(),
-      icon: NextIcons.home,
-      selectedIcon: NextIcons.homeSelected,
-      title: "阅读"
-  ),
-  SideBarTiles(
-      id: "bookshelf",
-      pathPrefix: "/bookshelf",
-      route: const BookshelfRoute(),
-      icon: NextIcons.bookshelf,
-      selectedIcon: NextIcons.bookshelfSelected,
-      title: "书架"
-  ),
-  SideBarTiles(
-      id: "statistics",
-      pathPrefix: "/statistics",
-      route: const StatisticsRoute(),
-      icon: NextIcons.statistics,
-      selectedIcon: NextIcons.statisticsSelected,
-      title: "分析"
+      id: "store",
+      pathPrefix: "/store",
+      route: const StoreRoute(),
+      icon: NextIcons.store,
+      selectedIcon: NextIcons.storeSelected,
+      title: "藏书"
   ),
   SideBarTiles(
       id: "mine",

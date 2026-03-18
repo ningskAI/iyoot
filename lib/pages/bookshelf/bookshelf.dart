@@ -12,7 +12,9 @@ class BookshelfPage extends HookConsumerWidget{
   @override
   Widget build(BuildContext context, ref) {
     return Scaffold(
-      body: SizedBox(),
+      body: Column(
+        children: [],
+      ),
     );
   }
 }

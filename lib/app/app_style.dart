@@ -36,27 +36,13 @@ class AppStyle {
         systemNavigationBarColor: Colors.transparent,
       ),
     ),
+    navigationBarTheme: NavigationBarThemeData(
+      backgroundColor: Colors.white,
 
-    // radioTheme: RadioThemeData(
-    //   fillColor: MaterialStateProperty.all(AppColors.lightColorScheme.primary),
-    // ),
-    // checkboxTheme: CheckboxThemeData(
-    //   fillColor: MaterialStateProperty.all(AppColors.lightColorScheme.primary),
-    // ),
-    // tabBarTheme: TabBarTheme(
-    //   labelColor: AppColors.lightColorScheme.primary,
-    //   unselectedLabelColor: Colors.white70,
-    //   indicatorSize: TabBarIndicatorSize.tab,
-    //   indicator: RectangularIndicator(
-    //     color: Colors.white.withOpacity(.8),
-    //     topLeftRadius: 24,
-    //     bottomLeftRadius: 24,
-    //     topRightRadius: 24,
-    //     bottomRightRadius: 24,
-    //     verticalPadding: 8,
-    //     horizontalPadding: 0,
-    //   ),
-    // ),
+    ),
+    navigationDrawerTheme: NavigationDrawerThemeData(
+      backgroundColor: Colors.white,
+    )
   );
 
   static ThemeData darkTheme = ThemeData.dark().copyWith(

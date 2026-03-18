@@ -30,6 +30,7 @@
         "flutter_inappwebview",
         "flutter_js",
         "flutter_localizations",
+        "flutter_lucide",
         "flutter_riverpod",
         "flutter_smart_dialog",
         "flutter_staggered_grid_view",
@@ -886,6 +887,13 @@
       "dependencies": [
         "flutter",
         "web"
+      ]
+    },
+    {
+      "name": "flutter_lucide",
+      "version": "1.8.2",
+      "dependencies": [
+        "flutter"
       ]
     },
     {

@@ -27,8 +27,8 @@ class AppRouter extends RootStackRouter {
           page: BookshelfRoute.page,
         ),
         AutoRoute(
-          path: "statistics",
-          page: StatisticsRoute.page
+          path: "store",
+          page: StoreRoute.page
         ),
         AutoRoute(
           path: "mine",

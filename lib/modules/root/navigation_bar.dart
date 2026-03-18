@@ -29,8 +29,8 @@ class NextNavigationBar extends HookConsumerWidget {
         },
         destinations: tileList.map(
             (item) => NavigationDestination(
-                icon: Icon(item.icon),
-                selectedIcon: Icon(item.selectedIcon),
+                icon: Icon(item.icon, size: 21,),
+                selectedIcon: Icon(item.selectedIcon, size: 21,),
                 label: item.title)
             )
             .toList()

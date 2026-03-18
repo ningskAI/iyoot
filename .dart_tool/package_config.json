@@ -452,6 +452,12 @@
       "languageVersion": "3.8"
     },
     {
+      "name": "flutter_lucide",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/flutter_lucide-1.8.2",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
+    },
+    {
       "name": "flutter_plugin_android_lifecycle",
       "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/flutter_plugin_android_lifecycle-2.0.33",
       "packageUri": "lib/",

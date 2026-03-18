@@ -13,8 +13,8 @@ class HomePage extends HookConsumerWidget{
         titleSpacing: 8,
         title: Text(""),
       ),
-      body:  Expanded(
-        child:  Row(),
+      body:  Column(
+        children: [],
       ),
     );
   }

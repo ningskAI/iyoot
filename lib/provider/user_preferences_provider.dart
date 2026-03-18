@@ -6,7 +6,7 @@ import 'package:iyoot/services/logger/logger.dart';
 import 'package:iyoot/utils/platform.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart' as paths;
-import 'package:shadcn_flutter/shadcn_flutter.dart' hide join;
+import 'package:flutter/material.dart' hide join;
 
 typedef UserPreferences = PreferencesTableData;
 

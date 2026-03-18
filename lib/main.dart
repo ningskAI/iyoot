@@ -1,22 +1,16 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:ui';
-import 'package:flutter/material.dart' as material;
-import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:get/get.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:iyoot/app/app_style.dart';
 import 'package:iyoot/models/database/database.dart';
 import 'package:iyoot/provider/database.dart';
 import 'package:iyoot/provider/user_preferences_provider.dart';
 import 'package:iyoot/routes/routes.dart';
 import 'package:iyoot/services/logger/logger.dart';
-import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,22 +23,22 @@ void main() async {
       observers: const [
         AppLoggerProviderObserver(),
       ],
-      child: iyoot(),
+      child: iYoot(),
     ),
   );
 }
 
 
-class iyoot extends HookConsumerWidget {
+class iYoot extends HookConsumerWidget {
 
-  const iyoot({super.key});
+  const iYoot({super.key});
 
 
   @override
   Widget build(BuildContext context, ref) {
     final themeMode = ref.watch(userPreferencesProvider.select((s) => s.themeMode));
     final router = useMemoized(() => AppRouter(ref), []);
-    return ShadcnApp.router(
+    return MaterialApp.router(
       routerConfig: router.config(),
       debugShowCheckedModeBanner: false,
       title: 'iyoot',
@@ -62,12 +56,8 @@ class iyoot extends HookConsumerWidget {
 
         return child;
       },
-      theme: ThemeData(
-        radius: .5,
-        iconTheme: const IconThemeProperties(),
-        surfaceOpacity: .8,
-        surfaceBlur: 10,
-      ),
+      theme: AppStyle.lightTheme,
+      darkTheme: AppStyle.darkTheme,
       themeMode: themeMode,
     );
 

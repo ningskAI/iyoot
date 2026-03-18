@@ -11,7 +11,7 @@ class NextSidebar extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tileList = getSideBarTileList();
+    final tileList = getNavbarTileList();
     final router = context.watchRouter;
     final selectedIndex = max(
       0,
@@ -19,22 +19,37 @@ class NextSidebar extends HookConsumerWidget {
             (e) => router.currentPath.startsWith(e.pathPrefix),
       ),
     );
-    return SizedBox(
-      width: 130,
-      child: NavigationRail(
-        groupAlignment: 0,
-        selectedIndex: selectedIndex,
-        onDestinationSelected:(index) {
-          final tile = tileList[index];
-          context.navigateTo(tile.route);
-        },
-        labelType: NavigationRailLabelType.all,
-        destinations: tileList.map((e) => NavigationRailDestination(
-            icon: Icon(e.icon),
-            label: Text(e.title),
-            selectedIcon: Icon(e.selectedIcon)
-        )).toList(),
-      ),
+    return Column(
+      children: [
+        const SizedBox(height: 25),
+        const Spacer(flex: 2),
+        Expanded(
+          flex: 5,
+          child:SizedBox(
+            width: 130,
+            child: NavigationDrawer(
+              backgroundColor: Colors.transparent,
+              tilePadding: const EdgeInsetsGeometry.symmetric(
+                vertical: 5,
+                horizontal: 12,
+              ),
+              indicatorShape: const RoundedRectangleBorder(
+                borderRadius: BorderRadiusGeometry.all(Radius.circular(16)),
+              ),
+              selectedIndex: selectedIndex,
+              onDestinationSelected:(index) {
+                final tile = tileList[index];
+                context.navigateTo(tile.route);
+              },
+              children: tileList.map((e) => NavigationDrawerDestination(
+                  icon: Icon(e.icon, size: 21,),
+                  label: Text(e.title),
+                  selectedIcon: Icon(e.selectedIcon, size: 21,)
+              )).toList(),
+            ),
+          ) ,
+        )
+      ],
     );
   }
 }

@@ -13,7 +13,7 @@ import 'package:iyoot/pages/bookshelf/bookshelf.dart' as _i1;
 import 'package:iyoot/pages/home/home.dart' as _i2;
 import 'package:iyoot/pages/mine/mine.dart' as _i3;
 import 'package:iyoot/pages/root/root.dart' as _i4;
-import 'package:iyoot/pages/statistics/statistics.dart' as _i5;
+import 'package:iyoot/pages/store/store.dart' as _i5;
 
 /// generated route for
 /// [_i1.BookshelfPage]
@@ -92,20 +92,20 @@ class RootRoute extends _i6.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [_i5.StatisticsPage]
-class StatisticsRoute extends _i6.PageRouteInfo<void> {
-  const StatisticsRoute({List<_i6.PageRouteInfo>? children})
+/// [_i5.StorePage]
+class StoreRoute extends _i6.PageRouteInfo<void> {
+  const StoreRoute({List<_i6.PageRouteInfo>? children})
       : super(
-          StatisticsRoute.name,
+          StoreRoute.name,
           initialChildren: children,
         );
 
-  static const String name = 'StatisticsRoute';
+  static const String name = 'StoreRoute';
 
   static _i6.PageInfo page = _i6.PageInfo(
     name,
     builder: (data) {
-      return const _i5.StatisticsPage();
+      return const _i5.StorePage();
     },
   );
 }

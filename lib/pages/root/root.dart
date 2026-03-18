@@ -19,7 +19,7 @@ class RootPage extends ConsumerWidget{
           Visibility(
             visible: isLandscape, child:  NextSidebar()
           ),
-          Expanded(child: AutoRouter())
+          Expanded(flex:1,child: AutoRouter())
         ],
       ),
       bottomNavigationBar: Visibility(visible: !isLandscape,child: NextNavigationBar()),
