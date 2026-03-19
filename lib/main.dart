@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:iyoot/app/app_style.dart';
+import 'package:iyoot/collections/app_style.dart';
 import 'package:iyoot/models/database/database.dart';
 import 'package:iyoot/provider/database.dart';
 import 'package:iyoot/provider/user_preferences_provider.dart';

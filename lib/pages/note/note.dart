@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 @RoutePage()
-class SettingsPage extends HookConsumerWidget{
+class NotePage extends HookConsumerWidget{
 
-  const SettingsPage({super.key});
+  const NotePage({super.key});
 
 
   @override

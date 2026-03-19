@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:iyoot/app/app_style.dart';
 import 'package:iyoot/app/utils.dart';
+import 'package:iyoot/collections/app_style.dart';
 import 'package:remixicon/remixicon.dart';
 
 @RoutePage()

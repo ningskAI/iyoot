@@ -36,7 +36,7 @@ List<SideBarTiles> getNavbarTileList() => [
       route: const BookshelfRoute(),
       icon: NextIcons.bookshelf,
       selectedIcon: NextIcons.bookshelfSelected,
-      title: "书库"
+      title: "书架"
   ),
   SideBarTiles(
       id: "store",
@@ -45,6 +45,22 @@ List<SideBarTiles> getNavbarTileList() => [
       icon: NextIcons.store,
       selectedIcon: NextIcons.storeSelected,
       title: "藏书"
+  ),
+  SideBarTiles(
+      id: "statistics",
+      pathPrefix: "/statistics",
+      route: const StatisticsRoute(),
+      icon: NextIcons.statistics,
+      selectedIcon: NextIcons.statisticsSelected,
+      title: "统计"
+  ),
+  SideBarTiles(
+      id: "note",
+      pathPrefix: "/note",
+      route: const NoteRoute(),
+      icon: NextIcons.note,
+      selectedIcon: NextIcons.noteSelected,
+      title: "笔记"
   ),
   SideBarTiles(
       id: "mine",
