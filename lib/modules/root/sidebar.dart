@@ -1,9 +1,11 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:iyoot/collections/side_bar_tiles.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:iyoot/provider/ui_state_provider.dart';
 class NextSidebar extends HookConsumerWidget {
   const NextSidebar({
     super.key,
@@ -12,13 +14,7 @@ class NextSidebar extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tileList = getNavbarTileList(context);
-    final router = context.watchRouter;
-    final selectedIndex = max(
-      0,
-      tileList.indexWhere(
-            (e) => router.currentPath.startsWith(e.pathPrefix),
-      ),
-    );
+    final selectedIndex = ref.watch(bottomTabIndexProvider);
     return Column(
       children: [
         const SizedBox(height: 25),
@@ -38,8 +34,9 @@ class NextSidebar extends HookConsumerWidget {
               ),
               selectedIndex: selectedIndex,
               onDestinationSelected:(index) {
-                final tile = tileList[index];
-                context.navigateTo(tile.route);
+                // 更新状态
+                ref.read(bottomTabIndexProvider.notifier).state = index;
+                context.go(tileList[index].pathPrefix);
               },
               children: tileList.map((e) => NavigationDrawerDestination(
                   icon: Icon(e.icon, size: 21,),

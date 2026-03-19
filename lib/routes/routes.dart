@@ -1,49 +1,51 @@
-import 'package:auto_route/auto_route.dart';
-import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:iyoot/routes/routes.gr.dart';
-final rootNavigatorKey = GlobalKey<NavigatorState>();
+import 'package:go_router/go_router.dart';
+import 'package:iyoot/pages/bookshelf/bookshelf.dart';
+import 'package:iyoot/pages/home/home.dart';
+import 'package:iyoot/pages/mine/mine.dart';
+import 'package:iyoot/pages/note/note.dart';
+import 'package:iyoot/pages/root/root.dart';
+import 'package:iyoot/pages/settings/settings.dart';
+import 'package:iyoot/pages/statistics/statistics.dart';
+import 'package:iyoot/pages/store/store.dart';
 
-@AutoRouterConfig(replaceInRouteName: 'Screen|Page,Route')
-class AppRouter extends RootStackRouter {
-  final WidgetRef ref;
-
-  AppRouter(this.ref) : super(navigatorKey: rootNavigatorKey);
-
-  @override
-  List<AutoRoute> get routes => [
-    AutoRoute(
-      page: RootRoute.page,
-      path: "/",
-      initial: true,
-      children: [
-        AutoRoute(
-          path: "home",
-          page: HomeRoute.page,
-          initial: true
+final router = GoRouter(
+  initialLocation: "/home",
+  routes: [
+    ShellRoute(
+      builder: (context, state, child) {
+        return RootPage(child: child);
+      },
+      routes: [
+        GoRoute(
+          path: "/home",
+          builder: (_, _,) => HomePage()
         ),
-        AutoRoute(
-          path: "bookshelf",
-          page: BookshelfRoute.page,
+        GoRoute(
+          path: "/bookshelf",
+          builder: (_, _) => BookshelfPage(),
         ),
-        AutoRoute(
-          path: "store",
-          page: StoreRoute.page
+        GoRoute(
+            path: "/store",
+            builder: (_, _) => StorePage()
         ),
-        AutoRoute(
-          path: "statistics",
-          page: StatisticsRoute.page
+        GoRoute(
+            path: "/statistics",
+            builder: (_, _) => StatisticsPage()
         ),
-        AutoRoute(
-          path: "note",
-          page: NoteRoute.page
+        GoRoute(
+            path: "/note",
+            builder: (_, _) => NotePage()
         ),
-        AutoRoute(
-          path: "mine",
-          page: MineRoute.page
-        )
+        GoRoute(
+            path: "/mine",
+            builder: (_, _) => MinePage()
+        ),
       ]
+    ),
+    GoRoute(
+        path: "/settings",
+        builder: (_, _) => SettingsPage()
     )
-  ];
+  ]
+);
 
-}

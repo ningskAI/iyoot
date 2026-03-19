@@ -518,6 +518,12 @@
       "languageVersion": "3.3"
     },
     {
+      "name": "go_router",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/go_router-14.8.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
+    },
+    {
       "name": "graphs",
       "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/graphs-2.3.2",
       "packageUri": "lib/",

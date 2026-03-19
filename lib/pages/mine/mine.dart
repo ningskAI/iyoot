@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:iyoot/collections/app_style.dart';
 import 'package:remixicon/remixicon.dart';
@@ -129,7 +130,7 @@ class MinePage extends HookConsumerWidget{
                         color: Colors.grey
                     ),
                     onTap: () {
-                      Get.toNamed('/setting');
+                      context.push("/settings");
                     }
                 ),
                 Divider(

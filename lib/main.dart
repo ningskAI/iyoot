@@ -37,9 +37,8 @@ class iYoot extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final themeMode = ref.watch(userPreferencesProvider.select((s) => s.themeMode));
     final locale = ref.watch(userPreferencesProvider.select((s) => s.locale));
-    final router = useMemoized(() => AppRouter(ref), []);
     return MaterialApp.router(
-      routerConfig: router.config(),
+      routerConfig: router,
       debugShowCheckedModeBanner: false,
       title: 'iyoot',
       builder: (context, child) {

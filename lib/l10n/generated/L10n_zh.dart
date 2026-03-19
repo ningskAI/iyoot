@@ -28,4 +28,7 @@ class L10nZh extends L10n {
 
   @override
   String get navMine => '我的';
+
+  @override
+  String get navBarSettings => '设置';
 }

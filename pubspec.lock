@@ -74,7 +74,7 @@ packages:
     source: hosted
     version: "2.3.7"
   auto_route:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: auto_route
       sha256: "1d1bd908a1fec327719326d5d0791edd37f16caff6493c01003689fb03315ad7"
@@ -677,6 +677,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.1.3"
+  go_router:
+    dependency: "direct main"
+    description:
+      name: go_router
+      sha256: f02fd7d2a4dc512fec615529824fdd217fecb3a3d3de68360293a551f21634b3
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "14.8.1"
   graphs:
     dependency: transitive
     description:

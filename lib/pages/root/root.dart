@@ -1,14 +1,11 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:iyoot/modules/root/navigation_bar.dart';
 import 'package:iyoot/modules/root/sidebar.dart';
-import 'package:iyoot/provider/user_preferences_provider.dart';
-import 'package:iyoot/routes/routes.gr.dart';
 
-@RoutePage()
 class RootPage extends ConsumerWidget{
-  const RootPage({super.key});
+  final Widget child;
+  const RootPage({super.key,required this.child});
   
   @override
   Widget build(BuildContext context, ref) {
@@ -19,7 +16,7 @@ class RootPage extends ConsumerWidget{
           Visibility(
             visible: isLandscape, child:  NextSidebar()
           ),
-          Expanded(flex:1,child: AutoRouter())
+          Expanded(flex:1,child: child)
         ],
       ),
       bottomNavigationBar: Visibility(visible: !isLandscape,child: NextNavigationBar()),

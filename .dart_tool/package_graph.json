@@ -9,7 +9,6 @@
       "dependencies": [
         "archive",
         "auto_orientation_v2",
-        "auto_route",
         "connectivity_plus",
         "cross_file",
         "crypto",
@@ -34,6 +33,7 @@
         "flutter_smart_dialog",
         "flutter_staggered_grid_view",
         "get",
+        "go_router",
         "hive",
         "hive_flutter",
         "hooks_riverpod",
@@ -408,14 +408,14 @@
       ]
     },
     {
-      "name": "auto_route",
-      "version": "9.3.0+1",
+      "name": "go_router",
+      "version": "14.8.1",
       "dependencies": [
         "collection",
         "flutter",
-        "meta",
-        "path",
-        "web"
+        "flutter_web_plugins",
+        "logging",
+        "meta"
       ]
     },
     {
@@ -1065,6 +1065,17 @@
       "name": "args",
       "version": "2.7.0",
       "dependencies": []
+    },
+    {
+      "name": "auto_route",
+      "version": "9.3.0+1",
+      "dependencies": [
+        "collection",
+        "flutter",
+        "meta",
+        "path",
+        "web"
+      ]
     },
     {
       "name": "package_config",

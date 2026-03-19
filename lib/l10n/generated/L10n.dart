@@ -137,6 +137,12 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'Mine'**
   String get navMine;
+
+  /// No description provided for @navBarSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Setting'**
+  String get navBarSettings;
 }
 
 class _L10nDelegate extends LocalizationsDelegate<L10n> {
