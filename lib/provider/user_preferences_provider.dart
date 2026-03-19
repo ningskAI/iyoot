@@ -56,7 +56,8 @@ class UserPreferencesNotifier extends Notifier<PreferencesTableData> {
         defaultToastOp: 1.0,
         enableAutoPlay: false,
         enableOpenHA: false,
-        layoutMode: LayoutMode.auto
+        layoutMode: LayoutMode.auto,
+        locale: const Locale("system", "system")
     );
   }
 

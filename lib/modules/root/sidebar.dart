@@ -11,7 +11,7 @@ class NextSidebar extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tileList = getNavbarTileList();
+    final tileList = getNavbarTileList(context);
     final router = context.watchRouter;
     final selectedIndex = max(
       0,

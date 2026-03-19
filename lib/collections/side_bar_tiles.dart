@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:iyoot/collections/next_icons.dart';
+import 'package:iyoot/l10n/generated/L10n.dart';
 import 'package:iyoot/routes/routes.gr.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
@@ -21,22 +22,22 @@ class SideBarTiles {
   });
 }
 
-List<SideBarTiles> getNavbarTileList() => [
+List<SideBarTiles> getNavbarTileList(BuildContext context) => [
   SideBarTiles(
       id: "home",
       pathPrefix: "/home",
       route: const HomeRoute(),
       icon: NextIcons.home,
       selectedIcon: NextIcons.homeSelected,
-      title: "阅读"
-  ),
+      title: L10n.of(context).navbarRead)
+  ,
   SideBarTiles(
       id: "bookshelf",
       pathPrefix: "/bookshelf",
       route: const BookshelfRoute(),
       icon: NextIcons.bookshelf,
       selectedIcon: NextIcons.bookshelfSelected,
-      title: "书架"
+      title: L10n.of(context).navBarBookshelf
   ),
   SideBarTiles(
       id: "store",
@@ -44,7 +45,7 @@ List<SideBarTiles> getNavbarTileList() => [
       route: const StoreRoute(),
       icon: NextIcons.store,
       selectedIcon: NextIcons.storeSelected,
-      title: "藏书"
+      title: L10n.of(context).navBarLibrary
   ),
   SideBarTiles(
       id: "statistics",
@@ -52,7 +53,7 @@ List<SideBarTiles> getNavbarTileList() => [
       route: const StatisticsRoute(),
       icon: NextIcons.statistics,
       selectedIcon: NextIcons.statisticsSelected,
-      title: "统计"
+      title: L10n.of(context).navBarStatistics
   ),
   SideBarTiles(
       id: "note",
@@ -60,7 +61,7 @@ List<SideBarTiles> getNavbarTileList() => [
       route: const NoteRoute(),
       icon: NextIcons.note,
       selectedIcon: NextIcons.noteSelected,
-      title: "笔记"
+      title: L10n.of(context).navBarNote
   ),
   SideBarTiles(
       id: "mine",
@@ -68,6 +69,6 @@ List<SideBarTiles> getNavbarTileList() => [
       route: const MineRoute(),
       icon: NextIcons.mine,
       selectedIcon: NextIcons.mineSelected,
-      title: "我的"
+      title: L10n.of(context).navMine
   )
 ];

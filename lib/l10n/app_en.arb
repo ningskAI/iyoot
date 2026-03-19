@@ -1,0 +1,9 @@
+{
+  "appName": "iReader",
+  "navbarRead": "Read",
+  "navBarBookshelf": "BookShelf",
+  "navBarLibrary": "BookStore",
+  "navBarStatistics": "Statistics",
+  "navBarNote": "Note",
+  "navMine": "Mine"
+}

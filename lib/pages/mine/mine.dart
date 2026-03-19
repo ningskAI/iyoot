@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:iyoot/app/utils.dart';
 import 'package:iyoot/collections/app_style.dart';
 import 'package:remixicon/remixicon.dart';
 
@@ -45,7 +44,6 @@ class MinePage extends HookConsumerWidget{
                       ),
                       applicationName: "iyoot",
                       applicationVersion: "但行好事，莫问前程",
-                      applicationLegalese: "Ver ${Utils.packageInfo.version}",
                     ));
                   },
                 ),
@@ -149,7 +147,6 @@ class MinePage extends HookConsumerWidget{
                         Icons.chevron_right,
                         color: Colors.grey,
                       ),
-                      onTap: Utils.showStatement,
                     ),
                   ],
                 ),

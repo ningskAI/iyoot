@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'dart:ui';
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:path/path.dart';
@@ -6,6 +8,7 @@ import 'dart:io';
 import 'package:flutter/material.dart' show ThemeMode;
 import 'package:sqlite3/sqlite3.dart';
 import 'package:sqlite3_flutter_libs/sqlite3_flutter_libs.dart';
+import 'package:encrypt/encrypt.dart';
 
 part 'database.g.dart'; // 主文件的生成文件
 
@@ -15,6 +18,24 @@ enum LayoutMode {
   bottomBar /// 仅支持底边栏
 }
 
+class LocaleConverter extends TypeConverter<Locale, String> {
+  const LocaleConverter();
+
+  @override
+  Locale fromSql(String fromDb) {
+    final rawMap = jsonDecode(fromDb) as Map<String, dynamic>;
+    return Locale(rawMap["languageCode"], rawMap["countryCode"]);
+  }
+
+  @override
+  String toSql(Locale value) {
+    return jsonEncode({
+      "languageCode": value.languageCode,
+      "countryCode": value.countryCode,
+    });
+  }
+}
+
 class PreferencesTable extends Table {
   IntColumn get id => integer().autoIncrement()();
   /// 是否首次启动
@@ -22,6 +43,12 @@ class PreferencesTable extends Table {
   /// 主题模式
   TextColumn get themeMode =>
       textEnum<ThemeMode>().withDefault(Constant(ThemeMode.system.name))();
+  /// 国际化
+  TextColumn get locale => text()
+      .withDefault(
+    const Constant('{"languageCode":"system","countryCode":"system"}'),
+  )
+      .map(const LocaleConverter())();
   /// 是否黑夜模式
   BoolColumn get isDarkMode => boolean().withDefault(const Constant(false))();
   /// 缓存音乐

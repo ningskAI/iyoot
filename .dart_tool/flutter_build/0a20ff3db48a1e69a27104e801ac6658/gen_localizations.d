@@ -1,0 +1,1 @@
+ D:\\project\\iYooT\\lib\\l10n\\generated\\L10n_en.dart D:\\project\\iYooT\\lib\\l10n\\generated\\L10n_zh.dart D:\\project\\iYooT\\docs\\untranslated_messages.txt D:\\project\\iYooT\\lib\\l10n\\generated\\L10n.dart:  D:\\project\\iYooT\\l10n.yaml D:\\project\\iYooT\\lib\\l10n\\app_en.arb D:\\project\\iYooT\\lib\\l10n\\app_zh.arb

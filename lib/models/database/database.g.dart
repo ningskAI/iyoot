@@ -37,6 +37,15 @@ class $PreferencesTableTable extends PreferencesTable
               requiredDuringInsert: false,
               defaultValue: Constant(ThemeMode.system.name))
           .withConverter<ThemeMode>($PreferencesTableTable.$converterthemeMode);
+  static const VerificationMeta _localeMeta = const VerificationMeta('locale');
+  @override
+  late final GeneratedColumnWithTypeConverter<Locale, String> locale =
+      GeneratedColumn<String>('locale', aliasedName, false,
+              type: DriftSqlType.string,
+              requiredDuringInsert: false,
+              defaultValue: const Constant(
+                  '{"languageCode":"system","countryCode":"system"}'))
+          .withConverter<Locale>($PreferencesTableTable.$converterlocale);
   static const VerificationMeta _isDarkModeMeta =
       const VerificationMeta('isDarkMode');
   @override
@@ -108,6 +117,7 @@ class $PreferencesTableTable extends PreferencesTable
         id,
         isFirstRun,
         themeMode,
+        locale,
         isDarkMode,
         cacheMusic,
         downloadLocation,
@@ -137,6 +147,7 @@ class $PreferencesTableTable extends PreferencesTable
               data['is_first_run']!, _isFirstRunMeta));
     }
     context.handle(_themeModeMeta, const VerificationResult.success());
+    context.handle(_localeMeta, const VerificationResult.success());
     if (data.containsKey('is_dark_mode')) {
       context.handle(
           _isDarkModeMeta,
@@ -190,6 +201,9 @@ class $PreferencesTableTable extends PreferencesTable
       themeMode: $PreferencesTableTable.$converterthemeMode.fromSql(
           attachedDatabase.typeMapping.read(
               DriftSqlType.string, data['${effectivePrefix}theme_mode'])!),
+      locale: $PreferencesTableTable.$converterlocale.fromSql(attachedDatabase
+          .typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}locale'])!),
       isDarkMode: attachedDatabase.typeMapping
           .read(DriftSqlType.bool, data['${effectivePrefix}is_dark_mode'])!,
       cacheMusic: attachedDatabase.typeMapping
@@ -215,6 +229,8 @@ class $PreferencesTableTable extends PreferencesTable
 
   static JsonTypeConverter2<ThemeMode, String, String> $converterthemeMode =
       const EnumNameConverter<ThemeMode>(ThemeMode.values);
+  static TypeConverter<Locale, String> $converterlocale =
+      const LocaleConverter();
   static JsonTypeConverter2<LayoutMode, String, String> $converterlayoutMode =
       const EnumNameConverter<LayoutMode>(LayoutMode.values);
 }
@@ -228,6 +244,9 @@ class PreferencesTableData extends DataClass
 
   /// 主题模式
   final ThemeMode themeMode;
+
+  /// 国际化
+  final Locale locale;
 
   /// 是否黑夜模式
   final bool isDarkMode;
@@ -253,6 +272,7 @@ class PreferencesTableData extends DataClass
       {required this.id,
       required this.isFirstRun,
       required this.themeMode,
+      required this.locale,
       required this.isDarkMode,
       required this.cacheMusic,
       required this.downloadLocation,
@@ -268,6 +288,10 @@ class PreferencesTableData extends DataClass
     {
       map['theme_mode'] = Variable<String>(
           $PreferencesTableTable.$converterthemeMode.toSql(themeMode));
+    }
+    {
+      map['locale'] = Variable<String>(
+          $PreferencesTableTable.$converterlocale.toSql(locale));
     }
     map['is_dark_mode'] = Variable<bool>(isDarkMode);
     map['cache_music'] = Variable<bool>(cacheMusic);
@@ -287,6 +311,7 @@ class PreferencesTableData extends DataClass
       id: Value(id),
       isFirstRun: Value(isFirstRun),
       themeMode: Value(themeMode),
+      locale: Value(locale),
       isDarkMode: Value(isDarkMode),
       cacheMusic: Value(cacheMusic),
       downloadLocation: Value(downloadLocation),
@@ -305,6 +330,7 @@ class PreferencesTableData extends DataClass
       isFirstRun: serializer.fromJson<bool>(json['isFirstRun']),
       themeMode: $PreferencesTableTable.$converterthemeMode
           .fromJson(serializer.fromJson<String>(json['themeMode'])),
+      locale: serializer.fromJson<Locale>(json['locale']),
       isDarkMode: serializer.fromJson<bool>(json['isDarkMode']),
       cacheMusic: serializer.fromJson<bool>(json['cacheMusic']),
       downloadLocation: serializer.fromJson<String>(json['downloadLocation']),
@@ -323,6 +349,7 @@ class PreferencesTableData extends DataClass
       'isFirstRun': serializer.toJson<bool>(isFirstRun),
       'themeMode': serializer.toJson<String>(
           $PreferencesTableTable.$converterthemeMode.toJson(themeMode)),
+      'locale': serializer.toJson<Locale>(locale),
       'isDarkMode': serializer.toJson<bool>(isDarkMode),
       'cacheMusic': serializer.toJson<bool>(cacheMusic),
       'downloadLocation': serializer.toJson<String>(downloadLocation),
@@ -338,6 +365,7 @@ class PreferencesTableData extends DataClass
           {int? id,
           bool? isFirstRun,
           ThemeMode? themeMode,
+          Locale? locale,
           bool? isDarkMode,
           bool? cacheMusic,
           String? downloadLocation,
@@ -349,6 +377,7 @@ class PreferencesTableData extends DataClass
         id: id ?? this.id,
         isFirstRun: isFirstRun ?? this.isFirstRun,
         themeMode: themeMode ?? this.themeMode,
+        locale: locale ?? this.locale,
         isDarkMode: isDarkMode ?? this.isDarkMode,
         cacheMusic: cacheMusic ?? this.cacheMusic,
         downloadLocation: downloadLocation ?? this.downloadLocation,
@@ -363,6 +392,7 @@ class PreferencesTableData extends DataClass
       isFirstRun:
           data.isFirstRun.present ? data.isFirstRun.value : this.isFirstRun,
       themeMode: data.themeMode.present ? data.themeMode.value : this.themeMode,
+      locale: data.locale.present ? data.locale.value : this.locale,
       isDarkMode:
           data.isDarkMode.present ? data.isDarkMode.value : this.isDarkMode,
       cacheMusic:
@@ -390,6 +420,7 @@ class PreferencesTableData extends DataClass
           ..write('id: $id, ')
           ..write('isFirstRun: $isFirstRun, ')
           ..write('themeMode: $themeMode, ')
+          ..write('locale: $locale, ')
           ..write('isDarkMode: $isDarkMode, ')
           ..write('cacheMusic: $cacheMusic, ')
           ..write('downloadLocation: $downloadLocation, ')
@@ -406,6 +437,7 @@ class PreferencesTableData extends DataClass
       id,
       isFirstRun,
       themeMode,
+      locale,
       isDarkMode,
       cacheMusic,
       downloadLocation,
@@ -420,6 +452,7 @@ class PreferencesTableData extends DataClass
           other.id == this.id &&
           other.isFirstRun == this.isFirstRun &&
           other.themeMode == this.themeMode &&
+          other.locale == this.locale &&
           other.isDarkMode == this.isDarkMode &&
           other.cacheMusic == this.cacheMusic &&
           other.downloadLocation == this.downloadLocation &&
@@ -433,6 +466,7 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
   final Value<int> id;
   final Value<bool> isFirstRun;
   final Value<ThemeMode> themeMode;
+  final Value<Locale> locale;
   final Value<bool> isDarkMode;
   final Value<bool> cacheMusic;
   final Value<String> downloadLocation;
@@ -444,6 +478,7 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
     this.id = const Value.absent(),
     this.isFirstRun = const Value.absent(),
     this.themeMode = const Value.absent(),
+    this.locale = const Value.absent(),
     this.isDarkMode = const Value.absent(),
     this.cacheMusic = const Value.absent(),
     this.downloadLocation = const Value.absent(),
@@ -456,6 +491,7 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
     this.id = const Value.absent(),
     this.isFirstRun = const Value.absent(),
     this.themeMode = const Value.absent(),
+    this.locale = const Value.absent(),
     this.isDarkMode = const Value.absent(),
     this.cacheMusic = const Value.absent(),
     this.downloadLocation = const Value.absent(),
@@ -468,6 +504,7 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
     Expression<int>? id,
     Expression<bool>? isFirstRun,
     Expression<String>? themeMode,
+    Expression<String>? locale,
     Expression<bool>? isDarkMode,
     Expression<bool>? cacheMusic,
     Expression<String>? downloadLocation,
@@ -480,6 +517,7 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
       if (id != null) 'id': id,
       if (isFirstRun != null) 'is_first_run': isFirstRun,
       if (themeMode != null) 'theme_mode': themeMode,
+      if (locale != null) 'locale': locale,
       if (isDarkMode != null) 'is_dark_mode': isDarkMode,
       if (cacheMusic != null) 'cache_music': cacheMusic,
       if (downloadLocation != null) 'download_location': downloadLocation,
@@ -494,6 +532,7 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
       {Value<int>? id,
       Value<bool>? isFirstRun,
       Value<ThemeMode>? themeMode,
+      Value<Locale>? locale,
       Value<bool>? isDarkMode,
       Value<bool>? cacheMusic,
       Value<String>? downloadLocation,
@@ -505,6 +544,7 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
       id: id ?? this.id,
       isFirstRun: isFirstRun ?? this.isFirstRun,
       themeMode: themeMode ?? this.themeMode,
+      locale: locale ?? this.locale,
       isDarkMode: isDarkMode ?? this.isDarkMode,
       cacheMusic: cacheMusic ?? this.cacheMusic,
       downloadLocation: downloadLocation ?? this.downloadLocation,
@@ -527,6 +567,10 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
     if (themeMode.present) {
       map['theme_mode'] = Variable<String>(
           $PreferencesTableTable.$converterthemeMode.toSql(themeMode.value));
+    }
+    if (locale.present) {
+      map['locale'] = Variable<String>(
+          $PreferencesTableTable.$converterlocale.toSql(locale.value));
     }
     if (isDarkMode.present) {
       map['is_dark_mode'] = Variable<bool>(isDarkMode.value);
@@ -559,6 +603,7 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
           ..write('id: $id, ')
           ..write('isFirstRun: $isFirstRun, ')
           ..write('themeMode: $themeMode, ')
+          ..write('locale: $locale, ')
           ..write('isDarkMode: $isDarkMode, ')
           ..write('cacheMusic: $cacheMusic, ')
           ..write('downloadLocation: $downloadLocation, ')
@@ -588,6 +633,7 @@ typedef $$PreferencesTableTableCreateCompanionBuilder
   Value<int> id,
   Value<bool> isFirstRun,
   Value<ThemeMode> themeMode,
+  Value<Locale> locale,
   Value<bool> isDarkMode,
   Value<bool> cacheMusic,
   Value<String> downloadLocation,
@@ -601,6 +647,7 @@ typedef $$PreferencesTableTableUpdateCompanionBuilder
   Value<int> id,
   Value<bool> isFirstRun,
   Value<ThemeMode> themeMode,
+  Value<Locale> locale,
   Value<bool> isDarkMode,
   Value<bool> cacheMusic,
   Value<String> downloadLocation,
@@ -628,6 +675,11 @@ class $$PreferencesTableTableFilterComposer
   ColumnWithTypeConverterFilters<ThemeMode, ThemeMode, String> get themeMode =>
       $composableBuilder(
           column: $table.themeMode,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
+
+  ColumnWithTypeConverterFilters<Locale, Locale, String> get locale =>
+      $composableBuilder(
+          column: $table.locale,
           builder: (column) => ColumnWithTypeConverterFilters(column));
 
   ColumnFilters<bool> get isDarkMode => $composableBuilder(
@@ -675,6 +727,9 @@ class $$PreferencesTableTableOrderingComposer
   ColumnOrderings<String> get themeMode => $composableBuilder(
       column: $table.themeMode, builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<String> get locale => $composableBuilder(
+      column: $table.locale, builder: (column) => ColumnOrderings(column));
+
   ColumnOrderings<bool> get isDarkMode => $composableBuilder(
       column: $table.isDarkMode, builder: (column) => ColumnOrderings(column));
 
@@ -718,6 +773,9 @@ class $$PreferencesTableTableAnnotationComposer
 
   GeneratedColumnWithTypeConverter<ThemeMode, String> get themeMode =>
       $composableBuilder(column: $table.themeMode, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<Locale, String> get locale =>
+      $composableBuilder(column: $table.locale, builder: (column) => column);
 
   GeneratedColumn<bool> get isDarkMode => $composableBuilder(
       column: $table.isDarkMode, builder: (column) => column);
@@ -773,6 +831,7 @@ class $$PreferencesTableTableTableManager extends RootTableManager<
             Value<int> id = const Value.absent(),
             Value<bool> isFirstRun = const Value.absent(),
             Value<ThemeMode> themeMode = const Value.absent(),
+            Value<Locale> locale = const Value.absent(),
             Value<bool> isDarkMode = const Value.absent(),
             Value<bool> cacheMusic = const Value.absent(),
             Value<String> downloadLocation = const Value.absent(),
@@ -785,6 +844,7 @@ class $$PreferencesTableTableTableManager extends RootTableManager<
             id: id,
             isFirstRun: isFirstRun,
             themeMode: themeMode,
+            locale: locale,
             isDarkMode: isDarkMode,
             cacheMusic: cacheMusic,
             downloadLocation: downloadLocation,
@@ -797,6 +857,7 @@ class $$PreferencesTableTableTableManager extends RootTableManager<
             Value<int> id = const Value.absent(),
             Value<bool> isFirstRun = const Value.absent(),
             Value<ThemeMode> themeMode = const Value.absent(),
+            Value<Locale> locale = const Value.absent(),
             Value<bool> isDarkMode = const Value.absent(),
             Value<bool> cacheMusic = const Value.absent(),
             Value<String> downloadLocation = const Value.absent(),
@@ -809,6 +870,7 @@ class $$PreferencesTableTableTableManager extends RootTableManager<
             id: id,
             isFirstRun: isFirstRun,
             themeMode: themeMode,
+            locale: locale,
             isDarkMode: isDarkMode,
             cacheMusic: cacheMusic,
             downloadLocation: downloadLocation,

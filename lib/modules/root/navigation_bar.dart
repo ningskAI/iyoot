@@ -12,7 +12,7 @@ class NextNavigationBar extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tileList = useMemoized(() => getNavbarTileList());
+    final tileList = useMemoized(() => getNavbarTileList(context));
     final router = context.watchRouter;
     final selectedIndex = max(
       0,
