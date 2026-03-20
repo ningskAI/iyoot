@@ -129,7 +129,7 @@ abstract class L10n {
   /// No description provided for @navBarNote.
   ///
   /// In en, this message translates to:
-  /// **'Note'**
+  /// **'Notes'**
   String get navBarNote;
 
   /// No description provided for @navMine.
@@ -143,6 +143,54 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'Setting'**
   String get navBarSettings;
+
+  /// No description provided for @settingsAppearance.
+  ///
+  /// In en, this message translates to:
+  /// **'Appearance'**
+  String get settingsAppearance;
+
+  /// No description provided for @settingsRead.
+  ///
+  /// In en, this message translates to:
+  /// **'Read'**
+  String get settingsRead;
+
+  /// No description provided for @settingsSync.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync'**
+  String get settingsSync;
+
+  /// No description provided for @settingsInterface.
+  ///
+  /// In en, this message translates to:
+  /// **'Interface'**
+  String get settingsInterface;
+
+  /// No description provided for @settingsTheme.
+  ///
+  /// In en, this message translates to:
+  /// **'Theme'**
+  String get settingsTheme;
+
+  /// No description provided for @settingsDarkMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark'**
+  String get settingsDarkMode;
+
+  /// No description provided for @settingsLightMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Light'**
+  String get settingsLightMode;
+
+  /// No description provided for @settingsSystemMode.
+  ///
+  /// In en, this message translates to:
+  /// **'System'**
+  String get settingsSystemMode;
 }
 
 class _L10nDelegate extends LocalizationsDelegate<L10n> {

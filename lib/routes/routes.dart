@@ -5,8 +5,11 @@ import 'package:iyoot/pages/mine/mine.dart';
 import 'package:iyoot/pages/note/note.dart';
 import 'package:iyoot/pages/root/root.dart';
 import 'package:iyoot/pages/settings/settings.dart';
+import 'package:iyoot/pages/settings/subpages/appearance_settings.dart';
 import 'package:iyoot/pages/statistics/statistics.dart';
 import 'package:iyoot/pages/store/store.dart';
+
+
 
 final router = GoRouter(
   initialLocation: "/home",
@@ -44,7 +47,12 @@ final router = GoRouter(
     ),
     GoRoute(
         path: "/settings",
-        builder: (_, _) => SettingsPage()
+        builder: (_, _) => SettingsPage(),
+    ),
+    GoRoute(
+        name: "appearance",
+        path: "/settings/appearance",
+        builder: (_, _) => AppearanceSettingsPage()
     )
   ]
 );

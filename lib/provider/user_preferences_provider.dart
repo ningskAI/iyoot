@@ -13,52 +13,56 @@ typedef UserPreferences = PreferencesTableData;
 class UserPreferencesNotifier extends Notifier<PreferencesTableData> {
   @override
   PreferencesTableData build() {
-    final db = ref.watch(databaseProvider);
-
-    (db.select(db.preferencesTable)..where((tbl) => tbl.id.equals(0)))
-        .getSingleOrNull()
-        .then((result) async {
-      if (result == null) {
-        await db.into(db.preferencesTable).insert(
-          PreferencesTableCompanion.insert(
-            id: const Value(0),
-            downloadLocation: Value(await _getDefaultDownloadDirectory()),
-          ),
-        );
-      }
-
-      state = await (db.select(db.preferencesTable)
-        ..where((tbl) => tbl.id.equals(0)))
-          .getSingle();
-
-      final subscription = (db.select(db.preferencesTable)
-        ..where((tbl) => tbl.id.equals(0)))
-          .watchSingle()
-          .listen((event) async {
-        try {
-          state = event;
-        } catch (e, stack) {
-          AppLogger.reportError(e, stack);
-        }
-      });
-
-      ref.onDispose(() {
-        subscription.cancel();
-      });
-    });
-    return PreferencesTableData(
+    final defaultConfig = PreferencesTableData(
         id: 0,
         isFirstRun: true,
         themeMode: ThemeMode.system,
+        locale: const Locale("system", "system"),
         isDarkMode: false,
         cacheMusic: true,
         downloadLocation: "",
         defaultToastOp: 1.0,
-        enableAutoPlay: false,
-        enableOpenHA: false,
-        layoutMode: LayoutMode.auto,
-        locale: const Locale("system", "system")
-    );
+        enableAutoPlay: true,
+        enableOpenHA: true,
+        layoutMode: LayoutMode.auto);
+    // 异步放在同步build里内部执行;
+    _init();
+    return defaultConfig;
+  }
+
+  Future<void> _init() async {
+    final db = ref.read(databaseProvider);
+    // 读取配置
+    final config = await (db.select(db.preferencesTable)..where((tbl) => tbl.id.equals(0)))
+        .getSingleOrNull();
+    if (config == null) {
+      await db.into(db.preferencesTable).insert(
+        PreferencesTableCompanion.insert(
+            id: const Value(0),
+            downloadLocation: Value(await _getDefaultDownloadDirectory())
+        )
+      );
+    }
+
+    // 监听变化并更新state
+    state = await (db.select(db.preferencesTable)
+      ..where((tbl) => tbl.id.equals(0)))
+        .getSingle();
+
+    final subscription = (db.select(db.preferencesTable)
+      ..where((tbl) => tbl.id.equals(0)))
+        .watchSingle()
+        .listen((event) async {
+      try {
+        state = event;
+      } catch (e, stack) {
+        AppLogger.reportError(e, stack);
+      }
+    });
+
+    ref.onDispose(() {
+      subscription.cancel();
+    });
   }
 
   Future<String> _getDefaultDownloadDirectory() async {
@@ -83,6 +87,10 @@ class UserPreferencesNotifier extends Notifier<PreferencesTableData> {
 
   void setLayoutMode(LayoutMode mode) {
     setData(PreferencesTableCompanion(layoutMode: Value(mode)));
+  }
+
+  Future<void> setThemeMode(ThemeMode mode) async {
+    await setData(PreferencesTableCompanion(themeMode: Value(mode)));
   }
 
 }

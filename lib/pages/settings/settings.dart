@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:iyoot/collections/setting_type_tiles.dart';
 import 'package:iyoot/l10n/generated/L10n.dart';
@@ -21,8 +22,9 @@ class SettingsPage extends HookConsumerWidget{
     );
   }
 
-  void toPage(SettingType type) {
-
+  void toPage(BuildContext context,String? route) {
+    if (route == null) return;
+    context.pushNamed(route);
   }
 
   Widget buildList(BuildContext context,ThemeData theme) {
@@ -31,15 +33,15 @@ class SettingsPage extends HookConsumerWidget{
     TextStyle subTitleStyle = theme.textTheme.labelMedium!.copyWith(
       color: theme.colorScheme.outline,
     );
-    final items = getSettingTiles();
+    final items = getSettingTiles(context);
     return ListView(
       padding: EdgeInsets.only(bottom: padding.bottom + 100),
       children: items
           .take(items.length)
           .map((item) => ListTile(
-            onTap: () => toPage(item.type) ,
+            onTap: () => toPage(context,item.route) ,
             leading: item.icon,
-            title: Text(item.type.title, style: titleStyle),
+            title: Text(item.title, style: titleStyle),
             subtitle: item.subtitle == null
                 ? null
                 : Text(item.subtitle!, style: subTitleStyle),

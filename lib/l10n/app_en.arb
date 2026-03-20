@@ -4,7 +4,15 @@
   "navBarBookshelf": "BookShelf",
   "navBarLibrary": "BookStore",
   "navBarStatistics": "Statistics",
-  "navBarNote": "Note",
+  "navBarNote": "Notes",
   "navMine": "Mine",
-  "navBarSettings": "Setting"
+  "navBarSettings": "Setting",
+  "settingsAppearance": "Appearance",
+  "settingsRead": "Read",
+  "settingsSync": "Sync",
+  "settingsInterface": "Interface",
+  "settingsTheme": "Theme",
+  "settingsDarkMode": "Dark",
+  "settingsLightMode": "Light",
+  "settingsSystemMode": "System"
 }

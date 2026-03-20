@@ -24,11 +24,35 @@ class L10nEn extends L10n {
   String get navBarStatistics => 'Statistics';
 
   @override
-  String get navBarNote => 'Note';
+  String get navBarNote => 'Notes';
 
   @override
   String get navMine => 'Mine';
 
   @override
   String get navBarSettings => 'Setting';
+
+  @override
+  String get settingsAppearance => 'Appearance';
+
+  @override
+  String get settingsRead => 'Read';
+
+  @override
+  String get settingsSync => 'Sync';
+
+  @override
+  String get settingsInterface => 'Interface';
+
+  @override
+  String get settingsTheme => 'Theme';
+
+  @override
+  String get settingsDarkMode => 'Dark';
+
+  @override
+  String get settingsLightMode => 'Light';
+
+  @override
+  String get settingsSystemMode => 'System';
 }
