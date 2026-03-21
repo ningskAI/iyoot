@@ -16,7 +16,19 @@ class RootPage extends ConsumerWidget{
           Visibility(
             visible: isLandscape, child:  NextSidebar()
           ),
-          Expanded(flex:1,child: child)
+          Expanded(flex:1,child: Container(
+              decoration: BoxDecoration(
+                border: Border(
+                  left: isLandscape
+                      ? BorderSide(
+                    color: Colors.grey.withAlpha(50),
+                    width: 1,
+                  )
+                      : BorderSide.none,
+                ),
+              ),
+              child: child,
+          ))
         ],
       ),
       bottomNavigationBar: Visibility(visible: !isLandscape,child: NextNavigationBar()),
