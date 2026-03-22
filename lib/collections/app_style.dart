@@ -38,9 +38,8 @@ class AppStyle {
     ),
     navigationBarTheme: NavigationBarThemeData(
       backgroundColor: Colors.white,
-
     ),
-    navigationDrawerTheme: NavigationDrawerThemeData(
+    navigationRailTheme: NavigationRailThemeData(
       backgroundColor: Colors.white,
     )
   );
