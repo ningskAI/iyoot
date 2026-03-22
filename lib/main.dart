@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:iyoot/collections/app_style.dart';
@@ -14,6 +15,14 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final database = AppDatabase();
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+  //设置状态栏为透明
+  SystemUiOverlayStyle systemUiOverlayStyle = const SystemUiOverlayStyle(
+    statusBarColor: Colors.transparent,
+    statusBarIconBrightness: Brightness.dark,
+    systemNavigationBarColor: Colors.transparent,
+  );
+  SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
   runApp(
     ProviderScope(
       overrides: [
