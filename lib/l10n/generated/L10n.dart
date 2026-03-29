@@ -207,50 +207,38 @@ abstract class L10n {
   /// No description provided for @webDavServerAddress.
   ///
   /// In en, this message translates to:
-  /// **'WebDav Server Address'**
+  /// **'Address'**
   String get webDavServerAddress;
-
-  /// No description provided for @webDavServerAddressHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Enter your server address'**
-  String get webDavServerAddressHint;
 
   /// No description provided for @webDavAccount.
   ///
   /// In en, this message translates to:
-  /// **'WebDav Account'**
+  /// **'Account'**
   String get webDavAccount;
-
-  /// No description provided for @webDavAccountHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Enter your WebDav account'**
-  String get webDavAccountHint;
 
   /// No description provided for @webDavPassword.
   ///
   /// In en, this message translates to:
-  /// **'WebDav Password'**
+  /// **'Password'**
   String get webDavPassword;
-
-  /// No description provided for @webDavPasswordHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Enter your WebDav authorization password'**
-  String get webDavPasswordHint;
 
   /// No description provided for @webDavSubFolder.
   ///
   /// In en, this message translates to:
-  /// **'Sub-folder'**
+  /// **'Path'**
   String get webDavSubFolder;
 
-  /// No description provided for @webDavDeviceName.
+  /// No description provided for @saveConfig.
   ///
   /// In en, this message translates to:
-  /// **'Device Name'**
-  String get webDavDeviceName;
+  /// **'Save Settings'**
+  String get saveConfig;
+
+  /// No description provided for @testConnection.
+  ///
+  /// In en, this message translates to:
+  /// **'Test Connection'**
+  String get testConnection;
 
   /// No description provided for @syncReadingProgress.
   ///
@@ -261,19 +249,19 @@ abstract class L10n {
   /// No description provided for @syncReadingProgressSummary.
   ///
   /// In en, this message translates to:
-  /// **'Sync reading progress when entering or exiting the reading interface'**
+  /// **'Sync reading progress when entering/exiting reading interface'**
   String get syncReadingProgressSummary;
 
   /// No description provided for @syncEnhancement.
   ///
   /// In en, this message translates to:
-  /// **'Sync Enhancement'**
+  /// **'Enhanced Sync'**
   String get syncEnhancement;
 
   /// No description provided for @syncEnhancementSummary.
   ///
   /// In en, this message translates to:
-  /// **'Sync cloud progress when re-entering the page (screen off, returning from background, etc.) or when the network becomes available. Syncing progress will ask.'**
+  /// **'Sync cloud progress when re-entering or network available, will prompt for sync'**
   String get syncEnhancementSummary;
 
   /// No description provided for @backupPath.
@@ -291,7 +279,7 @@ abstract class L10n {
   /// No description provided for @backupSummary.
   ///
   /// In en, this message translates to:
-  /// **'Backup locally and to WebDav together'**
+  /// **'Backup to Local and WebDav together'**
   String get backupSummary;
 
   /// No description provided for @restore.
@@ -303,7 +291,7 @@ abstract class L10n {
   /// No description provided for @restoreSummary.
   ///
   /// In en, this message translates to:
-  /// **'Priority to restore from WebDav, long press to restore from local'**
+  /// **'Priority from WebDav, long press for Local'**
   String get restoreSummary;
 
   /// No description provided for @restoreIgnoreList.
@@ -315,7 +303,7 @@ abstract class L10n {
   /// No description provided for @restoreIgnoreListSummary.
   ///
   /// In en, this message translates to:
-  /// **'Ignore some content during restoration to facilitate different configurations for different phones'**
+  /// **'Ignore certain items during restoration for different device configurations'**
   String get restoreIgnoreListSummary;
 
   /// No description provided for @importOldData.
@@ -327,7 +315,7 @@ abstract class L10n {
   /// No description provided for @importOldDataSummary.
   ///
   /// In en, this message translates to:
-  /// **'Select the folder for old backup files'**
+  /// **'Select folder containing old backup files'**
   String get importOldDataSummary;
 
   /// No description provided for @keepLatestBackupOnly.
@@ -339,7 +327,7 @@ abstract class L10n {
   /// No description provided for @keepLatestBackupOnlySummary.
   ///
   /// In en, this message translates to:
-  /// **'Keep only the latest local backup file'**
+  /// **'Only keep the most recent local backup file'**
   String get keepLatestBackupOnlySummary;
 
   /// No description provided for @autoCheckNewBackup.
@@ -351,7 +339,7 @@ abstract class L10n {
   /// No description provided for @autoCheckNewBackupSummary.
   ///
   /// In en, this message translates to:
-  /// **'Check for new backups when opening the software, and prompt whether to update if there is a new backup'**
+  /// **'Check for new backups on startup and prompt for update'**
   String get autoCheckNewBackupSummary;
 }
 

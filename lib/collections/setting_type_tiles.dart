@@ -30,9 +30,15 @@ List<SettingTile> getSettingTiles(BuildContext context) => [
   ),
   SettingTile(
     title: L10n.of(context).settingsSync,
-    subtitle: 'WebDav、导入、导出',
+    subtitle: 'Webdav配置',
     icon: Icon(Icons.sync),
-    route: "backup"
+    route: "webdav"
+  ),
+  SettingTile(
+      title: L10n.of(context).settingBackup,
+      subtitle: '备份与重置',
+      icon: Icon(Icons.sync),
+      route: "backup"
   ),
   SettingTile(
     title: L10n.of(context).settingsInterface,

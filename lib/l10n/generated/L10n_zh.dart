@@ -63,28 +63,22 @@ class L10nZh extends L10n {
   String get webDavSettings => 'WebDav 设置';
 
   @override
-  String get webDavServerAddress => 'WebDav 服务器地址';
+  String get webDavServerAddress => '地址';
 
   @override
-  String get webDavServerAddressHint => '输入你的服务器地址';
+  String get webDavAccount => '用户';
 
   @override
-  String get webDavAccount => 'WebDav 账号';
+  String get webDavPassword => '密码';
 
   @override
-  String get webDavAccountHint => '输入你的 WebDav 账号';
+  String get webDavSubFolder => '路径';
 
   @override
-  String get webDavPassword => 'WebDav 密码';
+  String get saveConfig => '保存设置';
 
   @override
-  String get webDavPasswordHint => '输入你的 WebDav 授权密码';
-
-  @override
-  String get webDavSubFolder => '子文件夹';
-
-  @override
-  String get webDavDeviceName => '设备名称';
+  String get testConnection => '连接测试';
 
   @override
   String get syncReadingProgress => '同步阅读进度';

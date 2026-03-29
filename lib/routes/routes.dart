@@ -6,9 +6,10 @@ import 'package:iyoot/pages/note/note.dart';
 import 'package:iyoot/pages/root/root.dart';
 import 'package:iyoot/pages/settings/settings.dart';
 import 'package:iyoot/pages/settings/subpages/appearance_settings.dart';
+import 'package:iyoot/pages/settings/subpages/backup_settings.dart';
+import 'package:iyoot/pages/settings/subpages/webdav_settings.dart';
 import 'package:iyoot/pages/statistics/statistics.dart';
 import 'package:iyoot/pages/store/store.dart';
-import 'package:iyoot/pages/backup/backup.dart';
 
 
 
@@ -59,6 +60,11 @@ final router = GoRouter(
       name: "backup",
       path: "/settings/backup",
       builder: (_, _) => BackupPage()
+    ),
+    GoRoute(
+        name: "webdav",
+        path: "/settings/webdavSettings",
+        builder: (_, _) => WebDavSettingsPage()
     )
   ]
 );

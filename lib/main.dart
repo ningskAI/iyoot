@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -59,28 +60,68 @@ class iYoot extends ConsumerWidget {
   const iYoot({super.key});
 
   @override
-  Widget build(BuildContext context, ref) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final themeMode = ref.watch(userPreferencesProvider.select((s) => s.themeMode));
     final locale = ref.watch(userPreferencesProvider.select((s) => s.locale));
     
-    // 2. 在 UI 层再次确认，如果不是平板则显示不支持提示
-    final shortestSide = MediaQuery.of(context).size.shortestSide;
-    if (shortestSide < 600) {
+    // 2. 拦截逻辑：当画幅宽度小于 600 时触发
+    final width = MediaQuery.of(context).size.width;
+    if (width < 600) {
       return MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: AppStyle.lightTheme,
         darkTheme: AppStyle.darkTheme,
         themeMode: themeMode,
-        home: const Scaffold(
-          body: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.tablet_android, size: 64, color: Colors.grey),
-                SizedBox(height: 16),
-                Text('阅然：本应用仅支持平板设备使用', style: TextStyle(fontSize: 18)),
-              ],
-            ),
+        home: Scaffold(
+          backgroundColor: const Color(0xFF1A1A1A), // 纯黑
+          body: Stack(
+            children: [
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 48),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      Text(
+                        '『尺幅局促，难容碎金。\n'
+                        '案头之书，须有舒展之所。\n'
+                        '检测到当前设备画幅受限，避难所大门暂不开启。\n'
+                        '待君执平板而来，再续书缘。』',
+                        style: TextStyle(
+                          color: Color(0xFFF2F2F2), // 玄纸白
+                          fontFamily: 'serif', // 宋体
+                          fontSize: 18,
+                          height: 2.2, // 呼吸感行高
+                          letterSpacing: 2.0, // 呼吸感字间距
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Positioned(
+                bottom: 60,
+                left: 0,
+                right: 0,
+                child: Center(
+                  child: TextButton(
+                    onPressed: () => exit(0),
+                    style: TextButton.styleFrom(
+                      foregroundColor: const Color(0xFFF2F2F2).withOpacity(0.3), // 半透明按钮
+                    ),
+                    child: const Text(
+                      '退出程序',
+                      style: TextStyle(
+                        fontFamily: 'serif',
+                        letterSpacing: 4,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       );

@@ -1,187 +1,185 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:get/get.dart';
 
+/// 02 色彩体系 - 封装品牌核心色彩
 class AppColors {
-  static ColorScheme lightColorScheme = ColorScheme.light(
-    surface: lightSurfaceColor,
-    onSurface: lightOnSurfaceColor,
-    primary: lightPrimaryColor,
-  );
-  static ColorScheme darkColorScheme = ColorScheme.dark(
-    surface: darkSurfaceColor,
-    onSurface: darkOnSurfaceColor,
-    primary: darkPrimaryColor,
-  );
+  // 核心品牌色：绯红 (Crimson)
+  static const Color crimson = Color(0xFFA62121);
+  static const Color darkCrimson = Color(0xFFB22222);
 
-  static const Color lightPrimaryColor = Color(0xFFA62121);
-  static const Color lightSurfaceColor = Color(0xFFFDFBF7);
-  static const Color lightOnSurfaceColor = Color(0xFF2D2D2D);
+  // 亮色模式：纸色 (Paper) 与 墨色 (Ink)
+  static const Color paper = Color(0xFFFDFBF7);
+  static const Color ink = Color(0xFF2D2D2D);
 
-  static const Color darkPrimaryColor = Color(0xFFB22222);
-  static const Color darkSurfaceColor = Color(0xFF0A0A0A);
-  static const Color darkOnSurfaceColor = Color(0xFFE8E8E8);
+  // 暗色模式：曜石 (Obsidian) 与 银霜 (Silver)
+  static const Color obsidian = Color(0xFF0A0A0A);
+  static const Color silver = Color(0xFFE8E8E8);
 
-  static const Color black333 = Color(0xFF333333);
+  static const Color grey666 = Color(0xFF666666);
+}
+
+/// 自定义主题扩展 - 方便在代码中直接获取品牌色
+class OneReadColors extends ThemeExtension<OneReadColors> {
+  final Color? crimson;
+  final Color? paper;
+  final Color? ink;
+
+  const OneReadColors({
+    required this.crimson,
+    required this.paper,
+    required this.ink,
+  });
+
+  @override
+  OneReadColors copyWith({Color? crimson, Color? paper, Color? ink}) {
+    return OneReadColors(
+      crimson: crimson ?? this.crimson,
+      paper: paper ?? this.paper,
+      ink: ink ?? this.ink,
+    );
+  }
+
+  @override
+  OneReadColors lerp(ThemeExtension<OneReadColors>? other, double t) {
+    if (other is! OneReadColors) return this;
+    return OneReadColors(
+      crimson: Color.lerp(crimson, other.crimson, t),
+      paper: Color.lerp(paper, other.paper, t),
+      ink: Color.lerp(ink, other.ink, t),
+    );
+  }
 }
 
 class AppStyle {
+  // 01 设计之魂 - 亮色主题 (纸色/墨色)
   static ThemeData lightTheme = ThemeData(
-    scaffoldBackgroundColor: const Color(0xFFFDFBF7),
-    colorScheme: AppColors.lightColorScheme,
     useMaterial3: true,
+    scaffoldBackgroundColor: AppColors.paper,
+    colorScheme: ColorScheme.light(
+      surface: AppColors.paper,
+      onSurface: AppColors.ink,
+      primary: AppColors.crimson,
+    ),
     fontFamily: Platform.isWindows ? "Microsoft YaHei" : null,
-    visualDensity: VisualDensity.standard,
-    appBarTheme: AppBarTheme(
+    appBarTheme: const AppBarTheme(
+      elevation: 0,
       centerTitle: true,
-      titleTextStyle: const TextStyle(fontSize: 16, color: AppColors.black333),
-      foregroundColor: AppColors.black333,
-      systemOverlayStyle: SystemUiOverlayStyle.dark.copyWith(
-        systemNavigationBarColor: Colors.transparent,
+      backgroundColor: Colors.transparent,
+      titleTextStyle: TextStyle(
+        fontSize: 18,
+        color: AppColors.ink,
+        fontFamily: 'serif',
+        fontWeight: FontWeight.bold,
       ),
     ),
-    navigationRailTheme: NavigationRailThemeData(
-      backgroundColor: const Color(0xFFFDFBF7),
-      selectedIconTheme: const IconThemeData(
-        color: AppColors.lightPrimaryColor,
+    // 04 核心组件 - 输入框样式封装
+    inputDecorationTheme: InputDecorationTheme(
+      filled: true,
+      fillColor: Colors.transparent,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: BorderSide(color: AppColors.ink.withOpacity(0.1), width: 0.5),
       ),
-      unselectedIconTheme: const IconThemeData(color: Color(0xff666666)),
-      selectedLabelTextStyle: const TextStyle(
-        color: AppColors.lightPrimaryColor,
-        fontSize: 12,
-        fontWeight: FontWeight.w900,
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: const BorderSide(color: AppColors.crimson, width: 1.0),
       ),
-      unselectedLabelTextStyle: const TextStyle(
-        color: Color(0xff666666),
-        fontSize: 12,
-        fontWeight: FontWeight.w900,
-      ),
-      indicatorColor: Colors.transparent,
-    ),
-    navigationBarTheme: NavigationBarThemeData(),
-  );
-
-  static ThemeData darkTheme = ThemeData.dark().copyWith(
-    scaffoldBackgroundColor: const Color(0xFF000000),
-    colorScheme: AppColors.darkColorScheme,
-    visualDensity: VisualDensity.standard,
-    textTheme: ThemeData.dark().textTheme.apply(
-      fontFamily: Platform.isWindows ? "Microsoft YaHei" : null,
-    ),
-    primaryTextTheme: ThemeData().textTheme.apply(
-      fontFamily: Platform.isWindows ? "Microsoft YaHei" : null,
-    ),
-    appBarTheme: AppBarTheme(
-      centerTitle: true,
-      titleTextStyle: const TextStyle(fontSize: 16, color: Colors.white),
-      foregroundColor: Colors.white,
-      systemOverlayStyle: SystemUiOverlayStyle.light.copyWith(
-        systemNavigationBarColor: Colors.transparent,
-      ),
-    ),
-    navigationRailTheme: NavigationRailThemeData(
-      backgroundColor: const Color(0xFF000000),
-      selectedIconTheme: const IconThemeData(
-        color: AppColors.darkOnSurfaceColor,
-      ),
-      unselectedIconTheme: const IconThemeData(color: Color(0xff666666)),
-      selectedLabelTextStyle: const TextStyle(
-        color: AppColors.darkOnSurfaceColor,
-        fontSize: 12,
-        fontWeight: FontWeight.w900,
-      ),
-      unselectedLabelTextStyle: const TextStyle(
-        color: Color(0xff666666),
-        fontSize: 12,
-        fontWeight: FontWeight.w900,
-      ),
-      indicatorColor: Colors.transparent,
+      hintStyle: TextStyle(color: AppColors.ink.withOpacity(0.3), fontSize: 14),
     ),
     navigationBarTheme: NavigationBarThemeData(
-      backgroundColor: const Color(0xFF000000),
+      backgroundColor: AppColors.paper,
       indicatorColor: Colors.transparent,
+      labelTextStyle: WidgetStateProperty.all(
+        const TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
+      ),
     ),
+    extensions: const [
+      OneReadColors(
+        crimson: AppColors.crimson,
+        paper: AppColors.paper,
+        ink: AppColors.ink,
+      ),
+    ],
   );
+
+  static ThemeData darkTheme = ThemeData(
+    useMaterial3: true,
+    scaffoldBackgroundColor: Colors.black,
+    colorScheme: const ColorScheme.dark(
+      surface: AppColors.obsidian,
+      onSurface: AppColors.silver,
+      primary: AppColors.darkCrimson,
+    ),
+    fontFamily: Platform.isWindows ? "Microsoft YaHei" : null,
+    appBarTheme: const AppBarTheme(
+      elevation: 0,
+      centerTitle: true,
+      backgroundColor: Colors.transparent,
+      titleTextStyle: TextStyle(
+        fontSize: 18,
+        color: AppColors.silver,
+        fontFamily: 'serif',
+        fontWeight: FontWeight.bold,
+      ),
+    ),
+    inputDecorationTheme: InputDecorationTheme(
+      filled: true,
+      fillColor: Colors.transparent,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: BorderSide(color: AppColors.silver.withOpacity(0.1), width: 0.5),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: const BorderSide(color: AppColors.darkCrimson, width: 1.0),
+      ),
+      hintStyle: TextStyle(color: AppColors.silver.withOpacity(0.3), fontSize: 14),
+    ),
+    navigationBarTheme: NavigationBarThemeData(
+      backgroundColor: Colors.black,
+      indicatorColor: Colors.transparent,
+      labelTextStyle: WidgetStateProperty.all(
+        const TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
+      ),
+    ),
+    extensions: const [
+      OneReadColors(
+        crimson: AppColors.darkCrimson,
+        paper: AppColors.obsidian,
+        ink: AppColors.silver,
+      ),
+    ],
+  );
+
   static const vGap4 = SizedBox(height: 4);
   static const vGap8 = SizedBox(height: 8);
   static const vGap12 = SizedBox(height: 12);
   static const vGap24 = SizedBox(height: 24);
-  static const vGap32 = SizedBox(height: 32);
   static const vGap48 = SizedBox(height: 48);
 
-  static const hGap4 = SizedBox(width: 4);
-  static const hGap8 = SizedBox(width: 8);
   static const hGap12 = SizedBox(width: 12);
   static const hGap16 = SizedBox(width: 16);
-
   static const hGap24 = SizedBox(width: 24);
-  static const hGap32 = SizedBox(width: 32);
-  static const hGap48 = SizedBox(width: 48);
-
-  static const edgeInsetsH4 = EdgeInsets.symmetric(horizontal: 4);
-  static const edgeInsetsH8 = EdgeInsets.symmetric(horizontal: 8);
-  static const edgeInsetsH12 = EdgeInsets.symmetric(horizontal: 12);
-  static const edgeInsetsH16 = EdgeInsets.symmetric(horizontal: 16);
-  static const edgeInsetsH20 = EdgeInsets.symmetric(horizontal: 20);
-  static const edgeInsetsH24 = EdgeInsets.symmetric(horizontal: 24);
-
-  static const edgeInsetsV4 = EdgeInsets.symmetric(vertical: 4);
-  static const edgeInsetsV8 = EdgeInsets.symmetric(vertical: 8);
-  static const edgeInsetsV12 = EdgeInsets.symmetric(vertical: 12);
-  static const edgeInsetsV24 = EdgeInsets.symmetric(vertical: 24);
 
   static const edgeInsetsA4 = EdgeInsets.all(4);
-  static const edgeInsetsA8 = EdgeInsets.all(8);
   static const edgeInsetsA12 = EdgeInsets.all(12);
   static const edgeInsetsA16 = EdgeInsets.all(16);
-  static const edgeInsetsA20 = EdgeInsets.all(20);
-  static const edgeInsetsA24 = EdgeInsets.all(24);
+  static const edgeInsetsH16 = EdgeInsets.symmetric(horizontal: 16);
+  static const edgeInsetsV12 = EdgeInsets.symmetric(vertical: 12);
 
-  static const edgeInsetsR4 = EdgeInsets.only(right: 4);
-  static const edgeInsetsR8 = EdgeInsets.only(right: 8);
-  static const edgeInsetsR12 = EdgeInsets.only(right: 12);
-  static const edgeInsetsR16 = EdgeInsets.only(right: 16);
-  static const edgeInsetsR20 = EdgeInsets.only(right: 20);
-  static const edgeInsetsR24 = EdgeInsets.only(right: 24);
-
-  static const edgeInsetsL4 = EdgeInsets.only(left: 4);
-  static const edgeInsetsL8 = EdgeInsets.only(left: 8);
-  static const edgeInsetsL12 = EdgeInsets.only(left: 12);
-  static const edgeInsetsL16 = EdgeInsets.only(left: 16);
-  static const edgeInsetsL20 = EdgeInsets.only(left: 20);
-  static const edgeInsetsL24 = EdgeInsets.only(left: 24);
-
-  static const edgeInsetsT4 = EdgeInsets.only(top: 4);
-  static const edgeInsetsT8 = EdgeInsets.only(top: 8);
-  static const edgeInsetsT12 = EdgeInsets.only(top: 12);
-  static const edgeInsetsT24 = EdgeInsets.only(top: 24);
-
-  static const edgeInsetsB4 = EdgeInsets.only(bottom: 4);
-  static const edgeInsetsB8 = EdgeInsets.only(bottom: 8);
-  static const edgeInsetsB12 = EdgeInsets.only(bottom: 12);
-  static const edgeInsetsB24 = EdgeInsets.only(bottom: 24);
-
-  static BorderRadius radius4 = BorderRadius.circular(4);
   static BorderRadius radius8 = BorderRadius.circular(8);
   static BorderRadius radius12 = BorderRadius.circular(12);
-  static BorderRadius radius24 = BorderRadius.circular(24);
-  static BorderRadius radius32 = BorderRadius.circular(32);
-  static BorderRadius radius48 = BorderRadius.circular(48);
-
-  /// 顶部状态栏的高度
-  static double get statusBarHeight => MediaQuery.of(Get.context!).padding.top;
-
-  /// 底部导航条的高度
-  static double get bottomBarHeight =>
-      MediaQuery.of(Get.context!).padding.bottom;
 
   static Divider get divider => Divider(
-    height: 1,
-    thickness: 1,
-    indent: 16,
-    endIndent: 16,
-    color: Colors.grey.withAlpha(25),
-  );
+        height: 1,
+        thickness: 0.5,
+        color: AppColors.grey666.withOpacity(0.1),
+      );
+}
+
+extension ThemeContextExtension on BuildContext {
+  OneReadColors get brandColors => Theme.of(this).extension<OneReadColors>()!;
 }

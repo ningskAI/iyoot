@@ -16,28 +16,28 @@ class NextSidebar extends ConsumerWidget {
     final selectedIndex = ref.watch(bottomTabIndexProvider);
     return Column(
       children: [
+        const SizedBox(height: 25),
+        const Spacer(flex: 2),
         Expanded(
-          flex: 1,
+          flex: 5,
           child:SizedBox(
-            width: 120,
-            child: NavigationRail(
-              leading: Container(
-                padding: EdgeInsets.symmetric(vertical: 40),
-                child: SizedBox(
-                  width: 36,
-                  height: 36 ,
-                  child: Image.asset("assets/images/logo.png"),
-                ),
+            width: 130,
+            child: NavigationDrawer(
+              backgroundColor: Colors.transparent,
+              tilePadding: const EdgeInsetsGeometry.symmetric(
+                vertical: 5,
+                horizontal: 12,
               ),
-              labelType: NavigationRailLabelType.all,
-              groupAlignment: 0,
+              indicatorShape: const RoundedRectangleBorder(
+                borderRadius: BorderRadiusGeometry.all(Radius.circular(16)),
+              ),
               selectedIndex: selectedIndex,
               onDestinationSelected:(index) {
                 // 更新状态
                 ref.read(bottomTabIndexProvider.notifier).state = index;
                 context.go(tileList[index].pathPrefix);
               },
-              destinations: tileList.map((e) => NavigationRailDestination(
+              children: tileList.map((e) => NavigationDrawerDestination(
                   icon: Icon(e.icon, size: 21,),
                   label: Text(e.title),
                   selectedIcon: Icon(e.selectedIcon, size: 21,)

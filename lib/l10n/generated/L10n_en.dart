@@ -63,42 +63,36 @@ class L10nEn extends L10n {
   String get webDavSettings => 'WebDav Settings';
 
   @override
-  String get webDavServerAddress => 'WebDav Server Address';
+  String get webDavServerAddress => 'Address';
 
   @override
-  String get webDavServerAddressHint => 'Enter your server address';
+  String get webDavAccount => 'Account';
 
   @override
-  String get webDavAccount => 'WebDav Account';
+  String get webDavPassword => 'Password';
 
   @override
-  String get webDavAccountHint => 'Enter your WebDav account';
+  String get webDavSubFolder => 'Path';
 
   @override
-  String get webDavPassword => 'WebDav Password';
+  String get saveConfig => 'Save Settings';
 
   @override
-  String get webDavPasswordHint => 'Enter your WebDav authorization password';
-
-  @override
-  String get webDavSubFolder => 'Sub-folder';
-
-  @override
-  String get webDavDeviceName => 'Device Name';
+  String get testConnection => 'Test Connection';
 
   @override
   String get syncReadingProgress => 'Sync Reading Progress';
 
   @override
   String get syncReadingProgressSummary =>
-      'Sync reading progress when entering or exiting the reading interface';
+      'Sync reading progress when entering/exiting reading interface';
 
   @override
-  String get syncEnhancement => 'Sync Enhancement';
+  String get syncEnhancement => 'Enhanced Sync';
 
   @override
   String get syncEnhancementSummary =>
-      'Sync cloud progress when re-entering the page (screen off, returning from background, etc.) or when the network becomes available. Syncing progress will ask.';
+      'Sync cloud progress when re-entering or network available, will prompt for sync';
 
   @override
   String get backupPath => 'Backup Path';
@@ -107,39 +101,39 @@ class L10nEn extends L10n {
   String get backup => 'Backup';
 
   @override
-  String get backupSummary => 'Backup locally and to WebDav together';
+  String get backupSummary => 'Backup to Local and WebDav together';
 
   @override
   String get restore => 'Restore';
 
   @override
-  String get restoreSummary =>
-      'Priority to restore from WebDav, long press to restore from local';
+  String get restoreSummary => 'Priority from WebDav, long press for Local';
 
   @override
   String get restoreIgnoreList => 'Restore Ignore List';
 
   @override
   String get restoreIgnoreListSummary =>
-      'Ignore some content during restoration to facilitate different configurations for different phones';
+      'Ignore certain items during restoration for different device configurations';
 
   @override
   String get importOldData => 'Import Old Data';
 
   @override
-  String get importOldDataSummary => 'Select the folder for old backup files';
+  String get importOldDataSummary =>
+      'Select folder containing old backup files';
 
   @override
   String get keepLatestBackupOnly => 'Keep Latest Backup Only';
 
   @override
   String get keepLatestBackupOnlySummary =>
-      'Keep only the latest local backup file';
+      'Only keep the most recent local backup file';
 
   @override
   String get autoCheckNewBackup => 'Auto Check for New Backup';
 
   @override
   String get autoCheckNewBackupSummary =>
-      'Check for new backups when opening the software, and prompt whether to update if there is a new backup';
+      'Check for new backups on startup and prompt for update';
 }
