@@ -5,46 +5,66 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 class AppColors {
-  static ColorScheme lightColorScheme = ColorScheme.fromSeed(
-    // primarySwatch: Colors.blue,
-    seedColor: const Color(0xff3498db),
-    brightness: Brightness.light,
+  static ColorScheme lightColorScheme = ColorScheme.light(
+    surface: lightSurfaceColor,
+    onSurface: lightOnSurfaceColor,
+    primary: lightPrimaryColor,
   );
-  static ColorScheme darkColorScheme = ColorScheme.fromSeed(
-    seedColor: const Color(0xff3498db),
-    brightness: Brightness.dark,
+  static ColorScheme darkColorScheme = ColorScheme.dark(
+    surface: darkSurfaceColor,
+    onSurface: darkOnSurfaceColor,
+    primary: darkPrimaryColor,
   );
+
+  static const Color lightPrimaryColor = Color(0xFFA62121);
+  static const Color lightSurfaceColor = Color(0xFFFDFBF7);
+  static const Color lightOnSurfaceColor = Color(0xFF2D2D2D);
+
+  static const Color darkPrimaryColor = Color(0xFFB22222);
+  static const Color darkSurfaceColor = Color(0xFF0A0A0A);
+  static const Color darkOnSurfaceColor = Color(0xFFE8E8E8);
 
   static const Color black333 = Color(0xFF333333);
 }
 
 class AppStyle {
   static ThemeData lightTheme = ThemeData(
+    scaffoldBackgroundColor: const Color(0xFFFDFBF7),
     colorScheme: AppColors.lightColorScheme,
     useMaterial3: true,
     fontFamily: Platform.isWindows ? "Microsoft YaHei" : null,
     visualDensity: VisualDensity.standard,
     appBarTheme: AppBarTheme(
-      //elevation: 0,
       centerTitle: true,
-      titleTextStyle: const TextStyle(
-        fontSize: 16,
-        color: AppColors.black333,
-      ),
+      titleTextStyle: const TextStyle(fontSize: 16, color: AppColors.black333),
       foregroundColor: AppColors.black333,
       systemOverlayStyle: SystemUiOverlayStyle.dark.copyWith(
         systemNavigationBarColor: Colors.transparent,
       ),
     ),
-    navigationBarTheme: NavigationBarThemeData(
-      backgroundColor: Colors.white,
-    ),
     navigationRailTheme: NavigationRailThemeData(
-      backgroundColor: Colors.white,
-    )
+      backgroundColor: const Color(0xFFFDFBF7),
+      selectedIconTheme: const IconThemeData(
+        color: AppColors.lightPrimaryColor,
+      ),
+      unselectedIconTheme: const IconThemeData(color: Color(0xff666666)),
+      selectedLabelTextStyle: const TextStyle(
+        color: AppColors.lightPrimaryColor,
+        fontSize: 12,
+        fontWeight: FontWeight.w900,
+      ),
+      unselectedLabelTextStyle: const TextStyle(
+        color: Color(0xff666666),
+        fontSize: 12,
+        fontWeight: FontWeight.w900,
+      ),
+      indicatorColor: Colors.transparent,
+    ),
+    navigationBarTheme: NavigationBarThemeData(),
   );
 
   static ThemeData darkTheme = ThemeData.dark().copyWith(
+    scaffoldBackgroundColor: const Color(0xFF000000),
     colorScheme: AppColors.darkColorScheme,
     visualDensity: VisualDensity.standard,
     textTheme: ThemeData.dark().textTheme.apply(
@@ -54,79 +74,51 @@ class AppStyle {
       fontFamily: Platform.isWindows ? "Microsoft YaHei" : null,
     ),
     appBarTheme: AppBarTheme(
-      //elevation: 0,
-
       centerTitle: true,
-      titleTextStyle: const TextStyle(
-        fontSize: 16,
-        color: Colors.white,
-      ),
+      titleTextStyle: const TextStyle(fontSize: 16, color: Colors.white),
       foregroundColor: Colors.white,
       systemOverlayStyle: SystemUiOverlayStyle.light.copyWith(
         systemNavigationBarColor: Colors.transparent,
       ),
     ),
-    // radioTheme: RadioThemeData(
-    //   fillColor: MaterialStateProperty.all(AppColors.darkColorScheme.primary),
-    // ),
-    // checkboxTheme: CheckboxThemeData(
-    //   fillColor: MaterialStateProperty.all(AppColors.darkColorScheme.primary),
-    // ),
-    // tabBarTheme: TabBarTheme(
-    //   labelColor: AppColors.darkColorScheme.primary,
-    //   unselectedLabelColor: Colors.white70,
-    //   indicator: RectangularIndicator(
-    //     color: Colors.white.withAlpha(50),
-    //     topLeftRadius: 24,
-    //     bottomLeftRadius: 24,
-    //     topRightRadius: 24,
-    //     bottomRightRadius: 24,
-    //     verticalPadding: 8,
-    //     horizontalPadding: 0,
-    //   ),
-    // ),
+    navigationRailTheme: NavigationRailThemeData(
+      backgroundColor: const Color(0xFF000000),
+      selectedIconTheme: const IconThemeData(
+        color: AppColors.darkOnSurfaceColor,
+      ),
+      unselectedIconTheme: const IconThemeData(color: Color(0xff666666)),
+      selectedLabelTextStyle: const TextStyle(
+        color: AppColors.darkOnSurfaceColor,
+        fontSize: 12,
+        fontWeight: FontWeight.w900,
+      ),
+      unselectedLabelTextStyle: const TextStyle(
+        color: Color(0xff666666),
+        fontSize: 12,
+        fontWeight: FontWeight.w900,
+      ),
+      indicatorColor: Colors.transparent,
+    ),
+    navigationBarTheme: NavigationBarThemeData(
+      backgroundColor: const Color(0xFF000000),
+      indicatorColor: Colors.transparent,
+    ),
   );
-  static const vGap4 = SizedBox(
-    height: 4,
-  );
-  static const vGap8 = SizedBox(
-    height: 8,
-  );
-  static const vGap12 = SizedBox(
-    height: 12,
-  );
-  static const vGap24 = SizedBox(
-    height: 24,
-  );
-  static const vGap32 = SizedBox(
-    height: 32,
-  );
-  static const vGap48 = SizedBox(
-    height: 48,
-  );
+  static const vGap4 = SizedBox(height: 4);
+  static const vGap8 = SizedBox(height: 8);
+  static const vGap12 = SizedBox(height: 12);
+  static const vGap24 = SizedBox(height: 24);
+  static const vGap32 = SizedBox(height: 32);
+  static const vGap48 = SizedBox(height: 48);
 
-  static const hGap4 = SizedBox(
-    width: 4,
-  );
-  static const hGap8 = SizedBox(
-    width: 8,
-  );
-  static const hGap12 = SizedBox(
-    width: 12,
-  );
-  static const hGap16 = SizedBox(
-    width: 16,
-  );
+  static const hGap4 = SizedBox(width: 4);
+  static const hGap8 = SizedBox(width: 8);
+  static const hGap12 = SizedBox(width: 12);
+  static const hGap16 = SizedBox(width: 16);
 
-  static const hGap24 = SizedBox(
-    width: 24,
-  );
-  static const hGap32 = SizedBox(
-    width: 32,
-  );
-  static const hGap48 = SizedBox(
-    width: 48,
-  );
+  static const hGap24 = SizedBox(width: 24);
+  static const hGap32 = SizedBox(width: 32);
+  static const hGap48 = SizedBox(width: 48);
 
   static const edgeInsetsH4 = EdgeInsets.symmetric(horizontal: 4);
   static const edgeInsetsH8 = EdgeInsets.symmetric(horizontal: 8);

@@ -64,8 +64,7 @@ dependencies:
   volume_controller: ^3.4.0 #音量控制
   flutter_js: ^0.8.5
   flutter_riverpod: ^2.5.1
-  riverpod: ^2.5.1
-  hooks_riverpod: ^2.5.1
+  riverpod_annotation: ^2.3.5
   drift: ^2.21.0
   metadata_god: ^1.1.0
   go_router: ^14.2.0
@@ -99,6 +98,7 @@ dev_dependencies:
   flutter_lints: ^6.0.0
   build_runner: ^2.3.3
   drift_dev: ^2.21.0
+  riverpod_generator: ^2.4.3
   auto_route_generator: ^9.0.0
   flutter_launcher_icons: ^0.14.4
   flutter_test:

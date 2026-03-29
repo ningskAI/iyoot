@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:iyoot/collections/setting_type_tiles.dart';
 import 'package:iyoot/l10n/generated/L10n.dart';
 import 'package:iyoot/widgets/view_safe_area.dart';
-class SettingsPage extends HookConsumerWidget{
+class SettingsPage extends ConsumerWidget{
 
   const SettingsPage({super.key});
 

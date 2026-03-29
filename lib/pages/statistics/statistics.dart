@@ -1,9 +1,7 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-@RoutePage()
-class StatisticsPage extends HookConsumerWidget{
+class StatisticsPage extends ConsumerWidget{
 
   const StatisticsPage({super.key});
 

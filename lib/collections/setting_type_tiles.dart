@@ -32,6 +32,7 @@ List<SettingTile> getSettingTiles(BuildContext context) => [
     title: L10n.of(context).settingsSync,
     subtitle: 'WebDav、导入、导出',
     icon: Icon(Icons.sync),
+    route: "backup"
   ),
   SettingTile(
     title: L10n.of(context).settingsInterface,

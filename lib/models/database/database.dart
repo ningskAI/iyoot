@@ -1,96 +1,100 @@
-import 'dart:convert';
-import 'dart:ui';
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
-import 'package:flutter/material.dart' show ThemeMode;
+import 'dart:ui'; // 增加：为 Locale 提供支持
+import 'package:flutter/material.dart' show ThemeMode; // 增加：为 ThemeMode 提供支持
 import 'package:sqlite3/sqlite3.dart';
 import 'package:sqlite3_flutter_libs/sqlite3_flutter_libs.dart';
-import 'package:encrypt/encrypt.dart';
 
-part 'database.g.dart'; // 主文件的生成文件
+// 引入表文件
+import 'tables/preferences.dart';
+import 'tables/clc_categories.dart';
+import 'tables/volumes.dart';
+import 'tables/reading.dart';
+import 'tables/gems.dart';
+import 'tables/webdav_configs.dart';
 
-enum LayoutMode {
-  auto, /// 支持横竖屏
-  sidebar, /// 仅支持侧边栏
-  bottomBar /// 仅支持底边栏
-}
+// 引入 DAO
+import 'daos/webdav_dao.dart';
 
-class LocaleConverter extends TypeConverter<Locale, String> {
-  const LocaleConverter();
+part 'database.g.dart';
 
-  @override
-  Locale fromSql(String fromDb) {
-    final rawMap = jsonDecode(fromDb) as Map<String, dynamic>;
-    return Locale(rawMap["languageCode"], rawMap["countryCode"]);
-  }
-
-  @override
-  String toSql(Locale value) {
-    return jsonEncode({
-      "languageCode": value.languageCode,
-      "countryCode": value.countryCode,
-    });
-  }
-}
-
-class PreferencesTable extends Table {
-  IntColumn get id => integer().autoIncrement()();
-  /// 是否首次启动
-  BoolColumn get isFirstRun => boolean().withDefault(const Constant(true))();
-  /// 主题模式
-  TextColumn get themeMode =>
-      textEnum<ThemeMode>().withDefault(Constant(ThemeMode.system.name))();
-  /// 国际化
-  TextColumn get locale => text()
-      .withDefault(
-    const Constant('{"languageCode":"system","countryCode":"system"}'),
-  )
-      .map(const LocaleConverter())();
-  /// 是否黑夜模式
-  BoolColumn get isDarkMode => boolean().withDefault(const Constant(false))();
-  /// 缓存音乐
-  BoolColumn get cacheMusic => boolean().withDefault(const Constant(true))();
-  /// 下载路径
-  TextColumn get downloadLocation => text().withDefault(const Constant(""))();
-  /// 默认吐司参数
-  RealColumn get defaultToastOp => real().withDefault(const Constant(1.0))();
-  /// 自动播放 默认不允许
-  BoolColumn get enableAutoPlay => boolean().withDefault(const Constant(false))();
-  /// 是否开启硬件加速
-  BoolColumn get enableOpenHA => boolean().withDefault(const Constant(false))();
-  /// 首页布局模式
-  TextColumn get layoutMode => textEnum<LayoutMode>().withDefault(Constant(LayoutMode.auto.name))();
-}
-
-@DriftDatabase(tables: [
-  PreferencesTable,
-])
-
+@DriftDatabase(
+  tables: [
+    PreferencesTable,
+    ClcCategories,
+    Volumes,
+    VolumeLocations,
+    Fragments,
+    ReadingProgress,
+    Gems,
+    WebDavConfigs,
+  ],
+  daos: [
+    WebDavDao,
+  ],
+)
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 4;
+
+  @override
+  MigrationStrategy get migration {
+    return MigrationStrategy(
+      onCreate: (m) async {
+        await m.createAll();
+
+        // 预置中图法22大类数据
+        final categories = {
+          'A': '马克思主义、列宁主义、毛泽东思想、邓小平理论',
+          'B': '哲学、宗教',
+          'C': '社会科学总论',
+          'D': '政治、法律',
+          'E': '军事',
+          'F': '经济',
+          'G': '文化、科学、教育、体育',
+          'H': '语言、文字',
+          'I': '文学',
+          'J': '艺术',
+          'K': '历史、地理',
+          'N': '自然科学总论',
+          'O': '数理科学和化学',
+          'P': '天文学、地球科学',
+          'Q': '生物科学',
+          'R': '医药、卫生',
+          'S': '农业科学',
+          'T': '工业技术',
+          'U': '交通运输',
+          'V': '航空、航天',
+          'X': '环境科学、安全科学',
+          'Z': '综合性图书',
+        };
+
+        for (final entry in categories.entries) {
+          await into(clcCategories).insert(
+            ClcCategoriesCompanion.insert(
+              code: entry.key,
+              name: entry.value,
+            ),
+          );
+        }
+      },
+    );
+  }
 }
 
 LazyDatabase _openConnection() {
   return LazyDatabase(() async {
     final dbFolder = await getApplicationSupportDirectory();
     final file = File(join(dbFolder.path, 'db.sqlite'));
-    // Make sqlite3 pick a more suitable location for temporary files - the
-    // one from the system may be inaccessible due to sandboxing.
     if (Platform.isAndroid) {
       await applyWorkaroundToOpenSqlite3OnOldAndroidVersions();
     }
-    final cacheBase = (await getTemporaryDirectory()).path;
-    // We can't access /tmp on Android, which sqlite3 would try by default.
-    // Explicitly tell it about the correct temporary directory.
-    sqlite3.tempDirectory = cacheBase;
-
+    sqlite3.tempDirectory = (await getTemporaryDirectory()).path;
     return NativeDatabase.createInBackground(file);
   });
 }
-

@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:iyoot/collections/app_style.dart';
-import 'package:iyoot/modules/mine/mine_read_section_item.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iyoot/widgets/card.dart';
 
-class MineReadRankSection extends HookConsumerWidget{
+class MineReadRankSection extends ConsumerWidget{
   const MineReadRankSection({super.key});
 
   @override

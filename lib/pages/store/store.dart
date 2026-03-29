@@ -1,9 +1,8 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-@RoutePage()
-class StorePage extends HookConsumerWidget{
+
+class StorePage extends ConsumerWidget{
 
   const StorePage({super.key});
 

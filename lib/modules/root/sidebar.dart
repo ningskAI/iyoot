@@ -1,12 +1,11 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:iyoot/collections/side_bar_tiles.dart';
-import 'package:auto_route/auto_route.dart';
 import 'package:iyoot/provider/ui_state_provider.dart';
-class NextSidebar extends HookConsumerWidget {
+class NextSidebar extends ConsumerWidget {
   const NextSidebar({
     super.key,
   });
@@ -20,12 +19,13 @@ class NextSidebar extends HookConsumerWidget {
         Expanded(
           flex: 1,
           child:SizedBox(
+            width: 120,
             child: NavigationRail(
               leading: Container(
                 padding: EdgeInsets.symmetric(vertical: 40),
                 child: SizedBox(
-                  width: 48,
-                  height: 48,
+                  width: 36,
+                  height: 36 ,
                   child: Image.asset("assets/images/logo.png"),
                 ),
               ),

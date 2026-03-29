@@ -1,6 +1,7 @@
 import 'package:drift/drift.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iyoot/models/database/database.dart';
+import 'package:iyoot/models/database/tables/preferences.dart';
 import 'package:iyoot/provider/database.dart';
 import 'package:iyoot/services/logger/logger.dart';
 import 'package:iyoot/utils/platform.dart';

@@ -4,7 +4,7 @@ import 'dart:isolate';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iyoot/utils/platform.dart';
 import 'package:logger/logger.dart';
 import 'package:path/path.dart';

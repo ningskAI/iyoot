@@ -3,21 +3,21 @@
   "packages": [
     {
       "name": "_fe_analyzer_shared",
-      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/_fe_analyzer_shared-67.0.0",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/_fe_analyzer_shared-85.0.0",
       "packageUri": "lib/",
-      "languageVersion": "3.0"
+      "languageVersion": "3.5"
     },
     {
       "name": "analyzer",
-      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/analyzer-6.4.1",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/analyzer-7.6.0",
       "packageUri": "lib/",
-      "languageVersion": "3.0"
+      "languageVersion": "3.5"
     },
     {
       "name": "analyzer_plugin",
-      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/analyzer_plugin-0.11.3",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/analyzer_plugin-0.13.4",
       "packageUri": "lib/",
-      "languageVersion": "3.0"
+      "languageVersion": "3.5"
     },
     {
       "name": "animation_kit",
@@ -63,7 +63,7 @@
     },
     {
       "name": "auto_route_generator",
-      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/auto_route_generator-9.0.0",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/auto_route_generator-9.3.1",
       "packageUri": "lib/",
       "languageVersion": "3.3"
     },
@@ -75,9 +75,9 @@
     },
     {
       "name": "build",
-      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/build-2.4.1",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/build-2.5.4",
       "packageUri": "lib/",
-      "languageVersion": "2.19"
+      "languageVersion": "3.7"
     },
     {
       "name": "build_cli_annotations",
@@ -99,21 +99,21 @@
     },
     {
       "name": "build_resolvers",
-      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/build_resolvers-2.4.2",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/build_resolvers-2.5.4",
       "packageUri": "lib/",
-      "languageVersion": "3.0"
+      "languageVersion": "3.7"
     },
     {
       "name": "build_runner",
-      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/build_runner-2.4.13",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/build_runner-2.5.4",
       "packageUri": "lib/",
-      "languageVersion": "3.5"
+      "languageVersion": "3.7"
     },
     {
       "name": "build_runner_core",
-      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/build_runner_core-7.3.2",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/build_runner_core-9.1.2",
       "packageUri": "lib/",
-      "languageVersion": "3.5"
+      "languageVersion": "3.7"
     },
     {
       "name": "built_collection",
@@ -218,10 +218,22 @@
       "languageVersion": "3.1"
     },
     {
-      "name": "dart_style",
-      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/dart_style-2.3.6",
+      "name": "custom_lint_core",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/custom_lint_core-0.7.5",
       "packageUri": "lib/",
       "languageVersion": "3.0"
+    },
+    {
+      "name": "custom_lint_visitor",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/custom_lint_visitor-1.0.0+7.7.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
+      "name": "dart_style",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/dart_style-3.1.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.7"
     },
     {
       "name": "data_widget",
@@ -261,15 +273,15 @@
     },
     {
       "name": "drift",
-      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/drift-2.21.0",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/drift-2.28.2",
       "packageUri": "lib/",
-      "languageVersion": "3.3"
+      "languageVersion": "3.5"
     },
     {
       "name": "drift_dev",
-      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/drift_dev-2.21.2",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/drift_dev-2.28.0",
       "packageUri": "lib/",
-      "languageVersion": "3.3"
+      "languageVersion": "3.4"
     },
     {
       "name": "dynamic_color",
@@ -372,12 +384,6 @@
       "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/flutter_easyrefresh-2.2.2",
       "packageUri": "lib/",
       "languageVersion": "2.12"
-    },
-    {
-      "name": "flutter_hooks",
-      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/flutter_hooks-0.21.3+1",
-      "packageUri": "lib/",
-      "languageVersion": "2.17"
     },
     {
       "name": "flutter_inappwebview",
@@ -494,6 +500,12 @@
       "languageVersion": "3.8"
     },
     {
+      "name": "freezed_annotation",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/freezed_annotation-3.1.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
       "name": "frontend_server_client",
       "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/frontend_server_client-4.0.0",
       "packageUri": "lib/",
@@ -546,12 +558,6 @@
       "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/hooks-1.0.2",
       "packageUri": "lib/",
       "languageVersion": "3.10"
-    },
-    {
-      "name": "hooks_riverpod",
-      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/hooks_riverpod-2.6.1",
-      "packageUri": "lib/",
-      "languageVersion": "2.17"
     },
     {
       "name": "http",
@@ -980,6 +986,24 @@
       "languageVersion": "2.17"
     },
     {
+      "name": "riverpod_analyzer_utils",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/riverpod_analyzer_utils-0.5.10",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
+      "name": "riverpod_annotation",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/riverpod_annotation-2.6.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.17"
+    },
+    {
+      "name": "riverpod_generator",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/riverpod_generator-2.6.5",
+      "packageUri": "lib/",
+      "languageVersion": "2.17"
+    },
+    {
       "name": "rxdart",
       "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/rxdart-0.28.0",
       "packageUri": "lib/",
@@ -1161,9 +1185,9 @@
     },
     {
       "name": "source_gen",
-      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/source_gen-1.5.0",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/source_gen-2.0.0",
       "packageUri": "lib/",
-      "languageVersion": "3.0"
+      "languageVersion": "3.6"
     },
     {
       "name": "source_span",
@@ -1215,9 +1239,9 @@
     },
     {
       "name": "sqlparser",
-      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/sqlparser-0.39.2",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/sqlparser-0.41.2",
       "packageUri": "lib/",
-      "languageVersion": "3.0"
+      "languageVersion": "3.5"
     },
     {
       "name": "sse",

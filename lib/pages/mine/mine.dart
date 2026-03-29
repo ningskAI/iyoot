@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:iyoot/collections/app_style.dart';
 import 'package:iyoot/modules/mine/mine_booklist_section.dart';
 import 'package:iyoot/modules/mine/mine_read_rank_section.dart';
-import 'package:iyoot/provider/user_preferences_provider.dart';
 import 'package:remixicon/remixicon.dart';
 import 'package:iyoot/modules/mine/mine_read_section.dart';
 
-class MinePage extends HookConsumerWidget {
+class MinePage extends ConsumerWidget {
   const MinePage({super.key});
 
   @override

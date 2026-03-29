@@ -1,7 +1,6 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-class NotePage extends HookConsumerWidget{
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+class NotePage extends ConsumerWidget{
 
   const NotePage({super.key});
 

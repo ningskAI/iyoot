@@ -35,20 +35,6 @@ List<SideBarTiles> getNavbarTileList(BuildContext context) => [
       title: L10n.of(context).navBarBookshelf
   ),
   SideBarTiles(
-      id: 2,
-      pathPrefix: "/store",
-      icon: NextIcons.store,
-      selectedIcon: NextIcons.storeSelected,
-      title: L10n.of(context).navBarLibrary
-  ),
-  SideBarTiles(
-      id: 3,
-      pathPrefix: "/statistics",
-      icon: NextIcons.statistics,
-      selectedIcon: NextIcons.statisticsSelected,
-      title: L10n.of(context).navBarStatistics
-  ),
-  SideBarTiles(
       id: 4,
       pathPrefix: "/note",
       icon: NextIcons.note,
