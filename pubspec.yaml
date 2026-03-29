@@ -101,6 +101,7 @@ dev_dependencies:
   riverpod_generator: ^2.4.3
   auto_route_generator: ^9.0.0
   flutter_launcher_icons: ^0.14.4
+  flutter_native_splash: ^2.4.6
   flutter_test:
     sdk: flutter
 
@@ -111,6 +112,22 @@ flutter_launcher_icons:
   min_sdk_android: 21
   macos:
     generate: true
+
+flutter_native_splash:
+  color: "#000000"               # 兜底背景色
+  image: assets/images/splash.png       # 你的全屏图片
+
+  # 关键设置
+  android_gravity: fill                     # 图片填满屏幕（可能会有少量裁剪，但不会留白边）
+  ios_content_mode: scaleAspectFill
+  fullscreen: true               # 隐藏状态栏（启动时全屏）
+
+  android_12:
+    image: assets/images/splash.png     # Android 12+ 的特殊适配
+    color: "#ffffff"
+
+    # 如果你希望图片保持比例不被拉伸，可以使用 gravity: center，但 fill: true 更有沉浸感
+
 flutter:
   generate: true
   uses-material-design: true

@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:ui';
+import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,39 +11,49 @@ import 'package:iyoot/provider/database.dart';
 import 'package:iyoot/provider/user_preferences_provider.dart';
 import 'package:iyoot/routes/routes.dart';
 import 'package:iyoot/services/logger/logger.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  // 保持启动页，直到手动释放
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   
-  // 1. 获取设备物理尺寸并判断
+  final database = AppDatabase();
+
+  // 1. 核心修复：预加载偏好设置，消除异步闪屏
+  // 确保在渲染第一帧之前就拿到真实的数据库数据
+  var prefs = await (database.select(database.preferencesTable)
+        ..where((tbl) => tbl.id.equals(0)))
+      .getSingleOrNull();
+  
+  if (prefs == null) {
+    // 如果是第一次运行，初始化一条记录
+    await database.into(database.preferencesTable).insert(
+      const PreferencesTableCompanion(id: Value(0))
+    );
+    prefs = await (database.select(database.preferencesTable)
+          ..where((tbl) => tbl.id.equals(0)))
+        .getSingle();
+  }
+
+  // 2. 屏幕方向锁定逻辑
   final view = PlatformDispatcher.instance.views.first;
   final size = view.physicalSize / view.devicePixelRatio;
   final isTablet = size.shortestSide >= 600;
 
   if (isTablet) {
-    // Pad 设备强制横屏
     await SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeLeft,
       DeviceOrientation.landscapeRight,
     ]);
   } else {
-    // 手机设备（暂不支持）：这里也可以锁定方向，或者在 Widget 层拦截
     await SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
   }
 
-  final database = AppDatabase();
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
   
-  // 设置状态栏为透明
-  SystemUiOverlayStyle systemUiOverlayStyle = const SystemUiOverlayStyle(
-    statusBarColor: Colors.transparent,
-    statusBarIconBrightness: Brightness.dark,
-    systemNavigationBarColor: Colors.transparent,
-  );
-  SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
-
   runApp(
     ProviderScope(
       overrides: [
@@ -51,29 +62,65 @@ void main() async {
       observers: const [
         AppLoggerProviderObserver(),
       ],
-      child: const iYoot(),
+      child: iYoot(preloadedPrefs: prefs), // 将预加载的数据传入
     ),
   );
 }
 
-class iYoot extends ConsumerWidget {
-  const iYoot({super.key});
+class iYoot extends ConsumerStatefulWidget {
+  final PreferencesTableData preloadedPrefs;
+  const iYoot({super.key, required this.preloadedPrefs});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final themeMode = ref.watch(userPreferencesProvider.select((s) => s.themeMode));
-    final locale = ref.watch(userPreferencesProvider.select((s) => s.locale));
+  ConsumerState<iYoot> createState() => _iYootState();
+}
+
+class _iYootState extends ConsumerState<iYoot> {
+  @override
+  Widget build(BuildContext context) {
+    // 监听 Provider 以获取后续的动态更新
+    final prefsFromProvider = ref.watch(userPreferencesProvider);
     
-    // 2. 拦截逻辑：当画幅宽度小于 600 时触发
+    // 关键逻辑：如果 Provider 还在加载默认值的极短瞬间（id=0 且 isFirstRun=true），
+    // 优先使用预加载的真实数据库数据，从而消除“白转黑”闪烁。
+    final bool usePreloaded = prefsFromProvider.id == 0 && 
+                             prefsFromProvider.isFirstRun == true && 
+                             widget.preloadedPrefs.isFirstRun == false;
+                             
+    final currentPrefs = usePreloaded ? widget.preloadedPrefs : prefsFromProvider;
+    
+    final themeMode = currentPrefs.themeMode;
+    final locale = currentPrefs.locale;
+    
+    // 判定亮暗模式
+    final brightness = MediaQuery.platformBrightnessOf(context);
+    final bool isDark = themeMode == ThemeMode.dark || 
+        (themeMode == ThemeMode.system && brightness == Brightness.dark);
+
+    // 确保在渲染逻辑稳定后再移除启动页
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      FlutterNativeSplash.remove();
+    });
+
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
+      systemNavigationBarColor: Colors.transparent,
+      systemNavigationBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
+    ));
+
     final width = MediaQuery.of(context).size.width;
+    
+    // 拦截页面逻辑
     if (width < 600) {
       return MaterialApp(
         debugShowCheckedModeBanner: false,
+        color: const Color(0xFF1A1A1A),
         theme: AppStyle.lightTheme,
         darkTheme: AppStyle.darkTheme,
         themeMode: themeMode,
         home: Scaffold(
-          backgroundColor: const Color(0xFF1A1A1A), // 纯黑
+          backgroundColor: const Color(0xFF1A1A1A),
           body: Stack(
             children: [
               Center(
@@ -84,16 +131,13 @@ class iYoot extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: const [
                       Text(
-                        '『尺幅局促，难容碎金。\n'
-                        '案头之书，须有舒展之所。\n'
-                        '检测到当前设备画幅受限，避难所大门暂不开启。\n'
-                        '待君执平板而来，再续书缘。』',
+                        '『尺幅局促，难容碎金。\n案头之书，须有舒展之所。\n检测到当前设备画幅受限，避难所大门暂不开启。\n待君执平板而来，再续书缘。』',
                         style: TextStyle(
-                          color: Color(0xFFF2F2F2), // 玄纸白
-                          fontFamily: 'serif', // 宋体
+                          color: Color(0xFFF2F2F2),
+                          fontFamily: 'serif',
                           fontSize: 18,
-                          height: 2.2, // 呼吸感行高
-                          letterSpacing: 2.0, // 呼吸感字间距
+                          height: 2.2,
+                          letterSpacing: 2.0,
                         ),
                       ),
                     ],
@@ -108,16 +152,9 @@ class iYoot extends ConsumerWidget {
                   child: TextButton(
                     onPressed: () => exit(0),
                     style: TextButton.styleFrom(
-                      foregroundColor: const Color(0xFFF2F2F2).withOpacity(0.3), // 半透明按钮
+                      foregroundColor: const Color(0xFFF2F2F2).withOpacity(0.3),
                     ),
-                    child: const Text(
-                      '退出程序',
-                      style: TextStyle(
-                        fontFamily: 'serif',
-                        letterSpacing: 4,
-                        fontSize: 12,
-                      ),
-                    ),
+                    child: const Text('退出程序', style: TextStyle(fontFamily: 'serif', letterSpacing: 4, fontSize: 12)),
                   ),
                 ),
               ),
@@ -131,8 +168,9 @@ class iYoot extends ConsumerWidget {
       routerConfig: router,
       debugShowCheckedModeBanner: false,
       title: 'iyoot',
+      color: isDark ? Colors.black : AppColors.paper, // 匹配底色，防止闪烁
       builder: (context, child) {
-        child = ScrollConfiguration(
+        return ScrollConfiguration(
           behavior: ScrollConfiguration.of(context).copyWith(
             dragDevices: {
               PointerDeviceKind.touch,
@@ -142,8 +180,6 @@ class iYoot extends ConsumerWidget {
           ),
           child: child!,
         );
-
-        return child;
       },
       theme: AppStyle.lightTheme,
       darkTheme: AppStyle.darkTheme,

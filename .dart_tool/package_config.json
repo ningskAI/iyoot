@@ -26,6 +26,12 @@
       "languageVersion": "3.7"
     },
     {
+      "name": "ansicolor",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/ansicolor-2.0.3",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
       "name": "archive",
       "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/archive-4.0.9",
       "packageUri": "lib/",
@@ -210,6 +216,12 @@
       "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/crypto-3.0.7",
       "packageUri": "lib/",
       "languageVersion": "3.4"
+    },
+    {
+      "name": "csslib",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/csslib-1.0.2",
+      "packageUri": "lib/",
+      "languageVersion": "3.1"
     },
     {
       "name": "cupertino_icons",
@@ -458,6 +470,12 @@
       "languageVersion": "3.8"
     },
     {
+      "name": "flutter_native_splash",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/flutter_native_splash-2.4.7",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
       "name": "flutter_plugin_android_lifecycle",
       "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/flutter_plugin_android_lifecycle-2.0.33",
       "packageUri": "lib/",
@@ -558,6 +576,12 @@
       "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/hooks-1.0.2",
       "packageUri": "lib/",
       "languageVersion": "3.10"
+    },
+    {
+      "name": "html",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/html-0.15.6",
+      "packageUri": "lib/",
+      "languageVersion": "3.2"
     },
     {
       "name": "http",
@@ -1338,6 +1362,12 @@
       "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/udp-5.0.3",
       "packageUri": "lib/",
       "languageVersion": "2.12"
+    },
+    {
+      "name": "universal_io",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/universal_io-2.3.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.6"
     },
     {
       "name": "universal_platform",
