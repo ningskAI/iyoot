@@ -1,34 +1,115 @@
-# Gradle files
-.gradle/
+# ----------------------------------------------------------------------------
+# 基础/系统文件 (Miscellaneous)
+# ----------------------------------------------------------------------------
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.build/
+.buildlog/
+.history
+.svn/
+.swiftpm/
+migrate_working_dir/
+# Windows 缩略图缓存
+Thumbs.db
+desktop.ini
+
+# ----------------------------------------------------------------------------
+# IDE 相关 (IntelliJ / Android Studio / VS Code)
+# ----------------------------------------------------------------------------
+*.iml
+*.ipr
+*.iws
+.idea/
+.vscode/
+.history/
+*.sublime-project
+*.sublime-workspace
+
+# ----------------------------------------------------------------------------
+# Flutter/Dart 核心
+# ----------------------------------------------------------------------------
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.metadata
+.pub-cache/
+.pub/
 build/
 
-# Local configuration file (sdk path, etc)
-local.properties
+# ----------------------------------------------------------------------------
+# 数据库与本地存储 (防止大文件/隐私数据进入 Git)
+# ----------------------------------------------------------------------------
+*.db
+*.sqlite
+*.sqlite-journal
+# 应用内下载的书籍和封面
+/books/
+/covers/
+**/staged_*
 
-# Log/OS Files
-*.log
+# ----------------------------------------------------------------------------
+# 代码生成 (Riverpod / Drift)
+# ----------------------------------------------------------------------------
+# 如果你希望保留生成的代码以便在没有生成环境的情况下编译，可以注释掉下面两行
+*.g.dart
+*.freezed.dart
+lib/gen/
 
-# Android Studio generated files and folders
-captures/
-.externalNativeBuild/
-.cxx/
-*.aab
-*.apk
-output-metadata.json
-
-# IntelliJ
-*.iml
-.idea/
-misc.xml
-deploymentTargetDropDown.xml
-render.experimental.xml
-
-# Keystore files
+# ----------------------------------------------------------------------------
+# Android 特定
+# ----------------------------------------------------------------------------
+/android/app/debug
+/android/app/profile
+/android/app/release
+/android/local.properties
+/android/key.properties
+/android/app/src/main/res/raw/
 *.jks
 *.keystore
+*.apk
+*.aab
 
-# Google Services (e.g. APIs or Firebase)
+# ----------------------------------------------------------------------------
+# iOS/macOS 特定
+# ----------------------------------------------------------------------------
+ios/Flutter/Generated.xcconfig
+ios/Flutter/flutter_export_environment.sh
+ios/Flutter/App.framework
+ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.podspec
+ios/ServiceDefinitions.json
+Runner/GeneratedPluginRegistrant.h
+Runner/GeneratedPluginRegistrant.m
+macos/Flutter/GeneratedXCConfig.xcconfig
+macos/Flutter/flutter_export_environment.sh
+macos/DerivedData/
+
+# ----------------------------------------------------------------------------
+# 环境与密钥
+# ----------------------------------------------------------------------------
+.env
+google_service_account.json
 google-services.json
+GoogleService-Info.plist
 
-# Android Profiling
-*.hprof
+# ----------------------------------------------------------------------------
+# 自动化与测试工具
+# ----------------------------------------------------------------------------
+**/fastlane/report.xml
+**/fastlane/Preview.html
+**/fastlane/screenshots
+**/fastlane/test_output
+CLAUDE.md
+AGENTS.md
+
+# ----------------------------------------------------------------------------
+# FVM (Flutter Version Management)
+# ----------------------------------------------------------------------------
+.fvm/
+.fvmrc
+/.dart_tool/
