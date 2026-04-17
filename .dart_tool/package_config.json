@@ -1532,7 +1532,7 @@
       "languageVersion": "3.4"
     },
     {
-      "name": "iyoot",
+      "name": "i_reader",
       "rootUri": "../",
       "packageUri": "lib/",
       "languageVersion": "3.10"

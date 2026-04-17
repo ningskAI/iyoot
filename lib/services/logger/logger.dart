@@ -5,7 +5,7 @@ import 'dart:isolate';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:iyoot/utils/platform.dart';
+import 'package:i_reader/utils/platform.dart';
 import 'package:logger/logger.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -39,22 +39,20 @@ class AppLogger {
     logging.hierarchicalLoggingEnabled = true;
     logging.Logger('iyoot')
       ..level = logging.Level.SEVERE
-      ..onRecord.listen(
-            (record) {
-          log.log(
-            _loggingToLoggerLevel[record.level] ?? Level.info,
-            record.message,
-            error: record.error,
-            stackTrace: record.stackTrace,
-            time: record.time,
-          );
-        },
-      );
+      ..onRecord.listen((record) {
+        log.log(
+          _loggingToLoggerLevel[record.level] ?? Level.info,
+          record.message,
+          error: record.error,
+          stackTrace: record.stackTrace,
+          time: record.time,
+        );
+      });
   }
 
   static R? runZoned<R>(R Function() body) {
     return runZonedGuarded<R>(
-          () {
+      () {
         WidgetsFlutterBinding.ensureInitialized();
 
         FlutterError.onError = (details) {
@@ -70,10 +68,7 @@ class AppLogger {
           Isolate.current.addErrorListener(
             RawReceivePort((pair) async {
               final isolateError = pair as List<dynamic>;
-              reportError(
-                isolateError.first.toString(),
-                isolateError.last,
-              );
+              reportError(isolateError.first.toString(), isolateError.last);
             }).sendPort,
           );
         }
@@ -84,7 +79,7 @@ class AppLogger {
 
         return body();
       },
-          (error, stackTrace) {
+      (error, stackTrace) {
         reportError(error, stackTrace);
       },
     );
@@ -112,17 +107,17 @@ class AppLogger {
   }
 
   static Future<void> reportError(
-      dynamic error, [
-        StackTrace? stackTrace,
-        message = "",
-      ]) async {
+    dynamic error, [
+    StackTrace? stackTrace,
+    message = "",
+  ]) async {
     log.e(message, error: error, stackTrace: stackTrace);
 
     if (kReleaseMode) {
       await logFile.writeAsString(
         "[${DateTime.now()}]---------------------\n"
-            "$error\n$stackTrace\n"
-            "----------------------------------------\n",
+        "$error\n$stackTrace\n"
+        "----------------------------------------\n",
         mode: FileMode.writeOnlyAppend,
       );
     }
@@ -148,11 +143,11 @@ class AppLoggerProviderObserver extends ProviderObserver {
 
   @override
   void providerDidFail(
-      ProviderBase<Object?> provider,
-      Object error,
-      StackTrace stackTrace,
-      ProviderContainer container,
-      ) {
+    ProviderBase<Object?> provider,
+    Object error,
+    StackTrace stackTrace,
+    ProviderContainer container,
+  ) {
     AppLogger.reportError(error, stackTrace);
   }
 }

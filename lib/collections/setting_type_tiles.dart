@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:iyoot/l10n/generated/L10n.dart';
+import 'package:i_reader/l10n/generated/L10n.dart';
 import 'package:remixicon/remixicon.dart';
 
 class SettingTile {
@@ -12,7 +12,7 @@ class SettingTile {
     required this.title,
     this.subtitle,
     required this.icon,
-    this.route
+    this.route,
   });
 }
 
@@ -21,7 +21,7 @@ List<SettingTile> getSettingTiles(BuildContext context) => [
     title: L10n.of(context).settingsAppearance,
     subtitle: '横屏适配（平板）、侧栏、列宽、主题、字号、图片、帧率等',
     icon: Icon(Icons.style_outlined),
-    route: "appearance"
+    route: "appearance",
   ),
   SettingTile(
     title: L10n.of(context).settingsRead,
@@ -32,13 +32,13 @@ List<SettingTile> getSettingTiles(BuildContext context) => [
     title: L10n.of(context).settingsSync,
     subtitle: 'Webdav配置',
     icon: Icon(Icons.sync),
-    route: "webdav"
+    route: "webdav",
   ),
   SettingTile(
-      title: L10n.of(context).settingBackup,
-      subtitle: '备份与重置',
-      icon: Icon(Icons.sync),
-      route: "backup"
+    title: L10n.of(context).settingBackup,
+    subtitle: '备份与重置',
+    icon: Icon(Icons.sync),
+    route: "backup",
   ),
   SettingTile(
     title: L10n.of(context).settingsInterface,

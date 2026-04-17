@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 /// 02 色彩体系 - 封装品牌核心色彩
 class AppColors {
@@ -80,7 +79,10 @@ class AppStyle {
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: BorderSide(color: AppColors.ink.withOpacity(0.1), width: 0.5),
+        borderSide: BorderSide(
+          color: AppColors.ink.withOpacity(0.1),
+          width: 0.5,
+        ),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
@@ -130,13 +132,19 @@ class AppStyle {
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: BorderSide(color: AppColors.silver.withOpacity(0.1), width: 0.5),
+        borderSide: BorderSide(
+          color: AppColors.silver.withOpacity(0.1),
+          width: 0.5,
+        ),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
         borderSide: const BorderSide(color: AppColors.darkCrimson, width: 1.0),
       ),
-      hintStyle: TextStyle(color: AppColors.silver.withOpacity(0.3), fontSize: 14),
+      hintStyle: TextStyle(
+        color: AppColors.silver.withOpacity(0.3),
+        fontSize: 14,
+      ),
     ),
     navigationBarTheme: NavigationBarThemeData(
       backgroundColor: Colors.black,
@@ -174,10 +182,10 @@ class AppStyle {
   static BorderRadius radius12 = BorderRadius.circular(12);
 
   static Divider get divider => Divider(
-        height: 1,
-        thickness: 0.5,
-        color: AppColors.grey666.withOpacity(0.1),
-      );
+    height: 1,
+    thickness: 0.5,
+    color: AppColors.grey666.withOpacity(0.1),
+  );
 }
 
 extension ThemeContextExtension on BuildContext {

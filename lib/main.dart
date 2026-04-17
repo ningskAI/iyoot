@@ -4,36 +4,36 @@ import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:iyoot/collections/app_style.dart';
-import 'package:iyoot/l10n/generated/L10n.dart';
-import 'package:iyoot/models/database/database.dart';
-import 'package:iyoot/provider/database.dart';
-import 'package:iyoot/provider/user_preferences_provider.dart';
-import 'package:iyoot/routes/routes.dart';
-import 'package:iyoot/services/logger/logger.dart';
+import 'package:i_reader/collections/app_style.dart';
+import 'package:i_reader/l10n/generated/L10n.dart';
+import 'package:i_reader/core/database/database.dart';
+import 'package:i_reader/provider/database.dart';
+import 'package:i_reader/provider/user_preferences_provider.dart';
+import 'package:i_reader/core/routes/routes.dart';
+import 'package:i_reader/services/logger/logger.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 void main() async {
   final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   // 保持启动页，直到手动释放
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
-  
+
   final database = AppDatabase();
 
   // 1. 核心修复：预加载偏好设置，消除异步闪屏
   // 确保在渲染第一帧之前就拿到真实的数据库数据
-  var prefs = await (database.select(database.preferencesTable)
-        ..where((tbl) => tbl.id.equals(0)))
-      .getSingleOrNull();
-  
+  var prefs = await (database.select(
+    database.preferencesTable,
+  )..where((tbl) => tbl.id.equals(0))).getSingleOrNull();
+
   if (prefs == null) {
     // 如果是第一次运行，初始化一条记录
-    await database.into(database.preferencesTable).insert(
-      const PreferencesTableCompanion(id: Value(0))
-    );
-    prefs = await (database.select(database.preferencesTable)
-          ..where((tbl) => tbl.id.equals(0)))
-        .getSingle();
+    await database
+        .into(database.preferencesTable)
+        .insert(const PreferencesTableCompanion(id: Value(0)));
+    prefs = await (database.select(
+      database.preferencesTable,
+    )..where((tbl) => tbl.id.equals(0))).getSingle();
   }
 
   // 2. 屏幕方向锁定逻辑
@@ -47,21 +47,15 @@ void main() async {
       DeviceOrientation.landscapeRight,
     ]);
   } else {
-    await SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-    ]);
+    await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   }
 
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-  
+
   runApp(
     ProviderScope(
-      overrides: [
-        databaseProvider.overrideWith((ref) => database),
-      ],
-      observers: const [
-        AppLoggerProviderObserver(),
-      ],
+      overrides: [databaseProvider.overrideWith((ref) => database)],
+      observers: const [AppLoggerProviderObserver()],
       child: iYoot(preloadedPrefs: prefs), // 将预加载的数据传入
     ),
   );
@@ -80,21 +74,25 @@ class _iYootState extends ConsumerState<iYoot> {
   Widget build(BuildContext context) {
     // 监听 Provider 以获取后续的动态更新
     final prefsFromProvider = ref.watch(userPreferencesProvider);
-    
+
     // 关键逻辑：如果 Provider 还在加载默认值的极短瞬间（id=0 且 isFirstRun=true），
     // 优先使用预加载的真实数据库数据，从而消除“白转黑”闪烁。
-    final bool usePreloaded = prefsFromProvider.id == 0 && 
-                             prefsFromProvider.isFirstRun == true && 
-                             widget.preloadedPrefs.isFirstRun == false;
-                             
-    final currentPrefs = usePreloaded ? widget.preloadedPrefs : prefsFromProvider;
-    
+    final bool usePreloaded =
+        prefsFromProvider.id == 0 &&
+        prefsFromProvider.isFirstRun == true &&
+        widget.preloadedPrefs.isFirstRun == false;
+
+    final currentPrefs = usePreloaded
+        ? widget.preloadedPrefs
+        : prefsFromProvider;
+
     final themeMode = currentPrefs.themeMode;
     final locale = currentPrefs.locale;
-    
+
     // 判定亮暗模式
     final brightness = MediaQuery.platformBrightnessOf(context);
-    final bool isDark = themeMode == ThemeMode.dark || 
+    final bool isDark =
+        themeMode == ThemeMode.dark ||
         (themeMode == ThemeMode.system && brightness == Brightness.dark);
 
     // 确保在渲染逻辑稳定后再移除启动页
@@ -102,15 +100,19 @@ class _iYootState extends ConsumerState<iYoot> {
       FlutterNativeSplash.remove();
     });
 
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-      statusBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
-      systemNavigationBarColor: Colors.transparent,
-      systemNavigationBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
-    ));
+    SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
+        systemNavigationBarColor: Colors.transparent,
+        systemNavigationBarIconBrightness: isDark
+            ? Brightness.light
+            : Brightness.dark,
+      ),
+    );
 
     final width = MediaQuery.of(context).size.width;
-    
+
     // 拦截页面逻辑
     if (width < 600) {
       return MaterialApp(
@@ -154,7 +156,14 @@ class _iYootState extends ConsumerState<iYoot> {
                     style: TextButton.styleFrom(
                       foregroundColor: const Color(0xFFF2F2F2).withOpacity(0.3),
                     ),
-                    child: const Text('退出程序', style: TextStyle(fontFamily: 'serif', letterSpacing: 4, fontSize: 12)),
+                    child: const Text(
+                      '退出程序',
+                      style: TextStyle(
+                        fontFamily: 'serif',
+                        letterSpacing: 4,
+                        fontSize: 12,
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -176,7 +185,7 @@ class _iYootState extends ConsumerState<iYoot> {
               PointerDeviceKind.touch,
               PointerDeviceKind.stylus,
               PointerDeviceKind.invertedStylus,
-            }
+            },
           ),
           child: child!,
         );

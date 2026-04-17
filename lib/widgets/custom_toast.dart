@@ -1,4 +1,3 @@
-import 'package:iyoot/utils/storage_pref.dart';
 import 'package:flutter/material.dart';
 
 class CustomToast extends StatelessWidget {
@@ -6,7 +5,7 @@ class CustomToast extends StatelessWidget {
 
   final String msg;
 
-  static double toastOpacity = Pref.defaultToastOp;
+  static double toastOpacity = 1.0;
 
   @override
   Widget build(BuildContext context) {

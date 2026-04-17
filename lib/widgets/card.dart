@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:iyoot/collections/app_style.dart';
+import 'package:i_reader/collections/app_style.dart';
 
 class CardView extends StatelessWidget {
   final Widget child;
@@ -11,13 +11,9 @@ class CardView extends StatelessWidget {
       color: Theme.of(context).brightness == Brightness.dark
           ? Colors.grey.withAlpha(50)
           : Colors.white70,
-      shape: RoundedRectangleBorder(
-        borderRadius: AppStyle.radius12,
-      ),
+      shape: RoundedRectangleBorder(borderRadius: AppStyle.radius12),
       child: Container(
-        decoration: BoxDecoration(
-          borderRadius: AppStyle.radius12,
-        ),
+        decoration: BoxDecoration(borderRadius: AppStyle.radius12),
         child: child,
       ),
     );

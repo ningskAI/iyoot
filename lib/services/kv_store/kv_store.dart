@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:iyoot/services/wm_tools/wm_tools.dart';
+import 'package:i_reader/services/wm_tools/wm_tools.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class KVStoreService {
@@ -34,9 +34,6 @@ abstract class KVStoreService {
   static Future<void> setWindowSize(WindowSize value) async =>
       await sharedPreferences.setString(
         'windowSize',
-        jsonEncode(
-          value.toJson(),
-        ),
+        jsonEncode(value.toJson()),
       );
-
 }

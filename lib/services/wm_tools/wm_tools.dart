@@ -1,6 +1,6 @@
 import 'package:shadcn_flutter/shadcn_flutter.dart';
-import 'package:iyoot/services/kv_store/kv_store.dart';
-import 'package:iyoot/utils/platform.dart';
+import 'package:i_reader/services/kv_store/kv_store.dart';
+import 'package:i_reader/utils/platform.dart';
 import 'package:window_manager/window_manager.dart';
 
 class WindowSize {
@@ -46,7 +46,7 @@ class WindowManagerTools with WidgetsBindingObserver {
         titleBarStyle: TitleBarStyle.hidden,
         center: true,
       ),
-          () async {
+      () async {
         final savedSize = KVStoreService.windowSize;
         await windowManager.setResizable(true);
         if (savedSize?.maximized == true &&

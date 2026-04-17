@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:iyoot/services/logger/logger.dart';
+import 'package:i_reader/services/logger/logger.dart';
 
-final logsProvider = StreamProvider.autoDispose((ref) async * {
+final logsProvider = StreamProvider.autoDispose((ref) async* {
   final file = await AppLogger.getLogsPath();
   if (await file.length() == 0) {
     throw StateError("Logs file is empty or non-existent");
