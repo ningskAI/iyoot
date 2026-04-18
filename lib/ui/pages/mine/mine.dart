@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:i_reader/config/app_theme.dart';
 import 'package:i_reader/ui/modules/mine/mine_booklist_section.dart';
@@ -38,19 +37,6 @@ class MinePage extends ConsumerWidget {
                 title: const Text("阅然", style: TextStyle(height: 1.0)),
                 subtitle: const Text("但行好事，莫问前程"),
                 trailing: const Icon(Icons.chevron_right),
-                onTap: () {
-                  Get.dialog(
-                    AboutDialog(
-                      applicationIcon: Image.asset(
-                        'assets/images/logo.png',
-                        width: 48,
-                        height: 48,
-                      ),
-                      applicationName: "iyoot",
-                      applicationVersion: "但行好事，莫问前程",
-                    ),
-                  );
-                },
               ),
               SizedBox(height: 40),
               MineReadRankSection(),

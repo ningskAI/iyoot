@@ -14,7 +14,6 @@ dependencies:
   remixicon: ^1.2.0 #Remix图标
 
   # 框架、工具
-  get: ^4.6.6 #状态管理、路由管理、国际化
   dio: ^5.4.3+1 #网络请求
   hive: 2.2.3 #持久化存储
   hive_flutter: 1.1.0 #持久化存储
@@ -65,9 +64,13 @@ dependencies:
   flutter_js: ^0.8.5
   flutter_riverpod: ^2.5.1
   riverpod_annotation: ^2.3.5
-  drift: ^2.21.0
+
   metadata_god: ^1.1.0
   go_router: ^14.2.0
+
+  # 数据库
+  drift: ^2.21.0
+  sqflite: ^2.3.0
 
   # 网络相关
   shelf: ^1.4.1
@@ -85,6 +88,9 @@ dependencies:
   shadcn_flutter: ^0.0.47
   sqlite3: ^2.4.3
   sqlite3_flutter_libs: ^0.5.23
+  # 数据解析
+  freezed_annotation: ^3.0.0
+  json_annotation: ^4.9.0
   flutter:
     sdk: flutter
   flutter_localizations:
@@ -98,6 +104,8 @@ dev_dependencies:
   flutter_lints: ^6.0.0
   build_runner: ^2.3.3
   drift_dev: ^2.21.0
+  freezed: ^3.0.2
+  json_serializable: ^6.9.0
   riverpod_generator: ^2.4.3
   auto_route_generator: ^9.0.0
   flutter_launcher_icons: ^0.14.4
