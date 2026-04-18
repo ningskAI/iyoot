@@ -18,7 +18,7 @@ class MineReadSectionItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return CardView(
       child: Container(
-        padding: AppStyle.edgeInsetsA12,
+        padding: EdgeInsets.all(12),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,

@@ -25,9 +25,9 @@ class MinePage extends ConsumerWidget {
         child: Container(
           margin: EdgeInsets.all(20),
           child: ListView(
-            padding: AppStyle.edgeInsetsA4,
+            padding: EdgeInsets.all(4),
             children: [
-              AppStyle.vGap12,
+              SizedBox(height: 12),
               ListTile(
                 leading: Image.asset(
                   'assets/images/logo.png',

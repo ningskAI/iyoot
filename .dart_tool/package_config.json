@@ -488,6 +488,12 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "flutter_swiper_null_safety",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/flutter_swiper_null_safety-1.0.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "flutter_test",
       "rootUri": "file:///D:/android/flutter/packages/flutter_test",
       "packageUri": "lib/",
@@ -1314,6 +1320,12 @@
       "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/synchronized-3.4.0",
       "packageUri": "lib/",
       "languageVersion": "3.8"
+    },
+    {
+      "name": "tdesign_flutter",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/tdesign_flutter-0.0.9",
+      "packageUri": "lib/",
+      "languageVersion": "2.18"
     },
     {
       "name": "term_glyph",

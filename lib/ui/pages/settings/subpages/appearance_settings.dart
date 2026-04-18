@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i_reader/config/app_theme.dart';
 import 'package:i_reader/l10n/generated/L10n.dart';
-import 'package:i_reader/providers/user_preferences_provider.dart';
 import 'package:i_reader/ui/widgets/settings/select_dialog.dart';
 import 'package:i_reader/ui/widgets/view_safe_area.dart';
 
@@ -11,10 +11,9 @@ class AppearanceSettingsPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final padding = MediaQuery.viewPaddingOf(context);
-    final preferences = ref.watch(userPreferencesProvider);
-    final preferencesNotifier = ref.watch(userPreferencesProvider.notifier);
+    final themeMode = ref.watch(themeModeProvider);
     var themeType = "";
-    switch (preferences.themeMode) {
+    switch (themeMode) {
       case ThemeMode.system:
         themeType = L10n.of(context).settingsSystemMode;
         break;
@@ -34,8 +33,7 @@ class AppearanceSettingsPage extends ConsumerWidget {
               leading: const Icon(Icons.flashlight_on_outlined),
               title: Text("主题模式"),
               subtitle: Text("当前模式: $themeType"),
-              onTap: () =>
-                  showThemeTypeDialog(context, ref, preferences.themeMode),
+              onTap: () => _showThemeModeDialog(context, ref),
             ),
           ],
         ),
@@ -43,34 +41,51 @@ class AppearanceSettingsPage extends ConsumerWidget {
     );
   }
 
-  Future<void> showThemeTypeDialog(
-    BuildContext context,
-    WidgetRef ref,
-    ThemeMode themeMode,
-  ) async {
-    final loc = L10n.of(context);
-    final themeOptions = [ThemeMode.light, ThemeMode.dark, ThemeMode.system];
-    await showDialog<ThemeMode>(
+  void _showThemeModeDialog(BuildContext context, WidgetRef ref) {
+    final currentThemeMode = ref.read(themeModeProvider);
+    showDialog(
       context: context,
-      builder: (context) => SelectDialog<ThemeMode>(
-        title: loc.settingsTheme,
-        value: themeMode,
-        values: themeOptions.toList(),
-        subtitleBuilder: (mode) {
-          switch (mode) {
-            case ThemeMode.light:
-              return Text(loc.settingsLightMode);
-            case ThemeMode.dark:
-              return Text(loc.settingsDarkMode);
-            case ThemeMode.system:
-              return Text(loc.settingsSystemMode);
-          }
-        },
+      builder: (context) => AlertDialog(
+        title: const Text('选择主题模式'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            RadioListTile<ThemeMode>(
+              title: const Text('浅色'),
+              value: ThemeMode.light,
+              groupValue: currentThemeMode,
+              onChanged: (value) {
+                if (value != null) {
+                  setThemeMode(ref, value);
+                  Navigator.pop(context);
+                }
+              },
+            ),
+            RadioListTile<ThemeMode>(
+              title: const Text('深色'),
+              value: ThemeMode.dark,
+              groupValue: currentThemeMode,
+              onChanged: (value) {
+                if (value != null) {
+                  setThemeMode(ref, value);
+                  Navigator.pop(context);
+                }
+              },
+            ),
+            RadioListTile<ThemeMode>(
+              title: const Text('跟随系统'),
+              value: ThemeMode.system,
+              groupValue: currentThemeMode,
+              onChanged: (value) {
+                if (value != null) {
+                  setThemeMode(ref, value);
+                  Navigator.pop(context);
+                }
+              },
+            ),
+          ],
+        ),
       ),
-    ).then((selectMode) {
-      if (selectMode != null) {
-        ref.read(userPreferencesProvider.notifier).setThemeMode(selectMode);
-      }
-    });
+    );
   }
 }

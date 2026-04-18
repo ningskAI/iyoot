@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:i_reader/utils/file_utils.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -23,7 +24,7 @@ class AppDatabase {
   }
 
   Future<Database> _initDB(String filePath) async {
-    final dbPath = await getDatabasesPath();
+    final dbPath = await FileUtils.getAppDatabasesPath();
     final path = join(dbPath, filePath);
     return await openDatabase(path, version: 7, onCreate: _createDB);
   }

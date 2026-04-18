@@ -6,8 +6,6 @@ import 'package:i_reader/ui/pages/note/note.dart';
 import 'package:i_reader/ui/pages/root/root.dart';
 import 'package:i_reader/ui/pages/settings/settings.dart';
 import 'package:i_reader/ui/pages/settings/subpages/appearance_settings.dart';
-import 'package:i_reader/ui/pages/settings/subpages/backup_settings.dart';
-import 'package:i_reader/ui/pages/settings/subpages/webdav_settings.dart';
 import 'package:i_reader/ui/pages/statistics/statistics.dart';
 import 'package:i_reader/ui/pages/store/store.dart';
 
@@ -32,16 +30,6 @@ final router = GoRouter(
       name: "appearance",
       path: "/settings/appearance",
       builder: (_, _) => AppearanceSettingsPage(),
-    ),
-    GoRoute(
-      name: "backup",
-      path: "/settings/backup",
-      builder: (_, _) => BackupPage(),
-    ),
-    GoRoute(
-      name: "webdav",
-      path: "/settings/webdavSettings",
-      builder: (_, _) => WebDavSettingsPage(),
     ),
   ],
 );
