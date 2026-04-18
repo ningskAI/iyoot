@@ -12,7 +12,7 @@ class ReadingTimeDatasourceImpl extends ReadingTimeDatasource {
     final session = ReadingTime(
       bookId: bookId,
       readingTime: readingTime,
-      date: startedAt,
+      date: startedAt?.toIso8601String(),
     );
 
     await insertReadingTime(session, startedAt: startedAt);
@@ -27,9 +27,7 @@ class ReadingTimeDatasourceImpl extends ReadingTimeDatasource {
     if (db == null) throw StateError("database has not inited");
     final resolvedDay = _resolveDayString(readingTime, startedAt);
 
-    final insertReadingTime = readingTime.copyWith(
-      date: resolvedDay
-    );
+    final insertReadingTime = readingTime.copyWith(date: resolvedDay);
 
     await db.transaction((txn) async {
       final existing = await txn.rawQuery(
@@ -83,7 +81,7 @@ class ReadingTimeDatasourceImpl extends ReadingTimeDatasource {
   }
 
   String _resolveDayString(ReadingTime readingTime, DateTime? startedAt) {
-    final fromModel = readingTime.;
+    final fromModel = readingTime.startedAt;
     if (fromModel != null) {
       return _dayKey(fromModel);
     }

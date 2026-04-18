@@ -5,9 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i_reader/config/app_theme.dart';
+import 'package:i_reader/data/database/app_database.dart';
 import 'package:i_reader/l10n/generated/L10n.dart';
-import 'package:i_reader/data/database/database.dart';
-import 'package:i_reader/providers/database.dart';
 import 'package:i_reader/providers/user_preferences_provider.dart';
 import 'package:i_reader/core/routes/routes.dart';
 import 'package:i_reader/services/logger/logger.dart';
@@ -15,23 +14,7 @@ import 'package:i_reader/services/logger/logger.dart';
 void main() async {
   final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
 
-  final database = AppDatabase();
-
-  // 1. 核心修复：预加载偏好设置，消除异步闪屏
-  // 确保在渲染第一帧之前就拿到真实的数据库数据
-  var prefs = await (database.select(
-    database.preferencesTable,
-  )..where((tbl) => tbl.id.equals(0))).getSingleOrNull();
-
-  if (prefs == null) {
-    // 如果是第一次运行，初始化一条记录
-    await database
-        .into(database.preferencesTable)
-        .insert(const PreferencesTableCompanion(id: Value(0)));
-    prefs = await (database.select(
-      database.preferencesTable,
-    )..where((tbl) => tbl.id.equals(0))).getSingle();
-  }
+  await AppDatabase.instance.database;
 
   // 2. 屏幕方向锁定逻辑
   final view = PlatformDispatcher.instance.views.first;
@@ -51,16 +34,14 @@ void main() async {
 
   runApp(
     ProviderScope(
-      overrides: [databaseProvider.overrideWith((ref) => database)],
       observers: const [AppLoggerProviderObserver()],
-      child: iYoot(preloadedPrefs: prefs), // 将预加载的数据传入
+      child: iYoot(), // 将预加载的数据传入
     ),
   );
 }
 
 class iYoot extends ConsumerStatefulWidget {
-  final PreferencesTableData preloadedPrefs;
-  const iYoot({super.key, required this.preloadedPrefs});
+  const iYoot({super.key});
 
   @override
   ConsumerState<iYoot> createState() => _iYootState();
@@ -69,22 +50,7 @@ class iYoot extends ConsumerStatefulWidget {
 class _iYootState extends ConsumerState<iYoot> {
   @override
   Widget build(BuildContext context) {
-    // 监听 Provider 以获取后续的动态更新
-    final prefsFromProvider = ref.watch(userPreferencesProvider);
-
-    // 关键逻辑：如果 Provider 还在加载默认值的极短瞬间（id=0 且 isFirstRun=true），
-    // 优先使用预加载的真实数据库数据，从而消除“白转黑”闪烁。
-    final bool usePreloaded =
-        prefsFromProvider.id == 0 &&
-        prefsFromProvider.isFirstRun == true &&
-        widget.preloadedPrefs.isFirstRun == false;
-
-    final currentPrefs = usePreloaded
-        ? widget.preloadedPrefs
-        : prefsFromProvider;
-
-    final themeMode = currentPrefs.themeMode;
-    final locale = currentPrefs.locale;
+    final themeMode = ThemeMode.dark;
 
     // 判定亮暗模式
     final brightness = MediaQuery.platformBrightnessOf(context);
@@ -185,7 +151,6 @@ class _iYootState extends ConsumerState<iYoot> {
       theme: AppStyle.lightTheme,
       darkTheme: AppStyle.darkTheme,
       themeMode: themeMode,
-      locale: locale.languageCode == "system" ? null : locale,
       localizationsDelegates: L10n.localizationsDelegates,
       supportedLocales: L10n.supportedLocales,
     );
