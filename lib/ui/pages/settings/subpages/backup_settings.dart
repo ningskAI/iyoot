@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i_reader/l10n/generated/L10n.dart';
-import 'package:i_reader/provider/backup_provider.dart';
+import 'package:i_reader/providers/backup_provider.dart';
 
 class BackupPage extends ConsumerWidget {
   const BackupPage({super.key});

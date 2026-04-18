@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:i_reader/collections/app_style.dart';
+import 'package:i_reader/config/app_theme.dart';
 
 class CardView extends StatelessWidget {
   final Widget child;

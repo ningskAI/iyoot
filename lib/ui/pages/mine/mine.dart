@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
-import 'package:i_reader/collections/app_style.dart';
+import 'package:i_reader/config/app_theme.dart';
 import 'package:i_reader/ui/modules/mine/mine_booklist_section.dart';
 import 'package:i_reader/ui/modules/mine/mine_read_rank_section.dart';
 import 'package:remixicon/remixicon.dart';

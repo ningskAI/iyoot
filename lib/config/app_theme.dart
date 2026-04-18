@@ -63,7 +63,7 @@ class AppStyle {
     fontFamily: Platform.isWindows ? "Microsoft YaHei" : null,
     appBarTheme: const AppBarTheme(
       elevation: 0,
-      centerTitle: true,
+      centerTitle: false,
       backgroundColor: Colors.transparent,
       titleTextStyle: TextStyle(
         fontSize: 18,
@@ -117,7 +117,7 @@ class AppStyle {
     fontFamily: Platform.isWindows ? "Microsoft YaHei" : null,
     appBarTheme: const AppBarTheme(
       elevation: 0,
-      centerTitle: true,
+      centerTitle: false,
       backgroundColor: Colors.transparent,
       titleTextStyle: TextStyle(
         fontSize: 18,

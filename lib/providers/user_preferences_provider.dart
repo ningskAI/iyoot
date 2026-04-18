@@ -1,8 +1,8 @@
 import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:i_reader/core/database/database.dart';
-import 'package:i_reader/core/database/tables/preferences.dart';
-import 'package:i_reader/provider/database.dart';
+import 'package:i_reader/data/database/database.dart';
+import 'package:i_reader/data/database/tables/preferences.dart';
+import 'package:i_reader/providers/database.dart';
 import 'package:i_reader/services/logger/logger.dart';
 import 'package:i_reader/utils/platform.dart';
 import 'package:path/path.dart';

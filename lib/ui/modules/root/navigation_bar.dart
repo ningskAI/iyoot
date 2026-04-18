@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:i_reader/collections/side_bar_tiles.dart';
-import 'package:i_reader/provider/ui_state_provider.dart';
+import 'package:i_reader/providers/ui_state_provider.dart';
 
 class NextNavigationBar extends ConsumerWidget {
   const NextNavigationBar({super.key});

@@ -1,6 +1,6 @@
 import 'package:drift/drift.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import '../core/database/database.dart';
+import '../data/database/database.dart';
 import 'database.dart';
 
 part 'backup_provider.g.dart';

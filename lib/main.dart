@@ -4,11 +4,11 @@ import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:i_reader/collections/app_style.dart';
+import 'package:i_reader/config/app_theme.dart';
 import 'package:i_reader/l10n/generated/L10n.dart';
-import 'package:i_reader/core/database/database.dart';
-import 'package:i_reader/provider/database.dart';
-import 'package:i_reader/provider/user_preferences_provider.dart';
+import 'package:i_reader/data/database/database.dart';
+import 'package:i_reader/providers/database.dart';
+import 'package:i_reader/providers/user_preferences_provider.dart';
 import 'package:i_reader/core/routes/routes.dart';
 import 'package:i_reader/services/logger/logger.dart';
 
