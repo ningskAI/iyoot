@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:i_reader/collections/setting_type_tiles.dart';
+import 'package:i_reader/models/setting_type_tiles.dart';
 import 'package:i_reader/l10n/generated/L10n.dart';
-import 'package:i_reader/widgets/view_safe_area.dart';
+import 'package:i_reader/ui/widgets/d_list_tile.dart';
+import 'package:i_reader/ui/widgets/view_safe_area.dart';
 
 class SettingsPage extends ConsumerWidget {
   const SettingsPage({super.key});
@@ -25,23 +26,19 @@ class SettingsPage extends ConsumerWidget {
 
   Widget buildList(BuildContext context, ThemeData theme) {
     final padding = MediaQuery.viewPaddingOf(context);
-    TextStyle titleStyle = theme.textTheme.titleMedium!;
-    TextStyle subTitleStyle = theme.textTheme.labelMedium!.copyWith(
-      color: theme.colorScheme.outline,
-    );
     final items = getSettingTiles(context);
     return ListView(
       padding: EdgeInsets.only(bottom: padding.bottom + 100),
       children: items
           .take(items.length)
           .map(
-            (item) => ListTile(
+            (item) => DListTile(
               onTap: () => toPage(context, item.route),
-              leading: item.icon,
-              title: Text(item.title, style: titleStyle),
-              subtitle: item.subtitle == null
-                  ? null
-                  : Text(item.subtitle!, style: subTitleStyle),
+              icon: item.icon,
+              iconColor: item.iconColor,
+              title: item.title,
+              subtitle: item.subtitle,
+              trailing: item.trailing,
             ),
           )
           .toList(),

@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i_reader/l10n/generated/L10n.dart';
 import 'package:i_reader/provider/user_preferences_provider.dart';
 import 'package:i_reader/ui/widgets/settings/select_dialog.dart';
-import 'package:i_reader/widgets/view_safe_area.dart';
+import 'package:i_reader/ui/widgets/view_safe_area.dart';
 
 class AppearanceSettingsPage extends ConsumerWidget {
   const AppearanceSettingsPage({super.key});

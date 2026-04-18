@@ -11,12 +11,9 @@ import 'package:i_reader/provider/database.dart';
 import 'package:i_reader/provider/user_preferences_provider.dart';
 import 'package:i_reader/core/routes/routes.dart';
 import 'package:i_reader/services/logger/logger.dart';
-import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 void main() async {
   final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
-  // 保持启动页，直到手动释放
-  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
   final database = AppDatabase();
 
@@ -94,11 +91,6 @@ class _iYootState extends ConsumerState<iYoot> {
     final bool isDark =
         themeMode == ThemeMode.dark ||
         (themeMode == ThemeMode.system && brightness == Brightness.dark);
-
-    // 确保在渲染逻辑稳定后再移除启动页
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      FlutterNativeSplash.remove();
-    });
 
     SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(

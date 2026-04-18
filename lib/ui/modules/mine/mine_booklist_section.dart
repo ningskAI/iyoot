@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:i_reader/widgets/card.dart';
+import 'package:i_reader/ui/widgets/card.dart';
 
 class MineBooklistSection extends ConsumerWidget {
   const MineBooklistSection({super.key});

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:i_reader/collections/app_style.dart';
-import 'package:i_reader/widgets/card.dart';
+import 'package:i_reader/ui/widgets/card.dart';
 
 class MineReadSectionItem extends StatelessWidget {
   final String title; // 如：在读
