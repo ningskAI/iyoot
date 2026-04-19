@@ -28,12 +28,12 @@ class WebServiceManager extends BaseService {
         .addHandler(_handleRequests);
     int port = AppConfig.getLastServerPort();
     try {
-      _server = await io.serve(handler, '127.0.0.1', port);
+      _server = await io.serve(handler, '0.0.0.0', port);
     } catch (e) {
       AppLog.instance.putDebug(
         'Server: Failed to bind to port $port, trying random port $e',
       );
-      _server = await io.serve(handler, '127.0.0.1', 0);
+      _server = await io.serve(handler, '0.0.0.0', 0);
     }
     AppConfig.setLastServerPort(_server!.port);
     AppLog.instance.putDebug(

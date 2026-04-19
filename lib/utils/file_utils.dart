@@ -309,6 +309,12 @@ class FileUtils {
     }
   }
 
+  static Future<String> getBasePath(String path) async {
+    var documentPath = await getDocumentsPath();
+    path.replaceAll("/", Platform.pathSeparator);
+    return '$documentPath${Platform.pathSeparator}$path';
+  }
+
   static Future<Directory> getBgimgDir({String? path}) async {
     var defaultPath = await getDocumentsPath();
     path ??= defaultPath;

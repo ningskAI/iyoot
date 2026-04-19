@@ -129,7 +129,7 @@ class _BookshelfState extends ConsumerState<BookshelfPage> {
     BuildContext context,
     WidgetRef ref,
   ) async {
-    final allowBookExtensions = ["epub", "mobi", "azw3", "fb2", "txt", "pdf"];
+    final allowBookExtensions = ["epub", "mobi", "azw3", "fb2", "pdf"];
     List<File> supportedFiles = fileList.where((file) {
       return allowBookExtensions.contains(
         file.path.split('.').last.toLowerCase(),
@@ -214,6 +214,7 @@ class _BookshelfState extends ConsumerState<BookshelfPage> {
         uniqueFiles: uniqueFiles,
         duplicateFiles: duplicateFiles,
         duplicateInfo: duplicateInfo,
+        ref: ref,
       ),
     );
   }

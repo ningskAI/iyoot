@@ -1,4 +1,5 @@
 import 'package:go_router/go_router.dart';
+import 'package:i_reader/main.dart';
 import 'package:i_reader/ui/pages/bookshelf/bookshelf.dart';
 import 'package:i_reader/ui/pages/home/home.dart';
 import 'package:i_reader/ui/pages/mine/mine.dart';
@@ -11,6 +12,7 @@ import 'package:i_reader/ui/pages/store/store.dart';
 
 final router = GoRouter(
   initialLocation: "/home",
+  navigatorKey: navigatorKey,
   routes: [
     ShellRoute(
       builder: (context, state, child) {

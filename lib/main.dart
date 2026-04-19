@@ -11,6 +11,7 @@ import 'package:i_reader/services/logger/logger.dart';
 import 'package:i_reader/services/startup/app_startup_coordinator.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
 
+final navigatorKey = GlobalKey<NavigatorState>();
 void main() async {
   await AppDatabase.instance.database;
   await AppStartupCoordinator.initialize();

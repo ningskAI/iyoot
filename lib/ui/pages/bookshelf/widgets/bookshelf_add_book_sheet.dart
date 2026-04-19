@@ -1,8 +1,10 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i_reader/data/models/book.dart';
 import 'package:i_reader/l10n/generated/L10n.dart';
+import 'package:i_reader/providers/service_registry.dart';
 import 'package:i_reader/ui/widgets/td/td_themed_toast.dart';
 import 'package:i_reader/utils/app_log.dart';
 import 'package:path/path.dart' as path;
@@ -17,6 +19,7 @@ class BookshelfAddBookSheet extends StatefulWidget {
     required this.unsupportedFiles,
     required this.duplicateFiles,
     required this.duplicateInfo,
+    required this.ref,
   });
 
   final List<File> uniqueFiles;
@@ -24,6 +27,7 @@ class BookshelfAddBookSheet extends StatefulWidget {
   final List<File> duplicateFiles;
   final List<File> supportedFiles;
   final Map<String, Book> duplicateInfo;
+  final WidgetRef ref;
 
   @override
   State<StatefulWidget> createState() => _BookshelfAddBookSheet();
@@ -246,14 +250,13 @@ class _BookshelfAddBookSheet extends State<BookshelfAddBookSheet> {
               }
 
               for (var file in filesToImport) {
-                TDThemedToast.show(context, path.basename(file.path));
                 setState(() {
                   currentHandlingFile = file.path;
                 });
                 try {
-                  setState(() {
-                    currentHandlingFile = '';
-                  });
+                  await readService(
+                    AppServices.localBookService,
+                  ).importBook(file, widget.ref);
                 } catch (e, stackTrace) {
                   AppLog.instance.put('Failed to import ${file.path}: $e');
                   AppLog.instance.put('Stack trace: $stackTrace');

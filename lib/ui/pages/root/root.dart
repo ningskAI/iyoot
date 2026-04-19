@@ -1,16 +1,35 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i_reader/ui/modules/root/navigation_bar.dart';
+import 'package:i_reader/utils/app_log.dart';
+import 'package:path_provider/path_provider.dart';
 
-class RootPage extends ConsumerWidget {
+WebViewEnvironment? webViewEnvironment;
+
+class RootPage extends StatefulWidget {
   final Widget child;
   const RootPage({super.key, required this.child});
 
   @override
-  Widget build(BuildContext context, ref) {
+  State<StatefulWidget> createState() => _RootState();
+}
+
+class _RootState extends State<RootPage> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => initData());
+  }
+
+  Future<void> initData() async {}
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       body: Row(
-        children: [Expanded(flex: 1, child: Container(child: child))],
+        children: [Expanded(flex: 1, child: Container(child: widget.child))],
       ),
       bottomNavigationBar: Visibility(
         visible: true,
