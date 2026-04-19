@@ -1,59 +1,124 @@
-import 'package:flutter/material.dart';
+import 'dart:io';
 
-/// 添加书籍底部弹层：搜索在线 / 导入本地。
-class BookshelfAddBookSheet extends StatelessWidget {
+import 'package:flutter/material.dart';
+import 'package:i_reader/data/models/book.dart';
+import 'package:i_reader/l10n/generated/L10n.dart';
+import 'package:i_reader/ui/widgets/td/td_themed_toast.dart';
+import 'package:i_reader/utils/app_log.dart';
+import 'package:path/path.dart' as path;
+import 'package:tdesign_flutter/tdesign_flutter.dart';
+
+/// 添加书籍底部弹层
+class BookshelfAddBookSheet extends StatefulWidget {
   const BookshelfAddBookSheet({
     super.key,
-    required this.onSearchOnline,
-    required this.onImportLocal,
+    required this.uniqueFiles,
+    required this.supportedFiles,
+    required this.unsupportedFiles,
+    required this.duplicateFiles,
+    required this.duplicateInfo,
   });
 
-  final VoidCallback onSearchOnline;
-  final VoidCallback onImportLocal;
+  final List<File> uniqueFiles;
+  final List<File> unsupportedFiles;
+  final List<File> duplicateFiles;
+  final List<File> supportedFiles;
+  final Map<String, Book> duplicateInfo;
+
+  @override
+  State<StatefulWidget> createState() => _BookshelfAddBookSheet();
+}
+
+class _BookshelfAddBookSheet extends State<BookshelfAddBookSheet> {
+  String currentHandlingFile = '';
+  List<String> errorFiles = [];
+  bool finished = false;
+  bool skipDuplicates = true;
+  Map<String, String> errorMessages = {};
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  Widget bookItem(
+    BuildContext context,
+    String filePath,
+    Widget icon, {
+    bool isDuplicate = false,
+    String? duplicateTitle,
+    String? errorMessage,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            SizedBox(width: 24, height: 24, child: icon),
+            Expanded(
+              child: Text(
+                path.basename(filePath),
+                style: TextStyle(
+                  fontWeight: FontWeight.w300,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ),
+            if (errorMessage != null)
+              IconButton(
+                icon: const Icon(Icons.info_outline, size: 16),
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(),
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: Text("错误"),
+                      content: SelectableText(errorMessage),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: Text("好"),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+          ],
+        ),
+        if (isDuplicate && duplicateTitle != null)
+          Padding(
+            padding: const EdgeInsets.only(left: 28, top: 2),
+            child: Text(
+              "与以下文件重复: ${duplicateTitle}",
+              style: const TextStyle(fontSize: 12, color: Colors.grey),
+            ),
+          ),
+        if (errorMessage != null)
+          Padding(
+            padding: const EdgeInsets.only(left: 28, top: 2),
+            child: Text(
+              'Error: ${errorMessage.length > 50 ? "${errorMessage.substring(0, 50)}..." : errorMessage}',
+              style: const TextStyle(fontSize: 12, color: Colors.red),
+            ),
+          ),
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Container(
-        margin: const EdgeInsets.fromLTRB(12, 0, 12, 12),
-        padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
-        decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.96),
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
-          boxShadow: [
-            BoxShadow(
-              color: const Color(0xFF1F2329).withValues(alpha: 0.16),
-              blurRadius: 32,
-              offset: const Offset(0, -8),
-            ),
-          ],
-        ),
+    return AlertDialog(
+      title: Text('添加${widget.supportedFiles.length}本书籍'),
+      contentPadding: const EdgeInsets.all(16),
+      content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Center(
-              child: Container(
-                width: 42,
-                height: 5,
-                decoration: BoxDecoration(
-                  color: const Color(0xFFD0D7E2),
-                  borderRadius: BorderRadius.circular(999),
-                ),
-              ),
-            ),
-            const SizedBox(height: 18),
-            const Text(
-              '添加书籍',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w800,
-                color: Color(0xFF1F2329),
-              ),
-            ),
             const SizedBox(height: 6),
             const Text(
-              '这个弹层只承载路径选择，不混入过多配置项，保证点击后马上进入下一步。',
+              '支持epub/mobi/azw3/fb2/txt/pdf',
               style: TextStyle(
                 fontSize: 13,
                 height: 1.5,
@@ -61,140 +126,164 @@ class BookshelfAddBookSheet extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 18),
-            _ActionCard(
-              icon: Icons.search_rounded,
-              title: '搜索在线书籍',
-              description: '从书源里搜索作品并直接加入书架，适合第一次使用或找新书。',
-              gradientColors: const [Color(0xFF1677FF), Color(0xFF69B1FF)],
-              actionLabel: '进入搜索',
-              onTap: () {
-                Navigator.of(context).pop();
-                onSearchOnline();
-              },
-            ),
-            const SizedBox(height: 12),
-            _ActionCard(
-              icon: Icons.folder_open_rounded,
-              title: '导入本地书籍',
-              description: '从设备文件中导入 TXT、EPUB 等内容，适合已有本地收藏的用户。',
-              gradientColors: const [Color(0xFFFA8C16), Color(0xFFFFB65C)],
-              actionLabel: '选择文件',
-              onTap: () {
-                Navigator.of(context).pop();
-                onImportLocal();
-              },
-            ),
+            for (var file in widget.uniqueFiles)
+              file.path == currentHandlingFile
+                  ? bookItem(
+                      context,
+                      file.path,
+                      Container(
+                        padding: const EdgeInsets.all(3),
+                        width: 20,
+                        height: 20,
+                        child: const CircularProgressIndicator(),
+                      ),
+                    )
+                  : bookItem(
+                      context,
+                      file.path,
+                      errorFiles.contains(file.path)
+                          ? const Icon(Icons.error)
+                          : const Icon(Icons.done),
+                      errorMessage: errorFiles.contains(file.path)
+                          ? errorMessages[file.path]
+                          : null,
+                    ),
+            // show unsupported files
+            if (widget.unsupportedFiles.isNotEmpty) ...[
+              Divider(),
+              SizedBox(height: 10),
+              Text("${widget.unsupportedFiles.length}本书暂不支持"),
+            ],
+            for (var file in widget.unsupportedFiles)
+              bookItem(context, file.path, const Icon(Icons.error)),
+
+            // show duplicate files
+            if (widget.duplicateFiles.isNotEmpty) ...[
+              Divider(),
+              const SizedBox(height: 10),
+              Text("重复文件"),
+            ],
+            for (var file in widget.duplicateFiles)
+              if (skipDuplicates)
+                bookItem(
+                  context,
+                  file.path,
+                  const Icon(Icons.double_arrow_rounded),
+                  isDuplicate: true,
+                  duplicateTitle: widget.duplicateInfo[file.path]?.title,
+                )
+              else
+                file.path == currentHandlingFile
+                    ? bookItem(
+                        context,
+                        file.path,
+                        Container(
+                          padding: const EdgeInsets.all(3),
+                          width: 20,
+                          height: 20,
+                          child: const CircularProgressIndicator(),
+                        ),
+                        isDuplicate: true,
+                        duplicateTitle: widget.duplicateInfo[file.path]?.title,
+                      )
+                    : bookItem(
+                        context,
+                        file.path,
+                        errorFiles.contains(file.path)
+                            ? const Icon(Icons.error)
+                            : const Icon(Icons.done),
+                        isDuplicate: true,
+                        duplicateTitle: widget.duplicateInfo[file.path]?.title,
+                        errorMessage: errorFiles.contains(file.path)
+                            ? errorMessages[file.path]
+                            : null,
+                      ),
+
+            // select skip duplicates
+            if (widget.duplicateFiles.isNotEmpty) ...[
+              const SizedBox(height: 10),
+              Row(
+                children: [
+                  Checkbox(
+                    value: skipDuplicates,
+                    onChanged: (value) {
+                      setState(() {
+                        skipDuplicates = value ?? true;
+                      });
+                    },
+                  ),
+                  Expanded(child: Text("跳过重复文件")),
+                ],
+              ),
+            ],
+
+            const SizedBox(height: 20),
           ],
         ),
       ),
-    );
-  }
-}
-
-class _ActionCard extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final String description;
-  final List<Color> gradientColors;
-  final String actionLabel;
-  final VoidCallback onTap;
-
-  const _ActionCard({
-    required this.icon,
-    required this.title,
-    required this.description,
-    required this.gradientColors,
-    required this.actionLabel,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(22),
-        child: Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: const Color(0xFFF7F9FC),
-            borderRadius: BorderRadius.circular(22),
-            border: Border.all(color: const Color(0xFFEDF0F4)),
-            boxShadow: [
-              BoxShadow(
-                color: gradientColors.last.withValues(alpha: 0.08),
-                blurRadius: 18,
-                offset: const Offset(0, 10),
-              ),
-            ],
-          ),
-          child: Row(
-            children: [
-              Container(
-                width: 52,
-                height: 52,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(18),
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: gradientColors,
-                  ),
-                ),
-                alignment: Alignment.center,
-                child: Icon(icon, color: Colors.white, size: 24),
-              ),
-              const SizedBox(width: 14),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: const TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w700,
-                        color: Color(0xFF1F2329),
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      description,
-                      style: const TextStyle(
-                        fontSize: 12,
-                        height: 1.45,
-                        color: Color(0xFF86909C),
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 6,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(999),
-                      ),
-                      child: Text(
-                        actionLabel,
-                        style: TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w700,
-                          color: gradientColors.first,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 8),
-              const Icon(Icons.chevron_right_rounded, color: Color(0xFFB8BEC8)),
-            ],
-          ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.pop(context);
+            for (var file in widget.supportedFiles) {
+              file.deleteSync();
+            }
+          },
+          child: Text("取消"),
         ),
-      ),
+        if (widget.uniqueFiles.isNotEmpty ||
+            (widget.duplicateFiles.isNotEmpty && !skipDuplicates))
+          TextButton(
+            onPressed: () async {
+              if (finished) {
+                Navigator.of(context).pop('dialog');
+                return;
+              }
+
+              List<File> filesToImport = [...widget.uniqueFiles];
+              if (!skipDuplicates) {
+                filesToImport.addAll(widget.duplicateFiles);
+              }
+
+              for (var file in filesToImport) {
+                TDThemedToast.show(context, path.basename(file.path));
+                setState(() {
+                  currentHandlingFile = file.path;
+                });
+                try {
+                  setState(() {
+                    currentHandlingFile = '';
+                  });
+                } catch (e, stackTrace) {
+                  AppLog.instance.put('Failed to import ${file.path}: $e');
+                  AppLog.instance.put('Stack trace: $stackTrace');
+                  setState(() {
+                    errorFiles.add(file.path);
+                    errorMessages[file.path] = e.toString();
+                  });
+                }
+              }
+
+              // dumplicateFiles will be deleted if skipDuplicates is true
+              // if skipDuplicates is false, they will be imported
+              // and then deleted in the importBook function
+              if (skipDuplicates) {
+                for (var file in widget.duplicateFiles) {
+                  file.deleteSync();
+                }
+              }
+
+              setState(() {
+                finished = true;
+              });
+            },
+            child: Text(
+              finished
+                  ? "确定"
+                  : "导入 ${widget.uniqueFiles.length + (skipDuplicates ? 0 : widget.duplicateFiles.length) - errorFiles.length}本书",
+            ),
+          ),
+      ],
     );
   }
 }

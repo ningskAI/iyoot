@@ -40,6 +40,7 @@ class AppDatabase {
         readingPercentage REAL,
         author TEXT,
         isDeleted INTEGER,
+        fileMd5 TEXT,
         description TEXT,
         createTime TEXT,
         updateTime TEXT

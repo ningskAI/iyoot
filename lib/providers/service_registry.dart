@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i_reader/services/book/local_book_service.dart';
+import 'package:i_reader/services/md5_service.dart';
 import 'package:i_reader/services/web/web_service_manager.dart';
 
 ProviderContainer _appProviderContainer = ProviderContainer();
@@ -16,5 +17,8 @@ abstract final class AppServices {
   });
   static final webserviceManager = Provider<WebServiceManager>((ref) {
     return WebServiceManager.instance;
+  });
+  static final md5Service = Provider<Md5Service>((ref) {
+    return Md5Service.instance;
   });
 }

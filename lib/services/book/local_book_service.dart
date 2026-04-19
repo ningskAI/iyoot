@@ -1,10 +1,13 @@
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i_reader/core/base/base_service.dart';
 import 'package:i_reader/data/models/book.dart';
+import 'package:i_reader/l10n/generated/L10n.dart';
+import 'package:i_reader/providers/service_registry.dart';
 import 'package:i_reader/utils/app_log.dart';
-import 'package:i_reader/utils/file_utils.dart';
 import 'package:i_reader/utils/platform.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
@@ -13,7 +16,7 @@ class LocalBookService extends BaseService {
   static final LocalBookService instance = LocalBookService._init();
   LocalBookService._init();
 
-  Future<List<Book>> importLocalFiles({List<String>? allowedExtensions}) async {
+  Future<List<File>> importLocalFiles({List<String>? allowedExtensions}) async {
     try {
       final result = await FilePicker.platform.pickFiles(
         type: FileType.custom,
@@ -24,18 +27,19 @@ class LocalBookService extends BaseService {
       if (result == null || result.files.isEmpty) {
         return [];
       }
-      List<PlatformFile> files = result.files;
-      AppLog.instance.putDebug('importBook files: ${files.toString()}');
+      List<PlatformFile> results = result.files;
+      AppLog.instance.putDebug('importBook files: ${results.toString()}');
       List<File> fileList = [];
       if (!kIsAndroid) {
         fileList = await Future.wait(
-          files.map((file) async {
+          results.map((file) async {
             return _copyToTempFile(sourcePath: file.path!, fileName: file.name);
           }).toList(),
         );
       } else {
-        fileList = files.map((file) => File(file.path!)).toList();
+        fileList = results.map((file) => File(file.path!)).toList();
       }
+      return fileList;
     } catch (e) {
       rethrow;
     }

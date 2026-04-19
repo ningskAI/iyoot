@@ -1,8 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:i_reader/data/models/book.dart';
 import 'package:i_reader/providers/bookshelf_provider.dart';
 import 'package:i_reader/providers/service_registry.dart';
+import 'package:i_reader/ui/pages/bookshelf/widgets/bookshelf_add_book_sheet.dart';
 import 'package:i_reader/ui/pages/bookshelf/widgets/bookshelf_empty_state.dart';
 import 'package:i_reader/ui/widgets/home_shell.dart';
 
@@ -14,8 +18,6 @@ class BookshelfPage extends ConsumerStatefulWidget {
 }
 
 class _BookshelfState extends ConsumerState<BookshelfPage> {
-  Widget body = Column();
-
   Widget _buildBookshelfHeader(BuildContext context) {
     return Container(
       width: double.infinity,
@@ -87,9 +89,133 @@ class _BookshelfState extends ConsumerState<BookshelfPage> {
   }
 
   Future<void> _importLocalBooks() async {
-    final books = await readService(
-      AppServices.localBookService,
-    ).importLocalFiles();
+    if (!mounted) return;
+
+    // 显示加载对话框
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) => const Center(child: CircularProgressIndicator()),
+    );
+
+    try {
+      final bookService = readService(AppServices.localBookService);
+      final books = await bookService.importLocalFiles();
+
+      if (!mounted) return;
+      // 使用 go_router 的 context.pop() 关闭对话框
+      context.pop();
+
+      if (books.isEmpty) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('未选择文件或导入失败')));
+        return;
+      }
+
+      checkDuplicatesAndShowDialog(books, context, ref);
+    } catch (e) {
+      if (mounted) {
+        context.pop(); // 发生错误也确保关闭对话框
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('导入异常: $e')));
+      }
+    }
+  }
+
+  void checkDuplicatesAndShowDialog(
+    List<File> fileList,
+    BuildContext context,
+    WidgetRef ref,
+  ) async {
+    final allowBookExtensions = ["epub", "mobi", "azw3", "fb2", "txt", "pdf"];
+    List<File> supportedFiles = fileList.where((file) {
+      return allowBookExtensions.contains(
+        file.path.split('.').last.toLowerCase(),
+      );
+    }).toList();
+
+    List<File> unsupportedFiles = fileList.where((file) {
+      return !allowBookExtensions.contains(
+        file.path.split('.').last.toLowerCase(),
+      );
+    }).toList();
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        title: const Text("计算MD5"),
+        content: const Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            CircularProgressIndicator(),
+            const SizedBox(height: 16),
+            Text("MD5计算中..."),
+          ],
+        ),
+      ),
+    );
+
+    try {
+      final filePaths = supportedFiles.map((f) => f.path).toList();
+      final checkResults = await readService(
+        AppServices.md5Service,
+      ).checkImportFiles(filePaths);
+
+      if (!mounted) return;
+      context.pop(); // 关闭 MD5 计算对话框
+
+      List<File> duplicateFiles = [];
+      List<File> uniqueFiles = [];
+      Map<String, Book> duplicateInfo = {};
+
+      for (int i = 0; i < supportedFiles.length; i++) {
+        final file = supportedFiles[i];
+        final result = checkResults[i];
+
+        if (result.isDuplicate && result.duplicateBook != null) {
+          duplicateFiles.add(file);
+          duplicateInfo[file.path] = result.duplicateBook!;
+        } else {
+          uniqueFiles.add(file);
+        }
+      }
+
+      _showAddBookDialog(
+        supportedFiles,
+        unsupportedFiles,
+        uniqueFiles,
+        duplicateFiles,
+        duplicateInfo,
+      );
+    } catch (e) {
+      if (mounted) {
+        context.pop(); // 失败时关闭对话框
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('分析失败: $e')));
+      }
+    }
+  }
+
+  void _showAddBookDialog(
+    List<File> supportedFiles,
+    List<File> unsupportedFiles,
+    List<File> uniqueFiles,
+    List<File> duplicateFiles,
+    Map<String, Book> duplicateInfo,
+  ) {
+    showDialog(
+      context: context,
+      builder: (context) => BookshelfAddBookSheet(
+        supportedFiles: supportedFiles,
+        unsupportedFiles: unsupportedFiles,
+        uniqueFiles: uniqueFiles,
+        duplicateFiles: duplicateFiles,
+        duplicateInfo: duplicateInfo,
+      ),
+    );
   }
 
   PopupMenuItem<String> _buildPopupMenuItem(
@@ -169,7 +295,7 @@ class _BookshelfState extends ConsumerState<BookshelfPage> {
   }
 
   Widget _buildBooksList(List<Book> books) {
-    return Center();
+    return const Center(child: Text('书籍列表加载成功'));
   }
 
   Widget _buildEmptyState() {

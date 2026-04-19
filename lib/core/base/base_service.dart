@@ -5,8 +5,7 @@ import '../../utils/app_log.dart';
 import '../exceptions/app_exceptions.dart' show ServiceException;
 
 /// 服务基类
-/// 所有服务类都应该继承此类，提供统一的生命周期管理
-/// 参考项目：BaseService.kt
+/// 所有服务类都应该继承此类，提供统一的生命周期管
 abstract class BaseService {
   bool _isInitialized = false;
   bool _isDisposed = false;
@@ -105,8 +104,9 @@ abstract class BaseService {
       final result = await action();
       return result;
     } catch (e) {
-      final errorMsg =
-          operationName != null ? '操作失败: $operationName' : '操作失败: $runtimeType';
+      final errorMsg = operationName != null
+          ? '操作失败: $operationName'
+          : '操作失败: $runtimeType';
 
       if (logError) {
         AppLog.instance.put(errorMsg, error: e);
@@ -149,7 +149,8 @@ abstract class BaseService {
   /// 检查多个权限
   /// 返回所有权限的检查结果
   Future<Map<Permission, bool>> checkPermissions(
-      List<Permission> permissions) async {
+    List<Permission> permissions,
+  ) async {
     final results = <Permission, bool>{};
     for (final permission in permissions) {
       results[permission] = await checkPermission(permission);
@@ -164,7 +165,8 @@ abstract class BaseService {
 
   /// 请求多个权限
   Future<Map<Permission, bool>> requestPermissions(
-      List<Permission> permissions) async {
+    List<Permission> permissions,
+  ) async {
     return await checkPermissions(permissions);
   }
 }
