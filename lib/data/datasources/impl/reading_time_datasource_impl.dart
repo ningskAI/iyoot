@@ -31,16 +31,16 @@ class ReadingTimeDatasourceImpl extends ReadingTimeDatasource {
 
     await db.transaction((txn) async {
       final existing = await txn.rawQuery(
-        'SELECT id, reading_time FROM tb_reading_time WHERE book_id = ? AND DATE(date) = DATE(?) LIMIT 1',
+        'SELECT id, readingTime FROM tb_reading_time WHERE bookId = ? AND DATE(date) = DATE(?) LIMIT 1',
         [insertReadingTime.bookId, resolvedDay],
       );
 
       if (existing.isNotEmpty) {
-        final current = existing.first['reading_time'] as int? ?? 0;
+        final current = existing.first['readingTime'] as int? ?? 0;
         await txn.update(
           'tb_reading_time',
           {
-            'reading_time': current + insertReadingTime.readingTime,
+            'readingTime': current + insertReadingTime.readingTime,
             // keep legacy date value unchanged to avoid churn
           },
           where: 'id = ?',
@@ -48,25 +48,28 @@ class ReadingTimeDatasourceImpl extends ReadingTimeDatasource {
         );
       } else {
         await txn.insert('tb_reading_time', {
-          'book_id': insertReadingTime.bookId,
+          'bookId': insertReadingTime.bookId,
           'date': resolvedDay,
-          'reading_time': insertReadingTime.readingTime,
+          'readingTime': insertReadingTime.readingTime,
         });
       }
     });
   }
 
   @override
-  Future<List<ReadingTime>> selectAllReadingTime() {
-    // TODO: implement selectAllReadingTime
-    throw UnimplementedError();
+  Future<List<ReadingTime>> selectAllReadingTime() async {
+    return queryList(
+      'tb_reading_time',
+      mapper: ReadingTime.fromJson,
+      orderBy: 'datetime(date) DESC, id DESC',
+    );
   }
 
   @override
   Future<int> selectTotalNumberOfBook() async {
     final result = await rawQuerySingle(
-      'SELECT COUNT(DISTINCT book_id) AS total_count FROM tb_reading_time',
-      mapper: (row) => row['total_count'] as int? ?? 0,
+      'SELECT COUNT(DISTINCT bookId) AS totalCount FROM tb_reading_time',
+      mapper: (row) => row['totalCount'] as int? ?? 0,
     );
     return result ?? 0;
   }

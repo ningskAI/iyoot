@@ -308,4 +308,16 @@ class FileUtils {
       AppLog.instance.put('FileUtils.writeBytes error: $e');
     }
   }
+
+  static Future<Directory> getBgimgDir({String? path}) async {
+    var defaultPath = await getDocumentsPath();
+    path ??= defaultPath;
+    return Directory('$path${Platform.pathSeparator}bgimg');
+  }
+
+  static Future<Directory> getFontDir({String? path}) async {
+    var defaultPath = await getDocumentsPath();
+    path ??= defaultPath;
+    return Directory('$path${Platform.pathSeparator}font');
+  }
 }

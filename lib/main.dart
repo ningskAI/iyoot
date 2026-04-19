@@ -6,6 +6,7 @@ import 'package:i_reader/config/app_theme.dart';
 import 'package:i_reader/data/database/app_database.dart';
 import 'package:i_reader/l10n/generated/L10n.dart';
 import 'package:i_reader/core/routes/routes.dart';
+import 'package:i_reader/providers/service_registry.dart';
 import 'package:i_reader/services/logger/logger.dart';
 import 'package:i_reader/services/startup/app_startup_coordinator.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
@@ -13,10 +14,11 @@ import 'package:tdesign_flutter/tdesign_flutter.dart';
 void main() async {
   await AppDatabase.instance.database;
   await AppStartupCoordinator.initialize();
+  await readService(AppServices.webserviceManager).start();
 
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
+      statusBarColor: Colors.black,
       statusBarIconBrightness: Brightness.dark,
     ),
   );

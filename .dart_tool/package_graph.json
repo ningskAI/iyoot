@@ -433,6 +433,15 @@
       ]
     },
     {
+      "name": "tdesign_flutter",
+      "version": "0.0.9",
+      "dependencies": [
+        "flutter",
+        "flutter_easyrefresh",
+        "flutter_swiper_null_safety"
+      ]
+    },
+    {
       "name": "signalr_netcore",
       "version": "1.4.4",
       "dependencies": [
@@ -1742,6 +1751,13 @@
       ]
     },
     {
+      "name": "flutter_swiper_null_safety",
+      "version": "1.0.2",
+      "dependencies": [
+        "flutter"
+      ]
+    },
+    {
       "name": "message_pack_dart",
       "version": "2.0.1",
       "dependencies": []
@@ -2494,22 +2510,6 @@
       "dependencies": [
         "collection",
         "hooks"
-      ]
-    },
-    {
-      "name": "tdesign_flutter",
-      "version": "0.0.9",
-      "dependencies": [
-        "flutter",
-        "flutter_easyrefresh",
-        "flutter_swiper_null_safety"
-      ]
-    },
-    {
-      "name": "flutter_swiper_null_safety",
-      "version": "1.0.2",
-      "dependencies": [
-        "flutter"
       ]
     }
   ],

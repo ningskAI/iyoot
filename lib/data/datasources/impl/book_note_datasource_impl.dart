@@ -73,23 +73,23 @@ class BookNoteDatasourceImpl extends BookNoteDatasource {
     }
 
     if (query != null && query.isNotEmpty) {
-      where.add('(content LIKE ? OR reader_note LIKE ? OR chapter LIKE ?)');
+      where.add('(content LIKE ? OR readerNote LIKE ? OR chapter LIKE ?)');
       final pattern = '%$query%';
       whereArgs.addAll([pattern, pattern, pattern]);
     }
 
     if (bookId != null) {
-      where.add('book_id = ?');
+      where.add('bookId = ?');
       whereArgs.add(bookId);
     }
 
     if (from != null) {
-      where.add('update_time >= ?');
+      where.add('updateTime >= ?');
       whereArgs.add(from.toIso8601String());
     }
 
     if (to != null) {
-      where.add('update_time <= ?');
+      where.add('updateTime <= ?');
       whereArgs.add(to.toIso8601String());
     }
 
@@ -98,7 +98,7 @@ class BookNoteDatasourceImpl extends BookNoteDatasource {
       mapper: BookNote.fromJson,
       where: where.isEmpty ? null : where.join(' AND '),
       whereArgs: whereArgs.isEmpty ? null : whereArgs,
-      orderBy: 'update_time DESC',
+      orderBy: 'updateTime DESC',
       limit: limit,
     );
   }
@@ -106,10 +106,10 @@ class BookNoteDatasourceImpl extends BookNoteDatasource {
   @override
   Future<List<Map<String, int>>> selectAllBookIdAndNotes() async {
     return rawQueryList(
-      'SELECT book_id, COUNT(id) AS number_of_notes FROM tb_notes WHERE $_typeFilter GROUP BY book_id ORDER BY number_of_notes DESC',
+      'SELECT bookId, COUNT(id) AS numberOfNotes FROM tb_notes WHERE $_typeFilter GROUP BY bookId ORDER BY numberOfNotes DESC',
       mapper: (row) => <String, int>{
-        'bookId': row['book_id'] as int? ?? 0,
-        'numberOfNotes': row['number_of_notes'] as int? ?? 0,
+        'bookId': row['bookId'] as int? ?? 0,
+        'numberOfNotes': row['numberOfNotes'] as int? ?? 0,
       },
     ).then((rows) => rows.where((element) => element['bookId'] != 0).toList());
   }
@@ -122,9 +122,9 @@ class BookNoteDatasourceImpl extends BookNoteDatasource {
     return queryList(
       'tb_notes',
       mapper: BookNote.fromJson,
-      where: 'cfi = ? AND book_id = ? AND $_typeFilter',
+      where: 'cfi = ? AND bookId = ? AND $_typeFilter',
       whereArgs: [cfi, bookId],
-      orderBy: 'update_time ASC',
+      orderBy: 'updateTime ASC',
     );
   }
 
@@ -149,19 +149,19 @@ class BookNoteDatasourceImpl extends BookNoteDatasource {
     return queryList(
       'tb_notes',
       mapper: BookNote.fromJson,
-      where: 'book_id = ? AND $_typeFilter',
+      where: 'bookId = ? AND $_typeFilter',
       whereArgs: [bookId],
-      orderBy: 'update_time DESC',
+      orderBy: 'updateTime DESC',
     );
   }
 
   @override
   Future<Map<String, int>> selectNumberOfNotesAndBooks() async {
     final result = await rawQuerySingle(
-      'SELECT COUNT(id) AS number_of_notes, COUNT(DISTINCT book_id) AS number_of_books FROM tb_notes WHERE $_typeFilter',
+      'SELECT COUNT(id) AS numberOfNotes, COUNT(DISTINCT bookId) AS numberOfBooks FROM tb_notes WHERE $_typeFilter',
       mapper: (row) => <String, int>{
-        'numberOfNotes': row['number_of_notes'] as int? ?? 0,
-        'numberOfBooks': row['number_of_books'] as int? ?? 0,
+        'numberOfNotes': row['numberOfNotes'] as int? ?? 0,
+        'numberOfBooks': row['numberOfBooks'] as int? ?? 0,
       },
     );
 

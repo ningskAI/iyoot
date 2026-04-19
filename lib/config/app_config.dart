@@ -226,4 +226,14 @@ class AppConfig {
     }
     return setString(PreferKey.backupPath, path);
   }
+
+  // =========== Web服务 ===========
+  static int getLastServerPort() {
+    final port = getInt(PreferKey.lastServerPort, defaultValue: 0);
+    return port;
+  }
+
+  static Future<bool> setLastServerPort(int port) {
+    return setInt(PreferKey.lastServerPort, port);
+  }
 }

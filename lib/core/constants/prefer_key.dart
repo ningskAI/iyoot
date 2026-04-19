@@ -50,4 +50,7 @@ class PreferKey {
 
   /// 自动检查新备份
   static const String autoCheckNewBackup = 'autoCheckNewBackup';
+
+  // ========== Web服务 ==============
+  static const String lastServerPort = 'lastServerPort';
 }

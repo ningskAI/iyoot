@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:i_reader/ui/widgets/home_shell.dart';
 
-class DListTile extends StatelessWidget {
+class TDListTile extends StatelessWidget {
   final IconData icon;
   final Color iconColor;
   final String title;
@@ -9,7 +9,7 @@ class DListTile extends StatelessWidget {
   final Widget? trailing;
   final VoidCallback? onTap;
 
-  const DListTile({
+  const TDListTile({
     super.key,
     required this.icon,
     required this.iconColor,

@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i_reader/config/app_theme.dart';
 import 'package:i_reader/l10n/generated/L10n.dart';
-import 'package:i_reader/ui/widgets/settings/select_dialog.dart';
-import 'package:i_reader/ui/widgets/view_safe_area.dart';
+import 'package:i_reader/ui/widgets/home_shell.dart';
+import 'package:i_reader/ui/widgets/td/td_appbar.dart';
+import 'package:i_reader/ui/widgets/td/td_list_tile.dart';
 
 class AppearanceSettingsPage extends ConsumerWidget {
   const AppearanceSettingsPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final padding = MediaQuery.viewPaddingOf(context);
     final themeMode = ref.watch(themeModeProvider);
     var themeType = "";
     switch (themeMode) {
@@ -22,20 +22,29 @@ class AppearanceSettingsPage extends ConsumerWidget {
       case ThemeMode.light:
         themeType = L10n.of(context).settingsLightMode;
     }
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      appBar: AppBar(title: Text(L10n.of(context).settingsAppearance)),
-      body: ViewSafeArea(
-        child: ListView(
-          padding: EdgeInsets.only(bottom: padding.bottom + 100),
-          children: [
-            ListTile(
-              leading: const Icon(Icons.flashlight_on_outlined),
-              title: Text("主题模式"),
-              subtitle: Text("当前模式: $themeType"),
-              onTap: () => _showThemeModeDialog(context, ref),
-            ),
-          ],
+    return HomePageBackground(
+      glowColors: const [Color(0xFF4F7CFF), Color(0xFF7C5CFF)],
+      child: Scaffold(
+        body: SafeArea(
+          bottom: false,
+          child: Column(
+            children: [
+              TDAppbar(title: L10n.of(context).settingsAppearance),
+              Expanded(
+                child: Column(
+                  children: [
+                    TDListTile(
+                      icon: Icons.flashlight_on_outlined,
+                      iconColor: const Color(0xFF8B5CF6),
+                      title: "主题模式",
+                      subtitle: "当前模式: $themeType",
+                      onTap: () => _showThemeModeDialog(context, ref),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

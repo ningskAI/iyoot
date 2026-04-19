@@ -3,9 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:i_reader/data/models/setting_tile.dart';
 import 'package:i_reader/l10n/generated/L10n.dart';
-import 'package:i_reader/ui/widgets/d_list_tile.dart';
+import 'package:i_reader/ui/widgets/td/td_appbar.dart';
+import 'package:i_reader/ui/widgets/td/td_list_tile.dart';
 import 'package:i_reader/ui/widgets/home_shell.dart';
-import 'package:i_reader/ui/widgets/view_safe_area.dart';
 import 'package:remixicon/remixicon.dart';
 
 class SettingsPage extends ConsumerWidget {
@@ -17,9 +17,15 @@ class SettingsPage extends ConsumerWidget {
     return HomePageBackground(
       glowColors: const [Color(0xFF4F7CFF), Color(0xFF7C5CFF)],
       child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        appBar: AppBar(title: Text(L10n.of(context).navBarSettings)),
-        body: ViewSafeArea(child: buildList(context, theme)),
+        body: SafeArea(
+          bottom: false,
+          child: Column(
+            children: [
+              TDAppbar(title: "设置"),
+              Expanded(child: buildList(context, theme)),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -37,7 +43,7 @@ class SettingsPage extends ConsumerWidget {
       children: items
           .take(items.length)
           .map(
-            (item) => DListTile(
+            (item) => TDListTile(
               onTap: () => toPage(context, item.route),
               icon: item.icon,
               iconColor: item.iconColor,
