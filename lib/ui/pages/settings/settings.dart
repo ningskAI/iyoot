@@ -21,6 +21,7 @@ class SettingsPage extends ConsumerWidget {
           child: Column(
             children: [
               TDAppbar(title: "设置"),
+              const SizedBox(height: 12),
               Expanded(child: buildList(context, theme)),
             ],
           ),
