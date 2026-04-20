@@ -85,6 +85,7 @@ class TDThemedBottomNavBar extends StatelessWidget {
       backgroundColor: backgroundColor ?? tdTheme.colorMap['bgColorContainer'],
       indicatorColor: tdTheme.brandNormalColor.withValues(alpha: 0.1),
       height: height,
+      labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
       destinations: items.map((item) {
         return NavigationDestination(
           icon: _buildIconWithBadge(item, false, tdTheme),
@@ -96,7 +97,11 @@ class TDThemedBottomNavBar extends StatelessWidget {
   }
 
   /// 构建带徽标的图标
-  Widget _buildIconWithBadge(TDThemedNavItem item, bool isSelected, TDThemeData tdTheme) {
+  Widget _buildIconWithBadge(
+    TDThemedNavItem item,
+    bool isSelected,
+    TDThemeData tdTheme,
+  ) {
     final icon = Icon(
       isSelected ? (item.selectedIcon ?? item.icon) : item.icon,
       color: isSelected
@@ -106,9 +111,7 @@ class TDThemedBottomNavBar extends StatelessWidget {
 
     if (item.badgeCount != null && item.badgeCount! > 0) {
       return Badge(
-        label: Text(
-          item.badgeCount! > 99 ? '99+' : item.badgeCount.toString(),
-        ),
+        label: Text(item.badgeCount! > 99 ? '99+' : item.badgeCount.toString()),
         backgroundColor: tdTheme.errorNormalColor,
         child: icon,
       );
@@ -138,9 +141,7 @@ class TDThemedBottomNavBar extends StatelessWidget {
     return Container(
       decoration: const BoxDecoration(
         color: Colors.white,
-        border: Border(
-          top: BorderSide(color: Colors.black12, width: 1),
-        ),
+        border: Border(top: BorderSide(color: Colors.black12, width: 1)),
       ),
       child: SafeArea(
         top: false,
@@ -213,8 +214,9 @@ class TDThemedBottomNavBar extends StatelessWidget {
                         style: TextStyle(
                           color: isSelected ? Colors.black : Colors.black54,
                           fontSize: 12,
-                          fontWeight:
-                              isSelected ? FontWeight.w600 : FontWeight.w400,
+                          fontWeight: isSelected
+                              ? FontWeight.w600
+                              : FontWeight.w400,
                         ),
                       ),
                     ],

@@ -46,6 +46,7 @@ class NextNavigationBar extends ConsumerWidget {
     } else {
       // 手机模式：底部导航栏
       return TDThemedBottomNavBar(
+        height: 60,
         currentIndex: selectedIndex,
         onChanged: (index) {
           ref.read(bottomTabIndexProvider.notifier).state = index;
