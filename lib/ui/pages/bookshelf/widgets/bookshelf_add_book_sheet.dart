@@ -3,12 +3,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i_reader/data/models/book.dart';
-import 'package:i_reader/l10n/generated/L10n.dart';
 import 'package:i_reader/providers/service_registry.dart';
-import 'package:i_reader/ui/widgets/td/td_themed_toast.dart';
 import 'package:i_reader/utils/app_log.dart';
 import 'package:path/path.dart' as path;
-import 'package:tdesign_flutter/tdesign_flutter.dart';
 
 /// 添加书籍底部弹层
 class BookshelfAddBookSheet extends StatefulWidget {
@@ -122,7 +119,7 @@ class _BookshelfAddBookSheet extends State<BookshelfAddBookSheet> {
           children: [
             const SizedBox(height: 6),
             const Text(
-              '支持epub/mobi/azw3/fb2/txt/pdf',
+              '支持epub/mobi/azw3/fb2/pdf',
               style: TextStyle(
                 fontSize: 13,
                 height: 1.5,
@@ -257,6 +254,9 @@ class _BookshelfAddBookSheet extends State<BookshelfAddBookSheet> {
                   await readService(
                     AppServices.localBookService,
                   ).importBook(file, widget.ref);
+                  setState(() {
+                    currentHandlingFile = '';
+                  });
                 } catch (e, stackTrace) {
                   AppLog.instance.put('Failed to import ${file.path}: $e');
                   AppLog.instance.put('Stack trace: $stackTrace');

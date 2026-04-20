@@ -26,7 +26,7 @@ class LocalBookService extends BaseService {
   static final LocalBookService instance = LocalBookService._init();
   LocalBookService._init();
 
-  Future<List<File>> importLocalFiles({List<String>? allowedExtensions}) async {
+  Future<List<File>> pickLocalFiles({List<String>? allowedExtensions}) async {
     try {
       final result = await FilePicker.platform.pickFiles(
         type: FileType.custom,
@@ -38,7 +38,7 @@ class LocalBookService extends BaseService {
         return [];
       }
       List<PlatformFile> results = result.files;
-      AppLog.instance.putDebug('importBook files: ${results.toString()}');
+      AppLog.instance.putDebug('pickLocalFiles files: ${results.toString()}');
       List<File> fileList = [];
       if (!kIsAndroid) {
         fileList = await Future.wait(

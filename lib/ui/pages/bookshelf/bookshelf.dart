@@ -89,14 +89,14 @@ class _BookshelfState extends ConsumerState<BookshelfPage>
   void _handleMenuAction(String value) {
     switch (value) {
       case 'add_local':
-        _importLocalBooks();
+        _pickLocalBooks();
         break;
       default:
         return;
     }
   }
 
-  Future<void> _importLocalBooks() async {
+  Future<void> _pickLocalBooks() async {
     if (!mounted) return;
 
     // 显示加载对话框
@@ -108,7 +108,7 @@ class _BookshelfState extends ConsumerState<BookshelfPage>
 
     try {
       final bookService = readService(AppServices.localBookService);
-      final books = await bookService.importLocalFiles();
+      final books = await bookService.pickLocalFiles();
 
       if (!mounted) return;
       // 使用 go_router 的 context.pop() 关闭对话框
@@ -158,7 +158,7 @@ class _BookshelfState extends ConsumerState<BookshelfPage>
           mainAxisSize: MainAxisSize.min,
           children: [
             CircularProgressIndicator(),
-            const SizedBox(height: 16),
+            SizedBox(height: 16),
             Text("MD5计算中..."),
           ],
         ),
@@ -216,6 +216,7 @@ class _BookshelfState extends ConsumerState<BookshelfPage>
   ) {
     showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (context) => BookshelfAddBookSheet(
         supportedFiles: supportedFiles,
         unsupportedFiles: unsupportedFiles,
