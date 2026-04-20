@@ -464,6 +464,12 @@
       "languageVersion": "3.9"
     },
     {
+      "name": "flutter_reorderable_grid_view",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/flutter_reorderable_grid_view-5.6.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.3"
+    },
+    {
       "name": "flutter_riverpod",
       "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/flutter_riverpod-2.6.1",
       "packageUri": "lib/",

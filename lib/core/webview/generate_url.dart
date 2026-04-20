@@ -24,6 +24,10 @@ String generateUrl(
     'importing': importing,
     'url': url,
     'initialCfi': cfi,
+    'style': {
+      'allowScript': true,
+      // Add other default style properties if needed
+    },
   };
 
   String query = '';

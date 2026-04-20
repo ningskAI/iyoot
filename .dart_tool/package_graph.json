@@ -29,6 +29,7 @@
         "flutter_inappwebview",
         "flutter_js",
         "flutter_localizations",
+        "flutter_reorderable_grid_view",
         "flutter_riverpod",
         "flutter_smart_dialog",
         "flutter_staggered_grid_view",
@@ -2510,6 +2511,13 @@
       "dependencies": [
         "collection",
         "hooks"
+      ]
+    },
+    {
+      "name": "flutter_reorderable_grid_view",
+      "version": "5.6.0",
+      "dependencies": [
+        "flutter"
       ]
     }
   ],

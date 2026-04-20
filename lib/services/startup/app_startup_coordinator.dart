@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:i_reader/config/app_config.dart';
+import 'package:i_reader/data/database/app_database.dart';
 import 'package:i_reader/utils/app_log.dart';
+import 'package:i_reader/utils/file_utils.dart';
 import 'package:i_reader/utils/startup_performance_monitor.dart';
 
 typedef _StartupAction = Future<void> Function();
@@ -28,6 +30,8 @@ class AppStartupCoordinator {
     try {
       await startupPerformanceMonitor.trackAsync('app_config_init', () async {
         AppConfig.preload();
+        await FileUtils.initBasePath();
+        await AppDatabase.instance.database;
         await Future.wait([
           AppConfig.waitUntilReady(timeout: const Duration(milliseconds: 400)),
         ]);

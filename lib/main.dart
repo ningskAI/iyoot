@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i_reader/config/app_theme.dart';
-import 'package:i_reader/data/database/app_database.dart';
 import 'package:i_reader/l10n/generated/L10n.dart';
 import 'package:i_reader/core/routes/routes.dart';
 import 'package:i_reader/providers/service_registry.dart';
@@ -13,7 +12,6 @@ import 'package:tdesign_flutter/tdesign_flutter.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
 void main() async {
-  await AppDatabase.instance.database;
   await AppStartupCoordinator.initialize();
   await readService(AppServices.webserviceManager).start();
 

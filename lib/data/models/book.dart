@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:i_reader/utils/file_utils.dart';
 part 'book.freezed.dart';
 part 'book.g.dart';
 
@@ -12,7 +13,7 @@ abstract class Book with _$Book {
     required String lastReadPosition,
     required double readingPercentage,
     required String author,
-    required bool isDeleted,
+    required int isDeleted,
     @Default("") String description,
     required double rating,
     required int groupId,
@@ -22,4 +23,9 @@ abstract class Book with _$Book {
   }) = _Book;
 
   factory Book.fromJson(Map<String, dynamic> json) => _$BookFromJson(json);
+}
+
+extension BookExtension on Book {
+  String get coverFullPath => FileUtils.getBasePath(coverPath);
+  String get fileFullPath => FileUtils.getBasePath(filePath);
 }

@@ -309,21 +309,54 @@ class FileUtils {
     }
   }
 
-  static Future<String> getBasePath(String path) async {
-    var documentPath = await getDocumentsPath();
+  static Future<Directory> getDocumentDir() async {
+    return Directory(await getDocumentsPath());
+  }
+
+  static Future<void> initBasePath() async {
+    documentPath = await getDocumentsPath();
+    final fileDir = getFileDir();
+    final coverDir = getCoverDir();
+    final fontDir = getFontDir();
+    final bgimgDir = getBgimgDir();
+    if (!fileDir.existsSync()) {
+      fileDir.createSync(recursive: true);
+    }
+    if (!coverDir.existsSync()) {
+      coverDir.createSync(recursive: true);
+    }
+    if (!fontDir.existsSync()) {
+      fontDir.createSync(recursive: true);
+    }
+    if (!bgimgDir.existsSync()) {
+      bgimgDir.createSync(recursive: true);
+    }
+  }
+
+  static String? documentPath;
+
+  static String getBasePath(String path) {
     path.replaceAll("/", Platform.pathSeparator);
     return '$documentPath${Platform.pathSeparator}$path';
   }
 
-  static Future<Directory> getBgimgDir({String? path}) async {
-    var defaultPath = await getDocumentsPath();
-    path ??= defaultPath;
+  static Directory getBgimgDir({String? path}) {
+    path ??= documentPath;
     return Directory('$path${Platform.pathSeparator}bgimg');
   }
 
-  static Future<Directory> getFontDir({String? path}) async {
-    var defaultPath = await getDocumentsPath();
-    path ??= defaultPath;
+  static Directory getFontDir({String? path}) {
+    path ??= documentPath;
     return Directory('$path${Platform.pathSeparator}font');
+  }
+
+  static Directory getCoverDir({String? path}) {
+    path ??= documentPath;
+    return Directory('$path${Platform.pathSeparator}cover');
+  }
+
+  static Directory getFileDir({String? path}) {
+    path ??= documentPath;
+    return Directory('$path${Platform.pathSeparator}file');
   }
 }

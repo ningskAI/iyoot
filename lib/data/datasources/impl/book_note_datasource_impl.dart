@@ -31,7 +31,7 @@ class BookNoteDatasourceImpl extends BookNoteDatasource {
       await updateBookNoteById(bookNote.copyWith(id: duplicates.last.id));
       return bookNote.id!;
     }
-    return insert("tb_notes", bookNote.toJson());
+    return insert("tb_notes", bookNote.toJson().remove('id'));
   }
 
   @override

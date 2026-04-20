@@ -42,7 +42,7 @@ class Md5Service extends BaseService {
       results.add(
         ImportFileCheck(
           filePath: filePath,
-          isDuplicate: duplicateBook != null && !duplicateBook.isDeleted,
+          isDuplicate: duplicateBook != null && (duplicateBook.isDeleted == 0),
           duplicateBook: duplicateBook,
           isRestore: false,
         ),

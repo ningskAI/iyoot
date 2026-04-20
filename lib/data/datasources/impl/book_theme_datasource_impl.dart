@@ -10,7 +10,7 @@ class BookThemeDatasourceImpl extends BookThemeDatasource {
 
   @override
   Future<int> insertTheme(ReadTheme readTheme) {
-    return insert('tb_themes', readTheme.toJson());
+    return insert('tb_themes', readTheme.toJson().remove('id'));
   }
 
   @override

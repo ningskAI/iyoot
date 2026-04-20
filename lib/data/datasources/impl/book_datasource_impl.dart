@@ -7,7 +7,7 @@ class BookDatasourceImpl extends BookDatasource {
     return querySingle(
       'tb_books',
       mapper: Book.fromJson,
-      where: 'fileMd5 = ?',
+      where: 'md5 = ?',
       whereArgs: [md5],
     );
   }
@@ -35,7 +35,9 @@ class BookDatasourceImpl extends BookDatasource {
       await updateBook(book);
       return book.id;
     }
-    return insert('tb_books', book.toJson());
+    final json = book.toJson();
+    json.remove('id');
+    return insert('tb_books', json);
   }
 
   @override
@@ -83,7 +85,7 @@ class BookDatasourceImpl extends BookDatasource {
     return queryList(
       'tb_books',
       mapper: Book.fromJson,
-      where: "isDeleted = 0 AND (fileMd5 IS NULL OR fileMd5 = '')",
+      where: "isDeleted = 0 AND (md5 IS NULL OR md5 = '')",
       orderBy: 'updateTime DESC',
     );
   }
@@ -92,7 +94,7 @@ class BookDatasourceImpl extends BookDatasource {
   Future<void> updateBookMd5(int bookId, String md5) async {
     await update(
       'tb_books',
-      {'fileMd5': md5, 'updateTime': DateTime.now().toIso8601String()},
+      {'md5': md5, 'updateTime': DateTime.now().toIso8601String()},
       where: 'id = ?',
       whereArgs: [bookId],
     );

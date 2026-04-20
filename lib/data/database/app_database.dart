@@ -40,8 +40,10 @@ class AppDatabase {
         readingPercentage REAL,
         author TEXT,
         isDeleted INTEGER,
-        fileMd5 TEXT,
+        md5 TEXT,
         description TEXT,
+        rating REAL,
+        groupId INTEGER,
         createTime TEXT,
         updateTime TEXT
       )
@@ -87,6 +89,7 @@ class AppDatabase {
         chapter TEXT,
         type TEXT,
         color TEXT,
+        readerNote TEXT,
         createTime TEXT,
         updateTime TEXT
       )

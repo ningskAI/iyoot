@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_reorderable_grid_view/widgets/reorderable_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:i_reader/data/models/book.dart';
@@ -8,6 +9,7 @@ import 'package:i_reader/providers/bookshelf_provider.dart';
 import 'package:i_reader/providers/service_registry.dart';
 import 'package:i_reader/ui/pages/bookshelf/widgets/bookshelf_add_book_sheet.dart';
 import 'package:i_reader/ui/pages/bookshelf/widgets/bookshelf_empty_state.dart';
+import 'package:i_reader/ui/widgets/book_cover.dart';
 import 'package:i_reader/ui/widgets/home_shell.dart';
 
 class BookshelfPage extends ConsumerStatefulWidget {
@@ -17,7 +19,13 @@ class BookshelfPage extends ConsumerStatefulWidget {
   ConsumerState<ConsumerStatefulWidget> createState() => _BookshelfState();
 }
 
-class _BookshelfState extends ConsumerState<BookshelfPage> {
+class _BookshelfState extends ConsumerState<BookshelfPage>
+    with AutomaticKeepAliveClientMixin {
+  final _scrollController = ScrollController();
+
+  @override
+  bool get wantKeepAlive => true;
+
   Widget _buildBookshelfHeader(BuildContext context) {
     return Container(
       width: double.infinity,
@@ -296,7 +304,40 @@ class _BookshelfState extends ConsumerState<BookshelfPage> {
   }
 
   Widget _buildBooksList(List<Book> books) {
-    return const Center(child: Text('书籍列表加载成功'));
+    List<int> lockedIndices = [];
+    for (int i = 0; i < books.length; i++) {
+      // folder can't be dragged
+      lockedIndices.add(i);
+    }
+    return ReorderableBuilder(
+      enableDraggable: false,
+      lockedIndices: lockedIndices,
+      scrollController: _scrollController,
+      children: [
+        for (final book in books)
+          BookCover(key: ValueKey(book.id.toString()), book: book),
+      ],
+      builder: (children) => LayoutBuilder(
+        builder: (context, constraints) {
+          int crossAxisCount = (constraints.maxWidth / 120).floor();
+          crossAxisCount = crossAxisCount.clamp(2, 8);
+          return Expanded(
+            child: GridView.builder(
+              controller: _scrollController,
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: crossAxisCount,
+                mainAxisSpacing: 32,
+                crossAxisSpacing: 24,
+                childAspectRatio: 0.7,
+              ),
+              itemCount: children.length,
+              itemBuilder: (context, index) => children[index],
+            ),
+          );
+        },
+      ),
+    );
   }
 
   Widget _buildEmptyState() {

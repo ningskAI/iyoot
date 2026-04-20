@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:extended_image/extended_image.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -86,7 +85,7 @@ class LocalBookService extends BaseService {
     WidgetRef? ref,
   }) async {
     final server = readService(AppServices.webserviceManager);
-    String serverFileName = server.setTempFile(file);
+    String serverFileName = await server.setTempFile(file);
 
     String cfi = '';
 
@@ -109,16 +108,7 @@ class LocalBookService extends BaseService {
       initialUrlRequest: URLRequest(
         url: WebUri(generateUrl(bookUrl, cfi, importing: true)),
       ),
-      onLoadStop: (controller, url) async {
-        AppLog.instance.put('WebView loaded: $url');
-        // Add timeout for metadata extraction
-        Future.delayed(const Duration(seconds: 10), () async {
-          if (headlessInAppWebView != null) {
-            AppLog.instance.put('Metadata extraction timeout, disposing webview');
-            await headlessInAppWebView?.dispose();
-            headlessInAppWebView = null;
-          }
-        });
+      onWebViewCreated: (controller) {
         controller.addJavaScriptHandler(
           handlerName: 'onMetadata',
           callback: (args) async {
@@ -154,7 +144,21 @@ class LocalBookService extends BaseService {
           },
         );
       },
+      onLoadStop: (controller, url) async {
+        AppLog.instance.put('WebView loaded: $url');
+      },
+      onLoadError: (controller, url, code, message) {
+        AppLog.instance.put('WebView load error: $url code=$code msg=$message');
+      },
+      onLoadHttpError: (controller, url, statusCode, description) {
+        AppLog.instance.put(
+          'WebView HTTP error: $url status=$statusCode desc=$description',
+        );
+      },
       onConsoleMessage: (controller, consoleMessage) {
+        AppLog.instance.put(
+          'WebView console: ${consoleMessage.messageLevel} ${consoleMessage.message}',
+        );
         if (consoleMessage.messageLevel == ConsoleMessageLevel.ERROR) {
           headlessInAppWebView?.dispose();
           headlessInAppWebView = null;
@@ -226,7 +230,7 @@ class LocalBookService extends BaseService {
       lastReadPosition: provideBook?.lastReadPosition ?? '',
       readingPercentage: provideBook?.readingPercentage ?? 0,
       author: provideBook?.author ?? author,
-      isDeleted: false,
+      isDeleted: 0,
       rating: provideBook?.rating ?? 0.0,
       md5: md5,
       createTime: provideBook?.createTime ?? DateTime.now(),
@@ -234,9 +238,14 @@ class LocalBookService extends BaseService {
       groupId: -1,
     );
 
-    await BookDatasourceImpl().insertBook(book);
-    await headlessInAppWebView?.dispose();
-    headlessInAppWebView = null;
+    try {
+      int insertResult = await BookDatasourceImpl().insertBook(book);
+      await headlessInAppWebView?.dispose();
+      headlessInAppWebView = null;
+    } catch (e) {
+      AppLog.instance.put('Error saving book to database: $e');
+    }
+
     return;
   }
 
