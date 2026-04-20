@@ -29,6 +29,7 @@
         "flutter_inappwebview",
         "flutter_js",
         "flutter_localizations",
+        "flutter_markdown",
         "flutter_reorderable_grid_view",
         "flutter_riverpod",
         "flutter_smart_dialog",
@@ -434,6 +435,13 @@
       ]
     },
     {
+      "name": "flutter_reorderable_grid_view",
+      "version": "5.6.0",
+      "dependencies": [
+        "flutter"
+      ]
+    },
+    {
       "name": "tdesign_flutter",
       "version": "0.0.9",
       "dependencies": [
@@ -537,6 +545,16 @@
         "flutter_rust_bridge",
         "meta",
         "uuid"
+      ]
+    },
+    {
+      "name": "flutter_markdown",
+      "version": "0.7.7+1",
+      "dependencies": [
+        "flutter",
+        "markdown",
+        "meta",
+        "path"
       ]
     },
     {
@@ -2514,10 +2532,11 @@
       ]
     },
     {
-      "name": "flutter_reorderable_grid_view",
-      "version": "5.6.0",
+      "name": "markdown",
+      "version": "7.3.1",
       "dependencies": [
-        "flutter"
+        "args",
+        "meta"
       ]
     }
   ],

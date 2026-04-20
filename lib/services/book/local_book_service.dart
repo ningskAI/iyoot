@@ -1,17 +1,15 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i_reader/core/base/base_service.dart';
-import 'package:i_reader/core/event/app_events.dart';
 import 'package:i_reader/core/webview/generate_url.dart';
 import 'package:i_reader/core/webview/td_headless_webview.dart';
 import 'package:i_reader/data/datasources/impl/book_datasource_impl.dart';
 import 'package:i_reader/data/models/book.dart';
-import 'package:i_reader/providers/event_bus_provider.dart';
 import 'package:i_reader/providers/service_registry.dart';
 import 'package:i_reader/ui/pages/root/root.dart';
 import 'package:i_reader/utils/app_log.dart';
@@ -26,12 +24,19 @@ class LocalBookService extends BaseService {
   static final LocalBookService instance = LocalBookService._init();
   LocalBookService._init();
 
+  static const List<String> supportedExtensions = [
+    "epub",
+    "mobi",
+    "azw3",
+    "fb2",
+    "pdf",
+  ];
+
   Future<List<File>> pickLocalFiles({List<String>? allowedExtensions}) async {
     try {
       final result = await FilePicker.platform.pickFiles(
         type: FileType.custom,
-        allowedExtensions:
-            allowedExtensions ?? ["epub", "mobi", "azw3", "fb2", "pdf"],
+        allowedExtensions: allowedExtensions ?? supportedExtensions,
         allowMultiple: true,
       );
       if (result == null || result.files.isEmpty) {
@@ -55,6 +60,59 @@ class LocalBookService extends BaseService {
     }
   }
 
+  /// 检查并分类导入文件 - 职责单一：只做文件检查分类
+  Future<Map<String, dynamic>> checkImportFilesAdvanced(
+    List<File> fileList,
+  ) async {
+    // 分类：支持和不支持
+    final supportedFiles = _filterSupportedFiles(fileList);
+    final unsupportedFiles = _filterUnsupportedFiles(fileList);
+
+    // 检查重复
+    final filePaths = supportedFiles.map((f) => f.path).toList();
+    final checkResults = await readService(
+      AppServices.md5Service,
+    ).checkImportFiles(filePaths);
+
+    List<File> duplicateFiles = [];
+    List<File> uniqueFiles = [];
+    Map<String, Book> duplicateInfo = {};
+
+    for (int i = 0; i < supportedFiles.length; i++) {
+      final file = supportedFiles[i];
+      final result = checkResults[i];
+
+      if (result.isDuplicate && result.duplicateBook != null) {
+        duplicateFiles.add(file);
+        duplicateInfo[file.path] = result.duplicateBook!;
+      } else {
+        uniqueFiles.add(file);
+      }
+    }
+
+    return {
+      'supportedFiles': supportedFiles,
+      'unsupportedFiles': unsupportedFiles,
+      'uniqueFiles': uniqueFiles,
+      'duplicateFiles': duplicateFiles,
+      'duplicateInfo': duplicateInfo,
+    };
+  }
+
+  List<File> _filterSupportedFiles(List<File> files) {
+    return files.where((file) {
+      final ext = file.path.split('.').last.toLowerCase();
+      return supportedExtensions.contains(ext);
+    }).toList();
+  }
+
+  List<File> _filterUnsupportedFiles(List<File> files) {
+    return files.where((file) {
+      final ext = file.path.split('.').last.toLowerCase();
+      return !supportedExtensions.contains(ext);
+    }).toList();
+  }
+
   Future<File> _copyToTempFile({
     required String sourcePath,
     required String fileName,
@@ -68,22 +126,28 @@ class LocalBookService extends BaseService {
     return File(sourcePath).copy(targetPath);
   }
 
-  Future<void> importBook(File file, WidgetRef ref) async {
-    String? md5 = await readService(
-      AppServices.md5Service,
-    ).calculateFileMd5(file.path);
-    await getBookMetadata(file, md5: md5, ref: ref);
-    ref
-        .read(eventBusProvider)
-        .fire(BookCollectionChangedEvent(reason: 'book_added', bookUrl: ""));
+  Future<void> importBook(File file) async {
+    try {
+      AppLog.instance.put('📌 importBook start: ${file.path}');
+
+      String? md5 = await readService(
+        AppServices.md5Service,
+      ).calculateFileMd5(file.path);
+
+      AppLog.instance.put('✓ MD5 calculated: $md5');
+
+      await getBookMetadata(file, md5: md5);
+
+      AppLog.instance.put('✓ Metadata extracted');
+      AppLog.instance.put('✓ importBook complete');
+    } catch (e, st) {
+      AppLog.instance.put('❌ importBook error: $e');
+      AppLog.instance.put('Stack: $st');
+      rethrow;
+    }
   }
 
-  Future<void> getBookMetadata(
-    File file, {
-    Book? book,
-    String? md5,
-    WidgetRef? ref,
-  }) async {
+  Future<void> getBookMetadata(File file, {Book? book, String? md5}) async {
     final server = readService(AppServices.webserviceManager);
     String serverFileName = await server.setTempFile(file);
 
@@ -91,6 +155,8 @@ class LocalBookService extends BaseService {
 
     String bookUrl = "http://127.0.0.1:${server.port}/$serverFileName";
     AppLog.instance.put("import start: book url: $bookUrl");
+
+    late Completer<void> webviewCompleter;
 
     TDHeadlessWebView webview = TDHeadlessWebView(
       webViewEnvironment: webViewEnvironment,
@@ -109,38 +175,52 @@ class LocalBookService extends BaseService {
         url: WebUri(generateUrl(bookUrl, cfi, importing: true)),
       ),
       onWebViewCreated: (controller) {
+        webviewCompleter = Completer<void>();
         controller.addJavaScriptHandler(
           handlerName: 'onMetadata',
           callback: (args) async {
-            AppLog.instance.put('onMetadata called: $args');
-            Map<String, dynamic> metadata = args[0];
-            String title = metadata['title'] ?? 'Unknown';
-            dynamic authorData = metadata['author'];
-            String author = authorData is String
-                ? authorData
-                : authorData
-                          ?.map(
-                            (author) =>
-                                author is String ? author : author['name'],
-                          )
-                          ?.join(', ') ??
-                      'Unknown';
+            try {
+              AppLog.instance.put('onMetadata called: $args');
+              Map<String, dynamic> metadata = args[0];
+              String title = metadata['title'] ?? 'Unknown';
+              dynamic authorData = metadata['author'];
+              String author = authorData is String
+                  ? authorData
+                  : authorData
+                            ?.map(
+                              (author) =>
+                                  author is String ? author : author['name'],
+                            )
+                            ?.join(', ') ??
+                        'Unknown';
 
-            // base64 cover
-            String cover = metadata['cover'] ?? '';
-            String description = metadata['description'] ?? '';
-            await saveBook(
-              file,
-              title,
-              author,
-              description,
-              md5,
-              cover,
-              provideBook: book,
-            );
-            // Signal completion
-            await headlessInAppWebView?.dispose();
-            headlessInAppWebView = null;
+              // base64 cover
+              String cover = metadata['cover'] ?? '';
+              String description = metadata['description'] ?? '';
+              await saveBook(
+                file,
+                title,
+                author,
+                description,
+                md5,
+                cover,
+                provideBook: book,
+              );
+              AppLog.instance.put('✓ saveBook complete');
+
+              // Signal completion
+              await headlessInAppWebView?.dispose();
+              headlessInAppWebView = null;
+
+              if (!webviewCompleter.isCompleted) {
+                webviewCompleter.complete();
+              }
+            } catch (e) {
+              AppLog.instance.put('❌ onMetadata error: $e');
+              if (!webviewCompleter.isCompleted) {
+                webviewCompleter.completeError(e);
+              }
+            }
           },
         );
       },
@@ -149,6 +229,11 @@ class LocalBookService extends BaseService {
       },
       onLoadError: (controller, url, code, message) {
         AppLog.instance.put('WebView load error: $url code=$code msg=$message');
+        if (!webviewCompleter.isCompleted) {
+          webviewCompleter.completeError(
+            Exception('WebView load error: $message'),
+          );
+        }
       },
       onLoadHttpError: (controller, url, statusCode, description) {
         AppLog.instance.put(
@@ -160,27 +245,27 @@ class LocalBookService extends BaseService {
           'WebView console: ${consoleMessage.messageLevel} ${consoleMessage.message}',
         );
         if (consoleMessage.messageLevel == ConsoleMessageLevel.ERROR) {
-          headlessInAppWebView?.dispose();
-          headlessInAppWebView = null;
-          throw Exception('Webview: ${consoleMessage.message}');
+          if (!webviewCompleter.isCompleted) {
+            webviewCompleter.completeError(
+              Exception('Webview: ${consoleMessage.message}'),
+            );
+          }
         }
       },
     );
 
     await webview.run();
     headlessInAppWebView = webview;
-    // max 30s
-    int count = 0;
-    while (count < 300) {
-      if (headlessInAppWebView == null) {
-        return;
-      }
-      await Future.delayed(const Duration(milliseconds: 100));
-      count++;
+
+    // 等待元数据提取完成或超时（30秒）
+    try {
+      await webviewCompleter.future.timeout(const Duration(seconds: 30));
+    } catch (e) {
+      AppLog.instance.put('WebView timeout or error: $e');
+      await headlessInAppWebView?.dispose();
+      headlessInAppWebView = null;
+      rethrow;
     }
-    await headlessInAppWebView?.dispose();
-    headlessInAppWebView = null;
-    throw Exception('Import: Get book metadata timeout');
   }
 
   Future<void> saveBook(

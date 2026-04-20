@@ -4,8 +4,9 @@ import 'package:i_reader/ui/widgets/home_shell.dart';
 class TDAppbar extends StatelessWidget {
   final String title;
   final String? subtitle;
+  final List<Widget>? actions;
 
-  const TDAppbar({super.key, required this.title, this.subtitle});
+  const TDAppbar({super.key, required this.title, this.subtitle, this.actions});
 
   @override
   Widget build(BuildContext context) {
@@ -48,6 +49,10 @@ class TDAppbar extends StatelessWidget {
               ],
             ),
           ),
+          if (actions != null && actions!.isNotEmpty) ...[
+            const SizedBox(width: 12),
+            ...actions!,
+          ],
         ],
       ),
     );

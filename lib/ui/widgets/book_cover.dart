@@ -35,7 +35,7 @@ class BookCover extends StatelessWidget {
     if (file.existsSync()) {
       child = Container(
         decoration: BoxDecoration(
-          image: DecorationImage(image: FileImage(file), fit: BoxFit.cover),
+          image: DecorationImage(image: FileImage(file), fit: BoxFit.fill),
         ),
       );
     } else {

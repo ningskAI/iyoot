@@ -1,0 +1,172 @@
+import 'package:flutter/material.dart';
+import '../../../utils/app_log.dart';
+
+/// 日志筛选组件
+class AppLogFilterWidget extends StatelessWidget {
+  final String searchQuery;
+  final String filterTag;
+  final List<String> availableTags;
+  final LogLevel filterLevel;
+  final LogCategory filterCategory;
+  final bool showErrorsOnly;
+  final ValueChanged<String> onSearchChanged;
+  final ValueChanged<String> onFilterTagChanged;
+  final ValueChanged<LogLevel> onFilterLevelChanged;
+  final ValueChanged<LogCategory> onFilterCategoryChanged;
+  final ValueChanged<bool> onShowErrorsOnlyChanged;
+
+  const AppLogFilterWidget({
+    super.key,
+    required this.searchQuery,
+    required this.filterTag,
+    required this.availableTags,
+    required this.filterLevel,
+    required this.filterCategory,
+    required this.showErrorsOnly,
+    required this.onSearchChanged,
+    required this.onFilterTagChanged,
+    required this.onFilterLevelChanged,
+    required this.onFilterCategoryChanged,
+    required this.onShowErrorsOnlyChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      color: Theme.of(context).cardColor,
+      child: Column(
+        children: [
+          // 搜索框
+          TextField(
+            decoration: InputDecoration(
+              hintText: '搜索日志...',
+              prefixIcon: const Icon(Icons.search),
+              suffixIcon: searchQuery.isNotEmpty
+                  ? IconButton(
+                      icon: const Icon(Icons.clear),
+                      onPressed: () => onSearchChanged(''),
+                    )
+                  : null,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            ),
+            onChanged: onSearchChanged,
+            textInputAction: TextInputAction.search,
+          ),
+          const SizedBox(height: 8),
+          // 筛选选项
+          Row(
+            children: [
+              Expanded(
+                child: DropdownButtonFormField<String>(
+                  initialValue: filterTag,
+                  decoration: InputDecoration(
+                    labelText: 'Tag',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    contentPadding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  ),
+                  items: availableTags
+                      .map(
+                        (tag) => DropdownMenuItem(
+                          value: tag,
+                          child: Text(AppLogTag.labelOf(tag)),
+                        ),
+                      )
+                      .toList(),
+                  onChanged: (value) {
+                    if (value != null) {
+                      onFilterTagChanged(value);
+                    }
+                  },
+                ),
+              ),
+              const SizedBox(width: 8),
+              // 级别筛选
+              Expanded(
+                child: DropdownButtonFormField<LogLevel>(
+                  initialValue: filterLevel,
+                  decoration: InputDecoration(
+                    labelText: '级别',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    contentPadding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  ),
+                  items: const [
+                    DropdownMenuItem(
+                      value: LogLevel.all,
+                      child: Text('全部'),
+                    ),
+                    DropdownMenuItem(
+                      value: LogLevel.info,
+                      child: Text('信息'),
+                    ),
+                    DropdownMenuItem(
+                      value: LogLevel.debug,
+                      child: Text('调试'),
+                    ),
+                    DropdownMenuItem(
+                      value: LogLevel.warning,
+                      child: Text('警告'),
+                    ),
+                    DropdownMenuItem(
+                      value: LogLevel.error,
+                      child: Text('错误'),
+                    ),
+                  ],
+                  onChanged: (value) {
+                    if (value != null) {
+                      onFilterLevelChanged(value);
+                    }
+                  },
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: DropdownButtonFormField<LogCategory>(
+                  initialValue: filterCategory,
+                  decoration: InputDecoration(
+                    labelText: '分类',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    contentPadding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  ),
+                  items: LogCategory.values
+                      .map(
+                        (category) => DropdownMenuItem(
+                          value: category,
+                          child: Text(category.label),
+                        ),
+                      )
+                      .toList(),
+                  onChanged: (value) {
+                    if (value != null) {
+                      onFilterCategoryChanged(value);
+                    }
+                  },
+                ),
+              ),
+              const SizedBox(width: 8),
+              // 仅显示错误
+              FilterChip(
+                label: const Text('仅错误'),
+                selected: showErrorsOnly,
+                onSelected: onShowErrorsOnlyChanged,
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}

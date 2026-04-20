@@ -53,4 +53,5 @@ class PreferKey {
 
   // ========== Web服务 ==============
   static const String lastServerPort = 'lastServerPort';
+  static const String recordLog = 'recordLog';
 }

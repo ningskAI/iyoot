@@ -458,6 +458,12 @@
       "languageVersion": "3.8"
     },
     {
+      "name": "flutter_markdown",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/flutter_markdown-0.7.7+1",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
+    },
+    {
       "name": "flutter_plugin_android_lifecycle",
       "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/flutter_plugin_android_lifecycle-2.0.33",
       "packageUri": "lib/",
@@ -694,6 +700,12 @@
     {
       "name": "lottie",
       "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/lottie-3.3.2",
+      "packageUri": "lib/",
+      "languageVersion": "3.9"
+    },
+    {
+      "name": "markdown",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/markdown-7.3.1",
       "packageUri": "lib/",
       "languageVersion": "3.9"
     },

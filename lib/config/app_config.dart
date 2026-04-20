@@ -236,4 +236,14 @@ class AppConfig {
   static Future<bool> setLastServerPort(int port) {
     return setInt(PreferKey.lastServerPort, port);
   }
+
+  // ========== 其他设置 ==========
+  /// 记录日志
+  static bool getRecordLog() {
+    return getBool(PreferKey.recordLog, defaultValue: false);
+  }
+
+  static Future<bool> setRecordLog(bool value) {
+    return setBool(PreferKey.recordLog, value);
+  }
 }

@@ -1,5 +1,6 @@
 import 'package:go_router/go_router.dart';
 import 'package:i_reader/main.dart';
+import 'package:i_reader/ui/pages/about/about_page.dart';
 import 'package:i_reader/ui/pages/bookshelf/bookshelf.dart';
 import 'package:i_reader/ui/pages/home/home.dart';
 import 'package:i_reader/ui/pages/mine/mine.dart';
@@ -32,6 +33,11 @@ final router = GoRouter(
       name: "appearance",
       path: "/settings/appearance",
       builder: (_, _) => AppearanceSettingsPage(),
+    ),
+    GoRoute(
+      name: "about",
+      path: "/settings/about",
+      builder: (_, _) => AboutPage(),
     ),
   ],
 );
