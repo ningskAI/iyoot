@@ -5,9 +5,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:i_reader/providers/bookshelf_provider.dart';
 import 'package:i_reader/providers/service_registry.dart';
+import 'package:i_reader/ui/pages/bookshelf/widgets/bookshelf_add_book_sheet.dart';
 import 'package:i_reader/ui/pages/bookshelf/widgets/bookshelf_body.dart';
 import 'package:i_reader/ui/pages/bookshelf/widgets/bookshelf_header.dart';
-import 'package:i_reader/ui/pages/bookshelf/widgets/bookshelf_add_book_sheet_v2.dart';
 import 'package:i_reader/ui/widgets/home_shell.dart';
 
 class BookshelfPage extends ConsumerStatefulWidget {

@@ -279,10 +279,7 @@ class _AboutPageState extends State<AboutPage> {
           icon: Icons.share_outlined,
           onTap: () {
             SharePlus.instance.share(
-              ShareParams(
-                text: 'Legado Flutter - 一个免费开源的小说阅读器',
-                subject: _appName,
-              ),
+              ShareParams(text: 'iReader - 一个免费开源的小说阅读器', subject: _appName),
             );
           },
         ),
@@ -720,28 +717,5 @@ class _AboutPageState extends State<AboutPage> {
     }
   }
 
-  Future<void> _openAppStore() async {
-    try {
-      late final String url;
-      if (Platform.isAndroid) {
-        const packageName = 'com.legado.flutter';
-        url = 'https://play.google.com/store/apps/details?id=$packageName';
-      } else if (Platform.isIOS) {
-        const appId = '1234567890';
-        url = 'https://apps.apple.com/app/id$appId';
-      } else {
-        _showMessage('当前平台不支持应用商店评分');
-        return;
-      }
-
-      final uri = Uri.parse(url);
-      if (await canLaunchUrl(uri)) {
-        await launchUrl(uri, mode: LaunchMode.externalApplication);
-      } else {
-        _showMessage('无法打开应用商店');
-      }
-    } catch (e) {
-      _showMessage('打开应用商店失败: $e');
-    }
-  }
+  Future<void> _openAppStore() async {}
 }

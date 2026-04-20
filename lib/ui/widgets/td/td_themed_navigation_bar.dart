@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i_reader/ui/widgets/td/td_themed_bottom_nav.dart';
-import 'package:tdesign_flutter/tdesign_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:i_reader/data/models/side_bar_tile.dart';
 import 'package:i_reader/providers/ui_state_provider.dart';
@@ -72,52 +71,30 @@ class NextNavigationBar extends ConsumerWidget {
     required bool isSelected,
     required VoidCallback onTap,
   }) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        color: isSelected
-            ? Theme.of(context).primaryColor.withValues(alpha: 0.2)
-            : Theme.of(context).scaffoldBackgroundColor.withValues(alpha: 0.5),
-        border: Border.all(
-          color: isSelected
-              ? Theme.of(context).primaryColor.withValues(alpha: 0.3)
-              : Colors.transparent,
-          width: 1.5,
-        ),
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onTap,
+    return Tooltip(
+      message: item.title,
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+        decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  isSelected ? item.selectedIcon : item.icon,
-                  size: 28,
-                  color: isSelected
-                      ? Theme.of(context).primaryColor
-                      : Colors.grey.shade600,
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  item.title,
-                  textAlign: TextAlign.center,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: 10,
-                    fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-                    color: isSelected
-                        ? Theme.of(context).primaryColor
-                        : Colors.grey.shade600,
-                  ),
-                ),
-              ],
+          color: isSelected
+              ? Theme.of(context).primaryColor.withValues(alpha: 0.15)
+              : Colors.transparent,
+        ),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: onTap,
+            borderRadius: BorderRadius.circular(12),
+            child: Padding(
+              padding: const EdgeInsets.all(12),
+              child: Icon(
+                isSelected ? item.selectedIcon : item.icon,
+                size: 28,
+                color: isSelected
+                    ? Theme.of(context).primaryColor
+                    : Colors.grey,
+              ),
             ),
           ),
         ),

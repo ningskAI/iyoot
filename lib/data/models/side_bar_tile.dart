@@ -1,15 +1,16 @@
+import 'package:flutter/material.dart';
 import 'package:i_reader/core/constants/next_icons.dart';
 import 'package:i_reader/l10n/generated/L10n.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
-class SideBarTiles {
+class SideBarTile {
   final IconData icon;
   final IconData selectedIcon;
   final String title;
   final int id;
   final String pathPrefix;
 
-  SideBarTiles({
+  SideBarTile({
     required this.icon,
     required this.selectedIcon,
     required this.title,
@@ -18,29 +19,29 @@ class SideBarTiles {
   });
 }
 
-List<SideBarTiles> getNavbarTileList(BuildContext context) => [
-  SideBarTiles(
+List<SideBarTile> getNavbarTileList(BuildContext context) => [
+  SideBarTile(
     id: 0,
     pathPrefix: "/home",
     icon: NextIcons.home,
     selectedIcon: NextIcons.homeSelected,
     title: L10n.of(context).navbarRead,
   ),
-  SideBarTiles(
+  SideBarTile(
     id: 1,
     pathPrefix: "/bookshelf",
     icon: NextIcons.bookshelf,
     selectedIcon: NextIcons.bookshelfSelected,
     title: L10n.of(context).navBarBookshelf,
   ),
-  SideBarTiles(
+  SideBarTile(
     id: 4,
     pathPrefix: "/note",
     icon: NextIcons.note,
     selectedIcon: NextIcons.noteSelected,
     title: L10n.of(context).navBarNote,
   ),
-  SideBarTiles(
+  SideBarTile(
     id: 5,
     pathPrefix: "/mine",
     icon: NextIcons.mine,
