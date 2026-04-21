@@ -1,12 +1,12 @@
 import 'package:go_router/go_router.dart';
 import 'package:i_reader/main.dart';
 import 'package:i_reader/ui/pages/about/about_page.dart';
-import 'package:i_reader/ui/pages/bookshelf/bookshelf.dart';
+import 'package:i_reader/ui/pages/bookshelf/bookshelf_page.dart';
 import 'package:i_reader/ui/pages/home/home.dart';
-import 'package:i_reader/ui/pages/mine/mine.dart';
+import 'package:i_reader/ui/pages/mine/mine_page.dart';
 import 'package:i_reader/ui/pages/note/note.dart';
 import 'package:i_reader/ui/pages/root/root.dart';
-import 'package:i_reader/ui/pages/settings/settings.dart';
+import 'package:i_reader/ui/pages/settings/settings_page.dart';
 import 'package:i_reader/ui/pages/settings/subpages/appearance_settings.dart';
 import 'package:i_reader/ui/pages/statistics/statistics.dart';
 import 'package:i_reader/ui/pages/store/store.dart';
