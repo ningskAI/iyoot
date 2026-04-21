@@ -39,7 +39,7 @@ class MinePage extends ConsumerWidget {
                       icon: Remix.settings_line,
                       onTap: () => context.push("/settings"),
                     ),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: 8),
                     TDActionButton(
                       icon: Remix.information_line,
                       onTap: () => context.pushNamed("about"),

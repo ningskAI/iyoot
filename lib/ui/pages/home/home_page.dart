@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i_reader/ui/widgets/home_shell.dart';
 
-class NotePage extends ConsumerStatefulWidget {
-  const NotePage({super.key});
+class HomePage extends ConsumerStatefulWidget {
+  const HomePage({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _NotePageState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _HomePageState();
 }
 
-class _NotePageState extends ConsumerState<NotePage> {
+class _HomePageState extends ConsumerState<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,7 +27,7 @@ class _NotePageState extends ConsumerState<NotePage> {
                     const SizedBox(width: 10),
                     Expanded(
                       child: Text(
-                        '笔记',
+                        '阅读',
                         style: TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.w800,

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i_reader/data/models/book.dart';
 import 'package:i_reader/providers/bookshelf_provider.dart';
 import 'package:i_reader/ui/widgets/book_cover.dart';
+import 'package:i_reader/ui/widgets/book_info.dart';
 
 /// 书架内容区域
 class BookshelfBody extends ConsumerWidget {
@@ -58,7 +59,7 @@ class BooksList extends StatelessWidget {
       scrollController: scrollController,
       children: [
         for (final book in books)
-          BookCover(key: ValueKey(book.id.toString()), book: book),
+          BookInfo(key: ValueKey(book.id.toString()), book: book),
       ],
       builder: (children) => LayoutBuilder(
         builder: (context, constraints) {
@@ -71,9 +72,9 @@ class BooksList extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: crossAxisCount,
-                mainAxisSpacing: 32,
-                crossAxisSpacing: 24,
-                childAspectRatio: 0.7,
+                childAspectRatio: 0.5,
+                mainAxisSpacing: 30,
+                crossAxisSpacing: 20,
               ),
               itemCount: children.length,
               itemBuilder: (context, index) => children[index],
