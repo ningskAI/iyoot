@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:i_reader/ui/modules/mine/mine_read_section_item.dart';
+import 'package:i_reader/ui/pages/mine/widgets/mine_read_section_item.dart';
 
 class MineReadSection extends ConsumerWidget {
   const MineReadSection({super.key});

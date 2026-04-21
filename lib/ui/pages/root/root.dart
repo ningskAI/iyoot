@@ -23,33 +23,13 @@ class _RootState extends State<RootPage> {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final isPadMode = screenWidth > 600;
-
-    if (isPadMode) {
-      // Pad 模式：侧边栏 + 内容
-      return Scaffold(
-        body: Row(
-          children: [
-            // 侧边栏
-            SizedBox(
-              width: 80,
-              child: NextNavigationBar(orientation: Axis.vertical),
-            ),
-            // 内容区域
-            Expanded(child: Container(child: widget.child)),
-          ],
-        ),
-      );
-    } else {
-      // 手机模式：内容 + 底边栏
-      return Scaffold(
-        body: Container(child: widget.child),
-        bottomNavigationBar: Visibility(
-          visible: true,
-          child: NextNavigationBar(orientation: Axis.horizontal),
-        ),
-      );
-    }
+    // 手机模式：内容 + 底边栏
+    return Scaffold(
+      body: Container(child: widget.child),
+      bottomNavigationBar: Visibility(
+        visible: true,
+        child: NextNavigationBar(orientation: Axis.horizontal),
+      ),
+    );
   }
 }

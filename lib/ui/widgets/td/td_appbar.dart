@@ -5,8 +5,15 @@ class TDAppbar extends StatelessWidget {
   final String title;
   final String? subtitle;
   final List<Widget>? actions;
+  final bool showBackButton; // New property to control back button visibility
 
-  const TDAppbar({super.key, required this.title, this.subtitle, this.actions});
+  const TDAppbar({
+    super.key,
+    required this.title,
+    this.subtitle,
+    this.actions,
+    this.showBackButton = true, // Default to true for backward compatibility
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -14,12 +21,13 @@ class TDAppbar extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
       child: Row(
         children: [
-          _buildHeaderButton(
-            context,
-            icon: Icons.arrow_back_ios_new_rounded,
-            onTap: () => Navigator.of(context).pop(),
-          ),
-          const SizedBox(width: 12),
+          if (showBackButton) // Conditionally render the back button
+            _buildHeaderButton(
+              context,
+              icon: Icons.arrow_back_ios_new_rounded,
+              onTap: () => Navigator.of(context).pop(),
+            ),
+          if (showBackButton) const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -32,20 +40,16 @@ class TDAppbar extends StatelessWidget {
                     color: HomePalette.primaryText(context),
                   ),
                 ),
-                subtitle == null
-                    ? const SizedBox()
-                    : Column(
-                        children: [
-                          const SizedBox(height: 2),
-                          Text(
-                            subtitle!,
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: HomePalette.tertiaryText(context),
-                            ),
-                          ),
-                        ],
-                      ),
+                if (subtitle != null) ...[
+                  const SizedBox(height: 2),
+                  Text(
+                    subtitle!,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: HomePalette.tertiaryText(context),
+                    ),
+                  ),
+                ],
               ],
             ),
           ),

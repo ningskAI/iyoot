@@ -3,16 +3,16 @@ import 'package:i_reader/config/app_theme.dart';
 import 'package:i_reader/ui/widgets/card.dart';
 
 class MineReadSectionItem extends StatelessWidget {
-  final String title; // 如：在读
-  final String subTitle; // 如：累计26本
-  final String iconPath; // 图标
+  final String title;
+  final String subTitle;
+  final String iconPath;
 
   const MineReadSectionItem({
     super.key,
     required this.title,
     required this.subTitle,
     required this.iconPath,
-  }); // 再度
+  });
 
   @override
   Widget build(BuildContext context) {
