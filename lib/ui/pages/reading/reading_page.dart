@@ -152,10 +152,10 @@ class ReadingPageState extends ConsumerState<ReadingPage> {
                         child: Container(color: Colors.transparent),
                       ),
                     ),
-                    // 底部操作面板
-                    _buildBottomBar(),
                   ],
                 ),
+                bottomNavigationBar: // 底部操作面板
+                    _buildBottomBar(),
               ),
             ),
           ),
@@ -188,7 +188,7 @@ class ReadingPageState extends ConsumerState<ReadingPage> {
                     backgroundColor: Colors.transparent,
                     builder: (context) {
                       return SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.8,
+                        height: MediaQuery.of(context).size.height * 0.9,
                         child: TocWidget(
                           currentHref: "",
                           onTocTap: (toc) {
