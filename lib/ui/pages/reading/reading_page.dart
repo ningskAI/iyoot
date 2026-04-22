@@ -96,54 +96,53 @@ class ReadingPageState extends ConsumerState<ReadingPage> {
               updateParent: updateState,
             ),
           ),
-
           Offstage(
             offstage: bottomBarOffstage,
             child: SafeArea(
               top: false,
-              child: Stack(
-                children: [
-                  Scaffold(
-                    extendBodyBehindAppBar: true,
-                    appBar: AppBar(
-                      title: Text(
-                        widget.book.title,
-                        style: const TextStyle(fontSize: 18),
-                      ),
-                      actions: [
-                        IconButton(
-                          icon: const Icon(Icons.auto_awesome),
-                          onPressed: () {},
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.bookmark_outline),
-                          onPressed: () {},
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.more_horiz_outlined),
-                          onPressed: () {},
-                        ),
-                        const SizedBox(width: 8),
-                      ],
-                    ),
-                    body: Column(
-                      children: [
-                        Expanded(
-                          child: GestureDetector(
-                            onTap: () {
-                              showOrHideAppBarAndBottomBar(false);
-                            },
-                            behavior: HitTestBehavior.opaque,
-                            onVerticalDragUpdate: (details) {},
-                            onVerticalDragEnd: (details) {},
-                            child: Container(color: Colors.transparent),
-                          ),
-                        ),
-                        _buildBottomBar(),
-                      ],
-                    ),
+              child: Scaffold(
+                backgroundColor: Colors.transparent, // 核心修改：让 Scaffold 背景透明
+                extendBodyBehindAppBar: true,
+                appBar: AppBar(
+                  elevation: 0,
+                  title: Text(
+                    widget.book.title,
+                    style: const TextStyle(fontSize: 16),
                   ),
-                ],
+                  leading: IconButton(
+                    icon: const Icon(Icons.arrow_back),
+                    onPressed: () => Navigator.of(context).pop(),
+                  ),
+                  actions: [
+                    IconButton(
+                      icon: const Icon(Icons.auto_awesome),
+                      onPressed: () {},
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.bookmark_outline),
+                      onPressed: () {},
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.more_horiz_outlined),
+                      onPressed: () {},
+                    ),
+                    const SizedBox(width: 8),
+                  ],
+                ),
+                body: Column(
+                  children: [
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          showOrHideAppBarAndBottomBar(false);
+                        },
+                        behavior: HitTestBehavior.opaque,
+                        child: Container(color: Colors.transparent),
+                      ),
+                    ),
+                    _buildBottomBar(),
+                  ],
+                ),
               ),
             ),
           ),
@@ -153,40 +152,30 @@ class ReadingPageState extends ConsumerState<ReadingPage> {
   }
 
   Widget _buildBottomBar() {
-    return BottomSheet(
-      onClosing: () {},
-      builder: (context) {
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                IconButton(
-                  icon: const Icon(Icons.menu_outlined),
-                  onPressed: () {},
-                ),
-                IconButton(
-                  icon: const Icon(Icons.bookmark_outline),
-                  onPressed: () {},
-                ),
-                IconButton(
-                  icon: const Icon(Icons.data_usage),
-                  onPressed: () {},
-                ),
-                IconButton(
-                  icon: const Icon(Icons.color_lens),
-                  onPressed: () {},
-                ),
-                IconButton(
-                  icon: const Icon(Icons.text_format),
-                  onPressed: () {},
-                ),
-              ],
-            ),
-          ],
-        );
-      },
+    return Container(
+      color: Theme.of(context).bottomSheetTheme.backgroundColor ?? Colors.white,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              IconButton(
+                icon: const Icon(Icons.menu_outlined),
+                onPressed: () {},
+              ),
+              IconButton(
+                icon: const Icon(Icons.bookmark_outline),
+                onPressed: () {},
+              ),
+              IconButton(icon: const Icon(Icons.data_usage), onPressed: () {}),
+              IconButton(icon: const Icon(Icons.color_lens), onPressed: () {}),
+              IconButton(icon: const Icon(Icons.text_format), onPressed: () {}),
+            ],
+          ),
+          SizedBox(height: MediaQuery.of(context).padding.bottom),
+        ],
+      ),
     );
   }
 }
