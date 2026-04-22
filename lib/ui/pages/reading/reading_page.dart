@@ -7,6 +7,7 @@ import 'package:i_reader/data/models/book.dart';
 import 'package:i_reader/data/models/reading_theme.dart';
 import 'package:i_reader/providers/service_registry.dart';
 import 'package:i_reader/ui/pages/reading/widgets/epub_player.dart';
+import 'package:i_reader/ui/pages/reading/widgets/toc_widget.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
 class ReadingPage extends ConsumerStatefulWidget {
@@ -31,7 +32,11 @@ final epubPlayerKey = GlobalKey<EpubPlayerState>();
 
 class ReadingPageState extends ConsumerState<ReadingPage> {
   static const empty = SizedBox.shrink();
+
+  // 控制整个 Overlay 层是否可见
   bool bottomBarOffstage = true;
+  // 独立控制 AppBar 的显示（当点击底部按钮时隐藏）
+  bool _isAppBarVisible = true;
 
   Timer? _awakeTimer;
 
@@ -54,6 +59,7 @@ class ReadingPageState extends ConsumerState<ReadingPage> {
     setState(() {
       readService(AppServices.statusbarService).showStatusBarWithoutResize();
       bottomBarOffstage = false;
+      _isAppBarVisible = true; // 唤起时默认重置 AppBar 为可见
     });
   }
 
@@ -83,6 +89,7 @@ class ReadingPageState extends ConsumerState<ReadingPage> {
     return Scaffold(
       body: Stack(
         children: [
+          // 1. 底层阅读器
           GestureDetector(
             onTap: () {
               showOrHideAppBarAndBottomBar(true);
@@ -96,41 +103,46 @@ class ReadingPageState extends ConsumerState<ReadingPage> {
               updateParent: updateState,
             ),
           ),
+
+          // 2. 控制层 Overlay
           Offstage(
             offstage: bottomBarOffstage,
             child: SafeArea(
               top: false,
               child: Scaffold(
-                backgroundColor: Colors.transparent, // 核心修改：让 Scaffold 背景透明
+                backgroundColor: Colors.transparent,
                 extendBodyBehindAppBar: true,
-                appBar: AppBar(
-                  elevation: 0,
-                  title: Text(
-                    widget.book.title,
-                    style: const TextStyle(fontSize: 16),
-                  ),
-                  leading: IconButton(
-                    icon: const Icon(Icons.arrow_back),
-                    onPressed: () => Navigator.of(context).pop(),
-                  ),
-                  actions: [
-                    IconButton(
-                      icon: const Icon(Icons.auto_awesome),
-                      onPressed: () {},
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.bookmark_outline),
-                      onPressed: () {},
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.more_horiz_outlined),
-                      onPressed: () {},
-                    ),
-                    const SizedBox(width: 8),
-                  ],
-                ),
+                // 根据 _isAppBarVisible 决定是否显示 AppBar
+                appBar: _isAppBarVisible
+                    ? AppBar(
+                        title: Text(
+                          widget.book.title,
+                          style: const TextStyle(fontSize: 16),
+                        ),
+                        leading: IconButton(
+                          icon: const Icon(Icons.arrow_back),
+                          onPressed: () => Navigator.of(context).pop(),
+                        ),
+                        actions: [
+                          IconButton(
+                            icon: const Icon(Icons.auto_awesome),
+                            onPressed: () {},
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.bookmark_outline),
+                            onPressed: () {},
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.more_horiz_outlined),
+                            onPressed: () {},
+                          ),
+                          const SizedBox(width: 8),
+                        ],
+                      )
+                    : null,
                 body: Column(
                   children: [
+                    // 中间透明占位区域：点击关闭整个控制层
                     Expanded(
                       child: GestureDetector(
                         onTap: () {
@@ -140,6 +152,7 @@ class ReadingPageState extends ConsumerState<ReadingPage> {
                         child: Container(color: Colors.transparent),
                       ),
                     ),
+                    // 底部操作面板
                     _buildBottomBar(),
                   ],
                 ),
@@ -160,22 +173,62 @@ class ReadingPageState extends ConsumerState<ReadingPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              IconButton(
-                icon: const Icon(Icons.menu_outlined),
-                onPressed: () {},
+              _buildBottomAction(
+                icon: Icons.menu_outlined,
+                onPressed: () {
+                  // 点击菜单：先隐藏 AppBar，再弹出目录
+                  setState(() => _isAppBarVisible = false);
+
+                  showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    constraints: const BoxConstraints(
+                      minWidth: double.infinity,
+                    ),
+                    backgroundColor: Colors.transparent,
+                    builder: (context) {
+                      return SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.8,
+                        child: TocWidget(
+                          currentHref: "",
+                          onTocTap: (toc) {
+                            Navigator.pop(context);
+                            epubPlayerKey.currentState?.goToHref(toc.href);
+                          },
+                        ),
+                      );
+                    },
+                  );
+                },
               ),
-              IconButton(
-                icon: const Icon(Icons.bookmark_outline),
-                onPressed: () {},
+              _buildBottomAction(
+                icon: Icons.bookmark_outline,
+                onPressed: () => setState(() => _isAppBarVisible = false),
               ),
-              IconButton(icon: const Icon(Icons.data_usage), onPressed: () {}),
-              IconButton(icon: const Icon(Icons.color_lens), onPressed: () {}),
-              IconButton(icon: const Icon(Icons.text_format), onPressed: () {}),
+              _buildBottomAction(
+                icon: Icons.data_usage,
+                onPressed: () => setState(() => _isAppBarVisible = false),
+              ),
+              _buildBottomAction(
+                icon: Icons.color_lens,
+                onPressed: () => setState(() => _isAppBarVisible = false),
+              ),
+              _buildBottomAction(
+                icon: Icons.text_format,
+                onPressed: () => setState(() => _isAppBarVisible = false),
+              ),
             ],
           ),
           SizedBox(height: MediaQuery.of(context).padding.bottom),
         ],
       ),
     );
+  }
+
+  Widget _buildBottomAction({
+    required IconData icon,
+    required VoidCallback onPressed,
+  }) {
+    return IconButton(icon: Icon(icon), onPressed: onPressed);
   }
 }

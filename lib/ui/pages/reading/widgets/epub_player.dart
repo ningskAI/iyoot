@@ -14,7 +14,9 @@ import 'package:i_reader/data/models/bookmark.dart';
 import 'package:i_reader/data/models/font_model.dart';
 import 'package:i_reader/data/models/reading_info.dart';
 import 'package:i_reader/data/models/reading_theme.dart';
+import 'package:i_reader/data/models/toc.dart';
 import 'package:i_reader/l10n/generated/L10n.dart';
+import 'package:i_reader/providers/book_toc.dart';
 import 'package:i_reader/providers/chapter_content_provider.dart';
 import 'package:i_reader/providers/service_registry.dart';
 import 'package:i_reader/ui/pages/reading/reading_page.dart';
@@ -579,9 +581,9 @@ class EpubPlayerState extends ConsumerState<EpubPlayer>
     controller.addJavaScriptHandler(
       handlerName: 'onSetToc',
       callback: (args) {
-        // List<dynamic> t = args[0];
-        // final toc = t.map((i) => TocItem.fromJson(i)).toList();
-        // ref.read(bookTocProvider.notifier).setToc(toc);
+        List<dynamic> t = args[0];
+        final tocList = t.map((i) => Toc.fromJson(i)).toList();
+        ref.read(bookTocProvider.notifier).setToc(tocList);
       },
     );
     controller.addJavaScriptHandler(
