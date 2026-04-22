@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:i_reader/data/models/book.dart';
 import 'package:i_reader/ui/widgets/book_cover.dart';
 
@@ -11,7 +12,7 @@ class BookInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // Handle tap event if needed
+        context.pushNamed("reading", extra: {"book": book, "initialCfi": ""});
       },
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

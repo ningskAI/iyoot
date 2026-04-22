@@ -5,7 +5,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:intl/intl.dart';
 import '../../core/base/base_service.dart';
 import '../../utils/crash_handler.dart';
-import 'local_config_service.dart';
 
 /// 崩溃日志服务
 /// 增强版，集成 CrashHandler 功能

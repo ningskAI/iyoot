@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:i_reader/providers/service_registry.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
 
 /// TDesign 主题适配器
@@ -104,7 +106,7 @@ class TDesignThemeAdapter {
     // 使用 colorMap 安全获取颜色，提供默认值
     final bgColorPage =
         tdTheme.colorMap['bgColorPage'] ??
-        (isDark ? const Color(0xFF1A1A1A) : const Color(0xFFF3F3F3));
+        (isDark ? const Color(0xFF1A1A1A) : const Color(0xFFFFFFFF));
     final bgColorContainer =
         tdTheme.colorMap['bgColorContainer'] ??
         (isDark ? const Color(0xFF2A2A2A) : const Color(0xFFFFFFFF));
@@ -117,6 +119,12 @@ class TDesignThemeAdapter {
 
     // 深色模式使用更亮的主色调
     final primaryColor = tdTheme.brandNormalColor;
+
+    if (isDark) {
+      readService(AppServices.statusbarService).setDarkStatusBar();
+    } else {
+      readService(AppServices.statusbarService).setLightStatusBar();
+    }
 
     return ThemeData(
       useMaterial3: true,
@@ -134,11 +142,20 @@ class TDesignThemeAdapter {
       ),
       scaffoldBackgroundColor: bgColorPage,
       appBarTheme: AppBarTheme(
+        systemOverlayStyle: isDark
+            ? SystemUiOverlayStyle.light
+            : SystemUiOverlayStyle.dark,
         centerTitle: false,
         elevation: 0,
-        backgroundColor: isDark ? bgColorContainer : primaryColor,
-        foregroundColor: isDark ? fontGyColor1 : Colors.white,
-        iconTheme: IconThemeData(color: isDark ? fontGyColor1 : Colors.white),
+        backgroundColor: bgColorContainer,
+        foregroundColor: fontGyColor1,
+        iconTheme: IconThemeData(color: fontGyColor1),
+      ),
+      bottomSheetTheme: BottomSheetThemeData(
+        backgroundColor: bgColorContainer,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+        ),
       ),
       cardTheme: CardThemeData(
         elevation: isDark ? 0 : 2,

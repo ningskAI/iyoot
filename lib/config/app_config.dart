@@ -246,4 +246,21 @@ class AppConfig {
   static Future<bool> setRecordLog(bool value) {
     return setBool(PreferKey.recordLog, value);
   }
+
+  // ========= 阅读主题相关设置 ==========
+  static int getAwakeTime() {
+    return getInt(PreferKey.awakeTime, defaultValue: 5);
+  }
+
+  static Future<bool> setAwakeTime(int minutes) {
+    return setInt(PreferKey.awakeTime, minutes);
+  }
+
+  static void setPageTurningType(int type) {
+    setInt(PreferKey.pageTurningType, type);
+  }
+
+  static int getPageTurningType() {
+    return getInt(PreferKey.pageTurningType, defaultValue: 0);
+  }
 }

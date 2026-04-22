@@ -45,15 +45,15 @@
     },
     {
       "name": "async",
-      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/async-2.13.0",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/async-2.13.1",
       "packageUri": "lib/",
       "languageVersion": "3.4"
     },
     {
       "name": "auto_orientation_v2",
-      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/auto_orientation_v2-2.3.7",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/auto_orientation_v2-2.3.8",
       "packageUri": "lib/",
-      "languageVersion": "2.12"
+      "languageVersion": "2.17"
     },
     {
       "name": "auto_route",
@@ -66,6 +66,18 @@
       "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/auto_route_generator-9.3.1",
       "packageUri": "lib/",
       "languageVersion": "3.3"
+    },
+    {
+      "name": "battery_plus",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/battery_plus-6.2.3",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
+    },
+    {
+      "name": "battery_plus_platform_interface",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/battery_plus_platform_interface-2.0.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.18"
     },
     {
       "name": "boolean_selector",
@@ -123,7 +135,7 @@
     },
     {
       "name": "built_value",
-      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/built_value-8.12.4",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/built_value-8.12.5",
       "packageUri": "lib/",
       "languageVersion": "3.0"
     },
@@ -177,13 +189,13 @@
     },
     {
       "name": "connectivity_plus",
-      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/connectivity_plus-7.0.0",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/connectivity_plus-7.1.1",
       "packageUri": "lib/",
       "languageVersion": "3.2"
     },
     {
       "name": "connectivity_plus_platform_interface",
-      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/connectivity_plus_platform_interface-2.0.1",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/connectivity_plus_platform_interface-2.1.0",
       "packageUri": "lib/",
       "languageVersion": "2.18"
     },
@@ -213,9 +225,9 @@
     },
     {
       "name": "cupertino_icons",
-      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/cupertino_icons-1.0.8",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/cupertino_icons-1.0.9",
       "packageUri": "lib/",
-      "languageVersion": "3.1"
+      "languageVersion": "3.9"
     },
     {
       "name": "custom_lint_core",
@@ -249,7 +261,7 @@
     },
     {
       "name": "device_info_plus",
-      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/device_info_plus-12.3.0",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/device_info_plus-12.4.0",
       "packageUri": "lib/",
       "languageVersion": "3.7"
     },
@@ -465,7 +477,7 @@
     },
     {
       "name": "flutter_plugin_android_lifecycle",
-      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/flutter_plugin_android_lifecycle-2.0.33",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/flutter_plugin_android_lifecycle-2.0.34",
       "packageUri": "lib/",
       "languageVersion": "3.9"
     },
@@ -483,7 +495,7 @@
     },
     {
       "name": "flutter_rust_bridge",
-      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/flutter_rust_bridge-2.11.1",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/flutter_rust_bridge-2.12.0",
       "packageUri": "lib/",
       "languageVersion": "3.4"
     },
@@ -498,6 +510,12 @@
       "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/flutter_staggered_grid_view-0.7.0",
       "packageUri": "lib/",
       "languageVersion": "2.12"
+    },
+    {
+      "name": "flutter_svg",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/flutter_svg-2.2.4",
+      "packageUri": "lib/",
+      "languageVersion": "3.9"
     },
     {
       "name": "flutter_swiper_null_safety",
@@ -573,7 +591,7 @@
     },
     {
       "name": "hooks",
-      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/hooks-1.0.2",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/hooks-1.0.3",
       "packageUri": "lib/",
       "languageVersion": "3.10"
     },
@@ -608,6 +626,12 @@
       "languageVersion": "3.4"
     },
     {
+      "name": "icons_plus",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/icons_plus-5.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.16"
+    },
+    {
       "name": "image",
       "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/image-4.8.0",
       "packageUri": "lib/",
@@ -630,6 +654,18 @@
       "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/io-1.0.5",
       "packageUri": "lib/",
       "languageVersion": "3.4"
+    },
+    {
+      "name": "jni",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/jni-1.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.3"
+    },
+    {
+      "name": "jni_flutter",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/jni_flutter-1.0.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.3"
     },
     {
       "name": "jovial_misc",
@@ -687,7 +723,7 @@
     },
     {
       "name": "logger",
-      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/logger-2.6.2",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/logger-2.7.0",
       "packageUri": "lib/",
       "languageVersion": "2.17"
     },
@@ -699,7 +735,7 @@
     },
     {
       "name": "lottie",
-      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/lottie-3.3.2",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/lottie-3.3.3",
       "packageUri": "lib/",
       "languageVersion": "3.9"
     },
@@ -801,7 +837,7 @@
     },
     {
       "name": "native_toolchain_c",
-      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/native_toolchain_c-0.17.5",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/native_toolchain_c-0.17.6",
       "packageUri": "lib/",
       "languageVersion": "3.10"
     },
@@ -837,7 +873,7 @@
     },
     {
       "name": "package_info_plus",
-      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/package_info_plus-9.0.0",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/package_info_plus-9.0.1",
       "packageUri": "lib/",
       "languageVersion": "3.3"
     },
@@ -854,6 +890,12 @@
       "languageVersion": "3.4"
     },
     {
+      "name": "path_parsing",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/path_parsing-1.1.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.3"
+    },
+    {
       "name": "path_provider",
       "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/path_provider-2.1.5",
       "packageUri": "lib/",
@@ -861,7 +903,7 @@
     },
     {
       "name": "path_provider_android",
-      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/path_provider_android-2.2.22",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/path_provider_android-2.3.1",
       "packageUri": "lib/",
       "languageVersion": "3.9"
     },
@@ -1004,6 +1046,12 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "record_use",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/record_use-0.6.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.10"
+    },
+    {
       "name": "remixicon",
       "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/remixicon-1.4.1",
       "packageUri": "lib/",
@@ -1125,7 +1173,7 @@
     },
     {
       "name": "share_plus",
-      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/share_plus-12.0.1",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/share_plus-12.0.2",
       "packageUri": "lib/",
       "languageVersion": "3.4"
     },
@@ -1137,13 +1185,13 @@
     },
     {
       "name": "shared_preferences",
-      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/shared_preferences-2.5.4",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/shared_preferences-2.5.5",
       "packageUri": "lib/",
       "languageVersion": "3.9"
     },
     {
       "name": "shared_preferences_android",
-      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/shared_preferences_android-2.4.21",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/shared_preferences_android-2.4.23",
       "packageUri": "lib/",
       "languageVersion": "3.9"
     },
@@ -1161,9 +1209,9 @@
     },
     {
       "name": "shared_preferences_platform_interface",
-      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/shared_preferences_platform_interface-2.4.1",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/shared_preferences_platform_interface-2.4.2",
       "packageUri": "lib/",
-      "languageVersion": "3.2"
+      "languageVersion": "3.9"
     },
     {
       "name": "shared_preferences_web",
@@ -1191,9 +1239,9 @@
     },
     {
       "name": "shelf_web_socket",
-      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/shelf_web_socket-2.0.1",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/shelf_web_socket-3.0.0",
       "packageUri": "lib/",
-      "languageVersion": "3.3"
+      "languageVersion": "3.5"
     },
     {
       "name": "signalr_netcore",
@@ -1233,9 +1281,9 @@
     },
     {
       "name": "sqflite",
-      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/sqflite-2.4.2",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/sqflite-2.4.2+1",
       "packageUri": "lib/",
-      "languageVersion": "3.7"
+      "languageVersion": "3.10"
     },
     {
       "name": "sqflite_android",
@@ -1245,9 +1293,9 @@
     },
     {
       "name": "sqflite_common",
-      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/sqflite_common-2.5.6",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/sqflite_common-2.5.6+1",
       "packageUri": "lib/",
-      "languageVersion": "3.8"
+      "languageVersion": "3.10"
     },
     {
       "name": "sqflite_darwin",
@@ -1388,6 +1436,12 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "upower",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/upower-0.7.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.14"
+    },
+    {
       "name": "uri_parser",
       "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/uri_parser-3.0.2",
       "packageUri": "lib/",
@@ -1401,7 +1455,7 @@
     },
     {
       "name": "url_launcher_android",
-      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/url_launcher_android-6.3.28",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/url_launcher_android-6.3.29",
       "packageUri": "lib/",
       "languageVersion": "3.9"
     },
@@ -1448,6 +1502,24 @@
       "languageVersion": "3.0"
     },
     {
+      "name": "vector_graphics",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/vector_graphics-1.1.21",
+      "packageUri": "lib/",
+      "languageVersion": "3.9"
+    },
+    {
+      "name": "vector_graphics_codec",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/vector_graphics_codec-1.1.13",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
+    },
+    {
+      "name": "vector_graphics_compiler",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/vector_graphics_compiler-1.2.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.9"
+    },
+    {
       "name": "vector_math",
       "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/vector_math-2.2.0",
       "packageUri": "lib/",
@@ -1455,27 +1527,27 @@
     },
     {
       "name": "vm_service",
-      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/vm_service-15.0.2",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/vm_service-15.1.0",
       "packageUri": "lib/",
       "languageVersion": "3.5"
     },
     {
       "name": "volume_controller",
-      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/volume_controller-3.4.2",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/volume_controller-3.4.4",
       "packageUri": "lib/",
       "languageVersion": "3.0"
     },
     {
       "name": "wakelock_plus",
-      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/wakelock_plus-1.4.0",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/wakelock_plus-1.5.2",
       "packageUri": "lib/",
-      "languageVersion": "3.4"
+      "languageVersion": "3.10"
     },
     {
       "name": "wakelock_plus_platform_interface",
-      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/wakelock_plus_platform_interface-1.3.0",
+      "rootUri": "file:///D:/android/flutter_cache/hosted/pub.flutter-io.cn/wakelock_plus_platform_interface-1.4.0",
       "packageUri": "lib/",
-      "languageVersion": "3.4"
+      "languageVersion": "3.10"
     },
     {
       "name": "watcher",

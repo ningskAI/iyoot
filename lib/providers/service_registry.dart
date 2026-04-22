@@ -6,6 +6,7 @@ import 'package:i_reader/services/book/local_book_service.dart';
 import 'package:i_reader/services/crash_log_service.dart';
 import 'package:i_reader/services/local_config_service.dart';
 import 'package:i_reader/services/md5_service.dart';
+import 'package:i_reader/services/statusbar/statusbar_service.dart';
 import 'package:i_reader/services/web/web_service_manager.dart';
 
 ProviderContainer _appProviderContainer = ProviderContainer();
@@ -40,5 +41,8 @@ abstract final class AppServices {
   });
   static final localConfigService = Provider<LocalConfigService>((ref) {
     return LocalConfigService.instance;
+  });
+  static final statusbarService = Provider<StatusbarService>((ref) {
+    return StatusbarService.instance;
   });
 }

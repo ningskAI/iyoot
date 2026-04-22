@@ -13,10 +13,11 @@ class SettingsPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final theme = Theme.of(context);
-    return HomePageBackground(
-      glowColors: const [Color(0xFF4F7CFF), Color(0xFF7C5CFF)],
-      child: Scaffold(
-        body: SafeArea(
+    return Scaffold(
+      backgroundColor: Colors.transparent,
+      body: HomePageBackground(
+        glowColors: const [Color(0xFFFFFFFF), Color(0xFF7C5CFF)],
+        child: SafeArea(
           bottom: false,
           child: Column(
             children: [
