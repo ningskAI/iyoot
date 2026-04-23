@@ -148,7 +148,7 @@ class EpubPlayerState extends ConsumerState<EpubPlayer>
     textColor = readTheme.textColor;
     backgroundColor = readTheme.backgroundColor;
 
-    String bc = ColorUtils.convertDartColorToJs(readTheme.backgroundColor);
+    String bc = ColorUtils.convertDartColorToJs(Colors.transparent.toString());
     String tc = ColorUtils.convertDartColorToJs(readTheme.textColor);
 
     webViewController.evaluateJavascript(
@@ -528,7 +528,7 @@ class EpubPlayerState extends ConsumerState<EpubPlayer>
   void getThemeColor() {
     // TODO
     textColor = "FF343434";
-    backgroundColor = "FFFBFBF3";
+    backgroundColor = "00FFFFFF";
   }
 
   Future<void> setHandler(InAppWebViewController controller) async {
@@ -1023,13 +1023,23 @@ class EpubPlayerState extends ConsumerState<EpubPlayer>
   Widget build(BuildContext context) {
     String uri = Uri.encodeComponent(widget.book.fileFullPath);
     String url = 'http://127.0.0.1:${AppConfig.getLastServerPort()}/book/$uri';
+    String bgImg =
+        "http://127.0.0.1:${AppConfig.getLastServerPort()}/bgimg/assets/assets/images/bgimg/bg2.jpg";
     String initialCfi = widget.cfi ?? widget.book.lastReadPosition;
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
-          buildWebviewWithIOSWorkaround(context, url, initialCfi),
+          Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: NetworkImage(bgImg),
+                fit: BoxFit.fill,
+              ),
+            ),
+            child: buildWebviewWithIOSWorkaround(context, url, initialCfi),
+          ),
           readingInfoWidget(),
           if (showHistory) _buildHistoryCapsule(),
         ],
