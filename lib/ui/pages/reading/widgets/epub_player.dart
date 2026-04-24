@@ -17,8 +17,12 @@ import 'package:i_reader/data/models/reading_theme.dart';
 import 'package:i_reader/data/models/toc.dart';
 import 'package:i_reader/l10n/generated/L10n.dart';
 import 'package:i_reader/providers/book_toc.dart';
+import 'package:i_reader/providers/bookmark_provider.dart';
+import 'package:i_reader/providers/bookshelf_provider.dart';
 import 'package:i_reader/providers/chapter_content_provider.dart';
+import 'package:i_reader/providers/repository_providers.dart';
 import 'package:i_reader/providers/service_registry.dart';
+import 'package:i_reader/services/statusbar/statusbar_service.dart';
 import 'package:i_reader/ui/pages/reading/reading_page.dart';
 import 'package:i_reader/utils/app_log.dart';
 import 'package:i_reader/utils/color_utils.dart';
@@ -249,7 +253,7 @@ class EpubPlayerState extends ConsumerState<EpubPlayer>
     );
   }
 
-  void addBookmark(BookmarkModel bookmark) {
+  void addBookmark(BookNote bookmark) {
     webViewController.evaluateJavascript(
       source:
           '''
@@ -511,11 +515,13 @@ class EpubPlayerState extends ConsumerState<EpubPlayer>
   }
 
   Future<void> renderAnnotations(InAppWebViewController controller) async {
-    List<BookNote> annotationList = await BookNoteDatasourceImpl()
+    List<BookNote> annotationList = await ref
+        .read(bookNoteRepositoryProvider)
         .selectBookNotesByBookId(widget.book.id);
     String allAnnotations = jsonEncode(
       annotationList.map((e) => e.toJson()).toList(),
     ).replaceAll('\'', '\\\'');
+
     controller.evaluateJavascript(
       source:
           '''
@@ -526,7 +532,6 @@ class EpubPlayerState extends ConsumerState<EpubPlayer>
   }
 
   void getThemeColor() {
-    // TODO
     textColor = "FF343434";
     backgroundColor = "00FFFFFF";
   }
@@ -544,9 +549,6 @@ class EpubPlayerState extends ConsumerState<EpubPlayer>
       callback: (args) {
         Map<String, dynamic> location = args[0];
         if (cfi == location['cfi']) return;
-        // if (chapterHref != location['chapterHref']) {
-        //   refreshToc();
-        // }
         setState(() {
           cfi = location['cfi'] ?? '';
           percentage =
@@ -709,7 +711,34 @@ class EpubPlayerState extends ConsumerState<EpubPlayer>
     controller.addJavaScriptHandler(
       handlerName: 'handleBookmark',
       callback: (args) async {
-        // TODO
+        AppLog.instance.put("handleBookMark");
+        Map<String, dynamic> detail = args[0]['detail'];
+        bool remove = args[0]['remove'];
+        String cfi = detail['cfi'] ?? '';
+        double percentage = double.parse(detail['percentage'].toString());
+        String content = detail['content'];
+        if (remove) {
+          ref.read(bookmarkProvider.notifier).removeBookmark(cfi: cfi);
+          bookmarkCfi = '';
+          bookmarkExists = false;
+        } else {
+          final bookmark = BookNote(
+            bookId: widget.book.id,
+            cfi: cfi,
+            content: content,
+            type: 'bookmark',
+            chapter: chapterTitle,
+            color: percentage.toString(),
+            createTime: DateTime.now(),
+            updateTime: DateTime.now(),
+          );
+          final realBookmark = await ref
+              .read(bookmarkProvider.notifier)
+              .addBookmark(bookmark);
+          bookmarkCfi = cfi;
+          bookmarkExists = true;
+          addBookmark(realBookmark);
+        }
       },
     );
   }
@@ -754,11 +783,18 @@ class EpubPlayerState extends ConsumerState<EpubPlayer>
     super.didChangeDependencies();
   }
 
-  Future<void> saveReadingProgress() async {}
+  Future<void> saveReadingProgress() async {
+    if (cfi == '' || widget.cfi != null) return;
+    Book book = widget.book.copyWith(
+      lastReadPosition: cfi,
+      readingPercentage: percentage,
+    );
+    await ref.read(bookshelfBooksProvider.notifier).updateBook(book);
+  }
 
   @override
   void dispose() {
-    readService(AppServices.statusbarService).hideStatusBar();
+    StatusbarService.instance.hideStatusBar();
     _scrollDebounceTimer?.cancel();
     _animationController?.dispose();
     saveReadingProgress();
@@ -770,6 +806,7 @@ class EpubPlayerState extends ConsumerState<EpubPlayer>
     supportZoom: false,
     transparentBackground: true,
     useHybridComposition: true,
+    javaScriptEnabled: true,
   );
 
   bool get isDarkMode => AppConfig.getThemeMode() == 2;
@@ -1024,7 +1061,7 @@ class EpubPlayerState extends ConsumerState<EpubPlayer>
     String uri = Uri.encodeComponent(widget.book.fileFullPath);
     String url = 'http://127.0.0.1:${AppConfig.getLastServerPort()}/book/$uri';
     String bgImg =
-        "http://127.0.0.1:${AppConfig.getLastServerPort()}/bgimg/assets/assets/images/bgimg/bg2.jpg";
+        "http://127.0.0.1:${AppConfig.getLastServerPort()}/bgimg/assets/assets/images/bgimg/bg1.jpg";
     String initialCfi = widget.cfi ?? widget.book.lastReadPosition;
 
     return Scaffold(

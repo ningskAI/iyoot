@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i_reader/config/app_config.dart';
 import 'package:i_reader/data/models/toc.dart';
 import 'package:i_reader/providers/book_toc.dart';
 
@@ -20,13 +21,11 @@ class _TocWidgetState extends ConsumerState<TocWidget> {
   @override
   Widget build(BuildContext context) {
     final tocList = ref.watch(bookTocProvider);
-
-    // 背景色参考图片中的浅绿色调，这里使用主题色或透明
-    final backgroundColor = const Color(0xFFD4E4C5); // 类似图片中的浅绿
-
+    String bgImg =
+        "http://127.0.0.1:${AppConfig.getLastServerPort()}/bgimg/assets/assets/images/bgimg/bg1.jpg";
     return Container(
       decoration: BoxDecoration(
-        color: backgroundColor,
+        image: DecorationImage(image: NetworkImage(bgImg), fit: BoxFit.fill),
         borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
       ),
       child: Column(
@@ -54,13 +53,17 @@ class _TocWidgetState extends ConsumerState<TocWidget> {
                       color: Colors.white.withOpacity(0.3),
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    child: TextField(
-                      controller: _searchController,
-                      decoration: const InputDecoration(
-                        hintText: '版本书',
-                        prefixIcon: Icon(Icons.search, size: 20),
-                        border: InputBorder.none,
-                        contentPadding: EdgeInsets.symmetric(vertical: 8),
+                    child: Center(
+                      child: TextField(
+                        controller: _searchController,
+                        decoration: const InputDecoration(
+                          hintText: '版本书',
+                          prefixIcon: Icon(Icons.search, size: 20),
+                          border: InputBorder.none,
+                          isDense: true,
+                          contentPadding: EdgeInsets.symmetric(horizontal: 8),
+                        ),
+                        textAlignVertical: TextAlignVertical.center,
                       ),
                     ),
                   ),
@@ -160,7 +163,7 @@ class _TocWidgetState extends ConsumerState<TocWidget> {
                   ),
                 ),
                 Text(
-                  '${toc.startPage + 1}',
+                  '${toc.percentage}',
                   style: const TextStyle(fontSize: 12, color: Colors.black45),
                 ),
               ],

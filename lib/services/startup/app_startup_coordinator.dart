@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:i_reader/config/app_config.dart';
 import 'package:i_reader/data/database/app_database.dart';
+import 'package:i_reader/services/web/web_service_manager.dart';
 import 'package:i_reader/utils/app_log.dart';
 import 'package:i_reader/utils/file_utils.dart';
 import 'package:i_reader/utils/startup_performance_monitor.dart';
@@ -32,6 +33,7 @@ class AppStartupCoordinator {
         AppConfig.preload();
         await FileUtils.initBasePath();
         await AppDatabase.instance.database;
+        await WebServiceManager.instance.start();
         await Future.wait([
           AppConfig.waitUntilReady(timeout: const Duration(milliseconds: 400)),
         ]);

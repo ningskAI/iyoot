@@ -58,4 +58,5 @@ class PreferKey {
   // ========= 阅读主题相关设置 ==========
   static const String awakeTime = 'awakeTime';
   static const String pageTurningType = 'pageTurningType';
+  static const String bookStyle = 'bookStyle';
 }

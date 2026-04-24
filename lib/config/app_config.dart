@@ -1,4 +1,5 @@
 import 'package:i_reader/core/constants/prefer_key.dart';
+import 'package:i_reader/data/models/book_style.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AppConfig {
@@ -248,6 +249,17 @@ class AppConfig {
   }
 
   // ========= 阅读主题相关设置 ==========
+
+  static Future<bool> setBookStyle(BookStyle bookStyle) {
+    return setString(PreferKey.bookStyle, bookStyle.toString());
+  }
+
+  static BookStyle getBookStyle() {
+    String bookStyleJson = getString(PreferKey.bookStyle);
+    if (bookStyleJson == "") return BookStyle();
+    return BookStyle.fromJson(bookStyleJson);
+  }
+
   static int getAwakeTime() {
     return getInt(PreferKey.awakeTime, defaultValue: 5);
   }

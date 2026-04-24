@@ -28,10 +28,13 @@ class BookNoteDatasourceImpl extends BookNoteDatasource {
       bookNote.bookId,
     );
     if (duplicates.isNotEmpty) {
-      await updateBookNoteById(bookNote.copyWith(id: duplicates.last.id));
+      bookNote.id = duplicates.last.id;
+      await updateBookNoteById(bookNote);
       return bookNote.id!;
     }
-    return insert("tb_notes", bookNote.toJson().remove('id'));
+    final json = bookNote.toJson();
+    json.remove('id');
+    return insert("tb_notes", json);
   }
 
   @override

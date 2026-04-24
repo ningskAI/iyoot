@@ -49,37 +49,6 @@ class AppDatabase {
       )
       ''';
 
-    const createThemeSQL = '''
-      CREATE TABLE tb_themes (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        backgroundColor TEXT,
-        textColor TEXT,
-        backgroundImagePath TEXT
-      )
-      ''';
-
-    const createStyleSQL = '''
-      CREATE TABLE tb_styles (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        fontSize REAL,
-        fontFamily TEXT,
-        lineHeight REAL,
-        letterSpacing REAL,
-        wordSpacing REAL,
-        paragraphSpacing REAL,
-        sideMargin REAL,
-        topMargin REAL,
-        bottomMargin REAL
-      )
-      ''';
-
-    const primaryTheme1 = '''
-      INSERT INTO tb_themes (backgroundColor, textColor, backgroundImagePath) VALUES ('fffbfbf3', 'ff343434', '')
-      ''';
-    const primaryTheme2 = '''
-      INSERT INTO tb_themes (backgroundColor, textColor, backgroundImagePath) VALUES ('ff040404', 'fffeffeb', '')
-      ''';
-
     const createNoteSQL = '''
       CREATE TABLE tb_notes (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -117,11 +86,7 @@ class AppDatabase {
       ''';
     await db.execute(createBookSQL);
     await db.execute(createNoteSQL);
-    await db.execute(createThemeSQL);
-    await db.execute(createStyleSQL);
     await db.execute(createReadingTimeSQL);
-    await db.execute(primaryTheme1);
-    await db.execute(primaryTheme2);
     await db.execute(createGroupSQL);
   }
 }

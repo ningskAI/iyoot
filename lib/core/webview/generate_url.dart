@@ -26,22 +26,7 @@ String generateUrl(
     textColor: "FF343434",
     backgroundImagePath: "",
   );
-  bookStyle ??= BookStyle(
-    fontSize: 1.4,
-    fontFamily: 'Arial',
-    fontWeight: 400,
-    lineHeight: 1.8,
-    letterSpacing: 0.0,
-    wordSpacing: 0.0,
-    paragraphSpacing: 1.0,
-    sideMargin: 6.0,
-    topMargin: 90.0,
-    bottomMargin: 50.0,
-    indent: 0,
-    maxColumnCount: 0,
-    headingFontSize: 1.0,
-    columnThreshold: 720.0,
-  );
+  bookStyle ??= AppConfig.getBookStyle();
   textColor ??= readTheme.textColor;
   final font = FontModel(
     label: "测试",
@@ -58,7 +43,8 @@ String generateUrl(
   backgroundColor = ColorUtils.convertDartColorToJs(backgroundColor);
 
   // Get effective background image URL using the new method
-  String bgimgUrl = "";
+  String bgimgUrl =
+      "http://127.0.0.1:${AppConfig.getLastServerPort()}/bgimg/assets/assets/images/bgimg/bg1.jpg";
   // const importing = $importing
   // const url = '${replaceSingleQuote(url)}'
   // let initialCfi = '${replaceSingleQuote(cfi)}'
@@ -113,7 +99,7 @@ String generateUrl(
     'customCSSEnabled': true,
     'useBookStyles': true,
     'headingFontSize': bookStyle.headingFontSize,
-    'codeHighlightTheme': "default",
+    'codeHighlightTheme': "material-dark",
   };
 
   Map<String, dynamic> readingRules = {};

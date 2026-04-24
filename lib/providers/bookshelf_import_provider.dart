@@ -5,6 +5,7 @@ import 'package:i_reader/core/event/app_events.dart';
 import 'package:i_reader/data/models/book.dart';
 import 'package:i_reader/providers/event_bus_provider.dart';
 import 'package:i_reader/providers/service_registry.dart';
+import 'package:i_reader/services/book/local_book_service.dart';
 import 'package:i_reader/utils/app_log.dart';
 
 /// 导入文件检查结果
@@ -89,9 +90,9 @@ class ImportFileCheckNotifier extends StateNotifier<ImportFileCheckState> {
   Future<void> checkFiles(List<File> files) async {
     state = state.copyWith(isLoading: true, error: null);
     try {
-      final result = await readService(
-        AppServices.localBookService,
-      ).checkImportFilesAdvanced(files);
+      final result = await LocalBookService.instance.checkImportFilesAdvanced(
+        files,
+      );
 
       state = state.copyWith(
         isLoading: false,

@@ -42,4 +42,17 @@ class BookshelfNotifier extends AsyncNotifier<List<Book>> {
       book,
     ]);
   }
+
+  Future<void> updateBook(Book book) async {
+    await ref.read(bookRepositoryProvider).updateBook(book);
+    final current = state.valueOrNull;
+    if (current == null) {
+      await reload();
+      return;
+    }
+    state = AsyncValue.data([
+      ...current.where((item) => item.id != book.id),
+      book,
+    ]);
+  }
 }

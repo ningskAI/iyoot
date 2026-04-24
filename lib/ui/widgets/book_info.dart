@@ -12,7 +12,10 @@ class BookInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        context.pushNamed("reading", extra: {"book": book, "initialCfi": ""});
+        context.pushNamed(
+          "reading",
+          extra: {"book": book, "initialCfi": book.lastReadPosition},
+        );
       },
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

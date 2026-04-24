@@ -90,18 +90,13 @@ class ReadingPageState extends ConsumerState<ReadingPage> {
       body: Stack(
         children: [
           // 1. 底层阅读器
-          GestureDetector(
-            onTap: () {
-              showOrHideAppBarAndBottomBar(true);
-            },
-            child: EpubPlayer(
-              key: epubPlayerKey,
-              showOrHideAppBarAndBottomBar: showOrHideAppBarAndBottomBar,
-              book: widget.book,
-              onLoadEnd: onLoadEnd,
-              initialThemes: widget.initialThemes,
-              updateParent: updateState,
-            ),
+          EpubPlayer(
+            key: epubPlayerKey,
+            showOrHideAppBarAndBottomBar: showOrHideAppBarAndBottomBar,
+            book: widget.book,
+            onLoadEnd: onLoadEnd,
+            initialThemes: widget.initialThemes,
+            updateParent: updateState,
           ),
 
           // 2. 控制层 Overlay

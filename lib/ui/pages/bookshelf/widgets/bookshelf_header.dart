@@ -36,8 +36,6 @@ class BookshelfHeader extends StatelessWidget {
               ),
               HeaderActionButton(icon: Icons.search_rounded, onTap: onSearch),
               const SizedBox(width: 10),
-              HeaderActionButton(icon: Icons.cloud_sync, onTap: onSync),
-              const SizedBox(width: 10),
               _buildMenuButton(),
             ],
           ),
@@ -53,6 +51,7 @@ class BookshelfHeader extends StatelessWidget {
       position: PopupMenuPosition.under,
       onSelected: onMenuSelected,
       itemBuilder: (context) => [
+        _buildMenuItem("sync", Icons.cloud_sync_outlined, "同步书籍"),
         _buildMenuItem("add_local", Icons.add_box_outlined, "添加本地"),
         _buildMenuItem("add_remote", Icons.download_outlined, "添加远程"),
         _buildMenuItem("sort_book", Icons.sort_outlined, "书籍排序"),
