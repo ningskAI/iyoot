@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:i_reader/data/models/book.dart';
 import 'package:i_reader/data/models/book_extra.dart';
 import 'package:i_reader/providers/book_statistics_provider.dart';
@@ -126,8 +127,11 @@ class _NotePageState extends ConsumerState<NotePage> {
       fontSize: 12,
       color: Colors.grey,
     );
-    return GestureDetector(
-      onTap: () {},
+    return InkWell(
+      onTap: () {
+        // 跳转到书籍笔记详情页
+        context.pushNamed("book_notes", extra: {"bookExtra": bookExtra});
+      },
       child: CardView(
         child: Padding(
           padding: EdgeInsetsGeometry.all(10),

@@ -30,15 +30,15 @@ class BookNote {
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'book_id': bookId,
+      'bookId': bookId,
       'content': content,
       'cfi': cfi,
       'chapter': chapter,
       'type': type,
       'color': color,
-      'reader_note': readerNote,
-      'create_time': createTime?.toIso8601String(),
-      'update_time': updateTime.toIso8601String(),
+      'readerNote': readerNote,
+      'createTime': createTime?.toIso8601String(),
+      'updateTime': updateTime.toIso8601String(),
     };
   }
 
@@ -53,8 +53,8 @@ class BookNote {
   }
 
   factory BookNote.fromJson(Map<String, dynamic> map) {
-    final createTimeString = map['create_time'] as String?;
-    final updateTimeString = map['update_time'] as String?;
+    final createTimeString = map['createTime'] as String?;
+    final updateTimeString = map['updateTime'] as String?;
 
     return BookNote(
       id: map['id'] as int?,

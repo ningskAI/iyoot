@@ -3,9 +3,10 @@ import 'package:i_reader/data/models/book_note.dart';
 
 class BookNoteDatasourceImpl extends BookNoteDatasource {
   static const List<String> annotationTypes = [
-    'highlight',
+    'note',
     'underline',
     'bookmark',
+    'highlight',
   ];
 
   static String get _typeFilter =>
@@ -32,7 +33,7 @@ class BookNoteDatasourceImpl extends BookNoteDatasource {
       await updateBookNoteById(bookNote);
       return bookNote.id!;
     }
-    final json = bookNote.toJson();
+    final json = bookNote.toMap();
     json.remove('id');
     return insert("tb_notes", json);
   }
@@ -41,7 +42,7 @@ class BookNoteDatasourceImpl extends BookNoteDatasource {
   Future<void> updateBookNoteById(BookNote bookNote) async {
     await update(
       "tb_notes",
-      bookNote.toJson(),
+      bookNote.toMap(),
       where: 'id = ?',
       whereArgs: [bookNote.id],
     );
@@ -154,7 +155,7 @@ class BookNoteDatasourceImpl extends BookNoteDatasource {
       mapper: BookNote.fromJson,
       where: 'bookId = ? AND $_typeFilter',
       whereArgs: [bookId],
-      orderBy: 'updateTime DESC',
+      orderBy: 'chapter,cfi',
     );
   }
 

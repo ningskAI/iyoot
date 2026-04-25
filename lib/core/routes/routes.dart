@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:i_reader/data/models/book.dart';
+import 'package:i_reader/data/models/book_extra.dart';
 import 'package:i_reader/main.dart';
 import 'package:i_reader/ui/pages/about/about_page.dart';
 import 'package:i_reader/ui/pages/bookshelf/bookshelf_page.dart';
 import 'package:i_reader/ui/pages/home/home_page.dart';
 import 'package:i_reader/ui/pages/mine/mine_page.dart';
+import 'package:i_reader/ui/pages/note/book_notes_page.dart';
 import 'package:i_reader/ui/pages/note/note_page.dart';
 import 'package:i_reader/ui/pages/reading/reading_page.dart';
 import 'package:i_reader/ui/pages/root/root.dart';
@@ -102,6 +104,15 @@ final router = GoRouter(
           initialCfi: initialCfi,
           initialThemes: [],
         );
+      },
+    ),
+    GoRoute(
+      name: "book_notes",
+      path: "/note/book_notes",
+      builder: (_, state) {
+        final extra = state.extra as Map;
+        final book = extra['bookExtra'] as BookExtra;
+        return BookNotesPage(book: book);
       },
     ),
   ],
