@@ -6,7 +6,7 @@ import 'package:i_reader/ui/pages/about/about_page.dart';
 import 'package:i_reader/ui/pages/bookshelf/bookshelf_page.dart';
 import 'package:i_reader/ui/pages/home/home_page.dart';
 import 'package:i_reader/ui/pages/mine/mine_page.dart';
-import 'package:i_reader/ui/pages/note/note.dart';
+import 'package:i_reader/ui/pages/note/note_page.dart';
 import 'package:i_reader/ui/pages/reading/reading_page.dart';
 import 'package:i_reader/ui/pages/root/root.dart';
 import 'package:i_reader/ui/pages/settings/settings_page.dart';

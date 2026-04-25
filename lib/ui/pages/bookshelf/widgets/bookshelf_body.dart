@@ -3,7 +3,6 @@ import 'package:flutter_reorderable_grid_view/widgets/reorderable_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i_reader/data/models/book.dart';
 import 'package:i_reader/providers/bookshelf_provider.dart';
-import 'package:i_reader/ui/widgets/book_cover.dart';
 import 'package:i_reader/ui/widgets/book_info.dart';
 
 /// 书架内容区域

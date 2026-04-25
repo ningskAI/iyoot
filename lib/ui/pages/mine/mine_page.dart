@@ -58,8 +58,6 @@ class MinePage extends ConsumerWidget {
                       MineReadRankSection(),
                       const SizedBox(height: 20),
                       MineReadSection(),
-                      const SizedBox(height: 20),
-                      MineBooklistSection(),
                       const SizedBox(height: 30),
                       _buildFooter(context),
                     ],

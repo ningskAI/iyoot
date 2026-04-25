@@ -1,8 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:i_reader/config/app_config.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
-
-import '../../config/app_config.dart';
 
 /// 电子墨水屏 (EInk) TDesign 主题配置
 /// EInk 屏幕需要特殊处理：无圆角、无阴影、高对比度
@@ -36,11 +35,8 @@ class EInkTDTheme {
           'fontBodyMedium': {'size': 14, 'lineHeight': 22},
           'fontBodySmall': {'size': 12, 'lineHeight': 20},
         },
-        'radius': {
-          'default': 0,
-          'round': 0,
-        },
-      }
+        'radius': {'default': 0, 'round': 0},
+      },
     };
 
     return TDThemeData.fromJson('eink', jsonEncode(themeJson)) ??
@@ -97,7 +93,8 @@ class EInkTDTheme {
     if (isEInkMode) {
       return Colors.white;
     }
-    return TDTheme.of(context).colorMap['bgColorPage'] ?? const Color(0xFFF3F3F3);
+    return TDTheme.of(context).colorMap['bgColorPage'] ??
+        const Color(0xFFF3F3F3);
   }
 
   /// 根据当前模式获取前景色
@@ -116,7 +113,9 @@ class EInkTDTheme {
         border: Border.all(color: Colors.black12, width: 1),
       );
     }
-    final bgColorContainer = TDTheme.of(context).colorMap['bgColorContainer'] ?? const Color(0xFFFFFFFF);
+    final bgColorContainer =
+        TDTheme.of(context).colorMap['bgColorContainer'] ??
+        const Color(0xFFFFFFFF);
     return BoxDecoration(
       color: bgColorContainer,
       borderRadius: BorderRadius.circular(8),
@@ -147,8 +146,9 @@ class EInkTDTheme {
       );
     }
     return ButtonStyle(
-      backgroundColor:
-          WidgetStateProperty.all(TDTheme.of(context).brandNormalColor),
+      backgroundColor: WidgetStateProperty.all(
+        TDTheme.of(context).brandNormalColor,
+      ),
       foregroundColor: WidgetStateProperty.all(Colors.white),
       shape: WidgetStateProperty.all(
         RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),

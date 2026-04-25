@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
 import 'app_config.dart';
-import '../ui/theme/td_theme_adapter.dart';
-import '../ui/theme/eink_td_theme.dart';
+import '../../ui/theme/td_theme_adapter.dart';
+import '../../ui/theme/eink_td_theme.dart';
 
 /// 主题模式 Provider
 class ThemeModeNotifier extends Notifier<ThemeMode> {
