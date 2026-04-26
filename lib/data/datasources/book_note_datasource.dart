@@ -5,6 +5,10 @@ abstract class BookNoteDatasource extends BaseDatasource {
   Future<int> save(BookNote bookNote);
   Future<List<BookNote>> selectBookNoteByCfiAndBookId(String cfi, int bookId);
   Future<List<BookNote>> selectBookNotesByBookId(int bookId);
+  Future<List<BookNote>> selectBookNotesByBookIdWithNote(
+    int bookId,
+    bool hasNote,
+  );
   Future<void> updateBookNoteById(BookNote bookNote);
   Future<BookNote> selectBookNoteById(int id);
   Future<List<Map<String, int>>> selectAllBookIdAndNotes();

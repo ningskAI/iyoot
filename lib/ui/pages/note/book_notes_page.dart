@@ -21,9 +21,6 @@ class BookNotesPage extends ConsumerStatefulWidget {
 }
 
 class _BookNotesPageState extends ConsumerState<BookNotesPage> {
-  // Set of currently selected filter types
-  final Set<String> _selectedTypes = {};
-
   @override
   void dispose() {
     // Reset filter when leaving the page to avoid carrying over state
@@ -81,21 +78,29 @@ class _BookNotesPageState extends ConsumerState<BookNotesPage> {
   }
 
   void _showFilterDialog(BuildContext context) {
-    // Define available note types.
-    final List<String> availableTypes = ['note', 'underline', 'bookmark'];
-    
-    // Temporary state for the dialog
-    Set<String> tempSelectedTypes = Set.from(_selectedTypes);
-    // 兼容 'note' 和 'highlight' 类型
-    String activeTab = tempSelectedTypes.isEmpty ? 'note' : tempSelectedTypes.first;
-    if (activeTab == 'highlight') activeTab = 'note';
+    // Simplified filter options:
+    // 0: All (no filter)
+    // 1: Highlight (underline + highlight)
+    // 2: Note (has readerNote)
+    // 3: Bookmark
+
+    int selectedFilter = 0; // Default: All
+
+    // Sync with current state is tricky without exposing internal state of notifier fully,
+    // but we can approximate or just default to 0 if we don't track it locally.
+    // For better UX, we might want to read the current filter state from the notifier if exposed.
+    // Assuming we default to 0 or try to infer from previous local state if we kept it.
+    // Since we removed _selectedTypes, we'll default to 0 (All) or you might want to store last selectedFilter index.
+
+    // If you want to persist the last selected filter mode, you could add an int _lastFilterIndex to the state.
+    // For now, let's assume we start at 0 or you can enhance this later.
 
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
       builder: (ctx) {
         return StatefulBuilder(
-          builder: (context, setState) {
+          builder: (context, setModalState) {
             return Container(
               decoration: const BoxDecoration(
                 color: Colors.white,
@@ -116,7 +121,7 @@ class _BookNotesPageState extends ConsumerState<BookNotesPage> {
                     ),
                   ),
                   const Text(
-                    '筛选你要的笔记',
+                    '筛选笔记',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
@@ -125,225 +130,34 @@ class _BookNotesPageState extends ConsumerState<BookNotesPage> {
                   ),
                   const SizedBox(height: 24),
 
-                  // Type selection tabs - 4 columns layout
+                  // Filter buttons - 4 options
                   Row(
                     children: [
-                      ...availableTypes.map((type) {
-                        String label;
-                        IconData? icon;
-                        switch (type) {
-                          case 'highlight':
-                          case 'note':
-                            label = '想法';
-                            icon = Icons.record_voice_over;
-                            break;
-                          case 'underline':
-                            label = '划线';
-                            icon = Icons.format_underline;
-                            break;
-                          case 'bookmark':
-                            label = '书签';
-                            icon = Icons.bookmark;
-                            break;
-                          default:
-                            label = type;
-                        }
-                        
-                        final isSelected = tempSelectedTypes.contains(type);
-                        
-                        return Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.only(right: 8),
-                            child: GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  if (isSelected) {
-                                    tempSelectedTypes.remove(type);
-                                    if (activeTab == type && tempSelectedTypes.isNotEmpty) {
-                                      activeTab = tempSelectedTypes.first;
-                                    }
-                                  } else {
-                                    tempSelectedTypes.add(type);
-                                    activeTab = type;
-                                  }
-                                });
-                              },
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(vertical: 12),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(8),
-                                  border: Border.all(
-                                    color: isSelected ? const Color(0xFF4A90E2) : Colors.grey[300]!,
-                                    width: 1.5,
-                                  ),
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    if (icon != null) ...[
-                                      Icon(icon, size: 16, color: isSelected ? const Color(0xFF4A90E2) : const Color(0xFF666666)),
-                                      const SizedBox(width: 4),
-                                    ],
-                                    Text(
-                                      label,
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        color: isSelected ? const Color(0xFF4A90E2) : const Color(0xFF666666),
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 15,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        );
-                      }).toList(),
-                      // Add "点评" button (disabled placeholder)
-                      Expanded(
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(vertical: 12),
-                          decoration: BoxDecoration(
-                            color: Colors.grey[100],
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(
-                              color: Colors.grey[300]!,
-                              width: 1.5,
-                            ),
-                          ),
-                          child: const Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.chat_bubble_outline, size: 16, color: Color(0xFF666666)),
-                              SizedBox(width: 4),
-                              Text(
-                                '点评',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: Color(0xFF666666),
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 15,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+                      _buildFilterButton(
+                        '全部',
+                        Icons.apps,
+                        selectedFilter == 0,
+                        () => setModalState(() => selectedFilter = 0),
+                      ),
+                      _buildFilterButton(
+                        '高亮',
+                        Icons.highlight,
+                        selectedFilter == 1,
+                        () => setModalState(() => selectedFilter = 1),
+                      ),
+                      _buildFilterButton(
+                        '笔记',
+                        Icons.sticky_note_2,
+                        selectedFilter == 2,
+                        () => setModalState(() => selectedFilter = 2),
+                      ),
+                      _buildFilterButton(
+                        '书签',
+                        Icons.bookmark,
+                        selectedFilter == 3,
+                        () => setModalState(() => selectedFilter = 3),
                       ),
                     ],
-                  ),
-
-                  const SizedBox(height: 20),
-                  // Sub-options area for note/highlight
-                  if (activeTab == 'note' || activeTab == 'highlight')
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFF8F9FA),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            '笔记类型',
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: Color(0xFF999999),
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                          const SizedBox(height: 12),
-                          Row(
-                            children: [
-                              _buildTypeIconWithIcon(Icons.record_voice_over, activeTab == 'note'),
-                              const SizedBox(width: 16),
-                              _buildTypeIconWithIcon(Icons.format_underline, activeTab == 'underline'),
-                            ],
-                          ),
-                          const SizedBox(height: 20),
-                          const Text(
-                            '笔记颜色',
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: Color(0xFF999999),
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                          const SizedBox(height: 12),
-                          Row(
-                            children: [
-                              _buildColorCircle(const Color(0xFF66CCFF)),
-                              const SizedBox(width: 12),
-                              _buildColorCircle(const Color(0xFFFF0000)),
-                              const SizedBox(width: 12),
-                              _buildColorCircle(const Color(0xFF00FF00)),
-                              const SizedBox(width: 12),
-                              _buildColorCircle(const Color(0xFFEB3BFF)),
-                              const SizedBox(width: 12),
-                              _buildColorCircle(const Color(0xFFFFD700)),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-
-                  const SizedBox(height: 20),
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFF8F9FA),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          '划线类型',
-                          style: TextStyle(
-                            fontSize: 13,
-                            color: Color(0xFF999999),
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-                        Row(
-                          children: [
-                            _buildTypeIcon('A', false),
-                            const SizedBox(width: 16),
-                            _buildTypeIcon('A', true, underline: true),
-                            const SizedBox(width: 16),
-                            _buildTypeIcon('A', true),
-                          ],
-                        ),
-                        const SizedBox(height: 20),
-                        const Text(
-                          '划线颜色',
-                          style: TextStyle(
-                            fontSize: 13,
-                            color: Color(0xFF999999),
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-                        Row(
-                          children: [
-                            _buildColorCircle(const Color(0xFFFFB3B3)),
-                            const SizedBox(width: 12),
-                            _buildColorCircle(const Color(0xFFD4B8FF)),
-                            const SizedBox(width: 12),
-                            _buildColorCircle(const Color(0xFFA8D4FF)),
-                            const SizedBox(width: 12),
-                            _buildColorCircle(const Color(0xFFB3E6B3)),
-                            const SizedBox(width: 12),
-                            _buildColorCircle(const Color(0xFFFFE0A8)),
-                          ],
-                        ),
-                      ],
-                    ),
                   ),
 
                   const SizedBox(height: 20),
@@ -355,7 +169,6 @@ class _BookNotesPageState extends ConsumerState<BookNotesPage> {
                         flex: 2,
                         child: OutlinedButton(
                           onPressed: () {
-                            tempSelectedTypes.clear();
                             ref
                                 .read(
                                   bookNoteNotifierProvider(
@@ -388,25 +201,27 @@ class _BookNotesPageState extends ConsumerState<BookNotesPage> {
                         flex: 5,
                         child: ElevatedButton(
                           onPressed: () {
-                            _selectedTypes.clear();
-                            _selectedTypes.addAll(tempSelectedTypes);
+                            final notifier = ref.read(
+                              bookNoteNotifierProvider(
+                                widget.book.bookId,
+                              ).notifier,
+                            );
 
-                            if (_selectedTypes.isEmpty) {
-                              ref
-                                  .read(
-                                    bookNoteNotifierProvider(
-                                      widget.book.bookId,
-                                    ).notifier,
-                                  )
-                                  .resetFilter();
-                            } else {
-                              ref
-                                  .read(
-                                    bookNoteNotifierProvider(
-                                      widget.book.bookId,
-                                    ).notifier,
-                                  )
-                                  .filterByTypes(_selectedTypes.toList());
+                            if (selectedFilter == 0) {
+                              // All - reset filter
+                              notifier.resetFilter();
+                            } else if (selectedFilter == 1) {
+                              // Highlight - filter by underline and highlight types
+                              notifier.filterByTypes([
+                                'underline',
+                                'highlight',
+                              ]);
+                            } else if (selectedFilter == 2) {
+                              // Note - filter by hasNote
+                              notifier.filterByHasNote(true);
+                            } else if (selectedFilter == 3) {
+                              // Bookmark - filter by bookmark type
+                              notifier.filterByTypes(['bookmark']);
                             }
                             Navigator.pop(ctx);
                           },
@@ -419,24 +234,12 @@ class _BookNotesPageState extends ConsumerState<BookNotesPage> {
                             ),
                             elevation: 0,
                           ),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const Text(
-                                '查看',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              Text(
-                                '筛选到 ${tempSelectedTypes.isEmpty ? '0' : tempSelectedTypes.length} 个笔记',
-                                style: const TextStyle(
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.w400,
-                                ),
-                              ),
-                            ],
+                          child: const Text(
+                            '确认',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                         ),
                       ),
@@ -452,54 +255,46 @@ class _BookNotesPageState extends ConsumerState<BookNotesPage> {
     );
   }
 
-  Widget _buildTypeIcon(String text, bool isActive, {bool underline = false}) {
-    return Container(
-      width: 40,
-      height: 40,
-      decoration: BoxDecoration(
-        color: isActive ? const Color(0xFFE8F2FF) : const Color(0xFFF0F0F0),
-        shape: BoxShape.circle,
-      ),
-      child: Center(
-        child: Text(
-          text,
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: isActive ? const Color(0xFF4A90E2) : const Color(0xFF999999),
-            decoration: underline ? TextDecoration.underline : null,
-            decorationColor: isActive ? const Color(0xFF4A90E2) : null,
+  Widget _buildFilterButton(
+    String label,
+    IconData icon,
+    bool isSelected,
+    VoidCallback onTap,
+  ) {
+    return Expanded(
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          decoration: BoxDecoration(
+            color: isSelected ? const Color(0xFFE8F2FF) : Colors.white,
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(
+              color: isSelected ? const Color(0xFF4A90E2) : Colors.grey[300]!,
+              width: 1.5,
+            ),
+          ),
+          child: Column(
+            children: [
+              Icon(
+                icon,
+                color: isSelected
+                    ? const Color(0xFF4A90E2)
+                    : const Color(0xFF666666),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                label,
+                style: TextStyle(
+                  color: isSelected
+                      ? const Color(0xFF4A90E2)
+                      : const Color(0xFF666666),
+                  fontSize: 12,
+                ),
+              ),
+            ],
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildTypeIconWithIcon(IconData icon, bool isActive) {
-    return Container(
-      width: 40,
-      height: 40,
-      decoration: BoxDecoration(
-        color: isActive ? const Color(0xFFE8F2FF) : const Color(0xFFF0F0F0),
-        shape: BoxShape.circle,
-      ),
-      child: Center(
-        child: Icon(
-          icon,
-          size: 22,
-          color: isActive ? const Color(0xFF4A90E2) : const Color(0xFF999999),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildColorCircle(Color color) {
-    return Container(
-      width: 36,
-      height: 36,
-      decoration: BoxDecoration(
-        color: color,
-        shape: BoxShape.circle,
       ),
     );
   }
@@ -671,11 +466,3 @@ class _BookNotesPageState extends ConsumerState<BookNotesPage> {
     );
   }
 }
-
-
-
-
-
-
-
-

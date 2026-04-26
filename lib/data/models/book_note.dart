@@ -27,7 +27,17 @@ class BookNote {
     required this.updateTime,
   });
 
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toFoliateJson() {
+    return {
+      'id': id,
+      'note': content,
+      'value': cfi,
+      'type': type,
+      'color': '#$color',
+    };
+  }
+
+  Map<String, dynamic> toJson() {
     return {
       'id': id,
       'bookId': bookId,
@@ -39,16 +49,6 @@ class BookNote {
       'readerNote': readerNote,
       'createTime': createTime?.toIso8601String(),
       'updateTime': updateTime.toIso8601String(),
-    };
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'note': content,
-      'value': cfi,
-      'type': type,
-      'color': '#$color',
     };
   }
 

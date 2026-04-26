@@ -59,4 +59,11 @@ class PreferKey {
   static const String awakeTime = 'awakeTime';
   static const String pageTurningType = 'pageTurningType';
   static const String bookStyle = 'bookStyle';
+  
+  // ========= 标注相关设置 ==========
+  /// 上次选择的标注类型（highlight 或 underline）
+  static const String lastAnnotationType = 'lastAnnotationType';
+  
+  /// 上次选择的标注颜色
+  static const String lastAnnotationColor = 'lastAnnotationColor';
 }

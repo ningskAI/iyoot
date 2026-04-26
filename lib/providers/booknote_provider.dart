@@ -8,24 +8,37 @@ part 'booknote_provider.g.dart';
 class BookNoteNotifier extends _$BookNoteNotifier {
   int? _bookId;
   List<String>? _types;
+  bool? _hasNote;
 
   @override
   Future<List<BookNote>> build(int bookId) async {
     _bookId = bookId;
-    return _fetchNotes(bookId, types: _types);
+    return _fetchNotes(bookId, types: _types, hasNote: _hasNote);
   }
 
-  Future<List<BookNote>> _fetchNotes(int bookId, {List<String>? types}) async {
+  Future<List<BookNote>> _fetchNotes(
+    int bookId, {
+    List<String>? types,
+    bool? hasNote,
+  }) async {
     final repository = ref.read(bookNoteRepositoryProvider);
-    // Assuming repository has a method to fetch by types, or we filter locally if not.
-    // If repository.selectBookNotesByBookId doesn't support types, we might need to fetch all and filter locally,
-    // or update the repository interface. For now, assuming we can pass types or filter locally.
-    // Let's assume we fetch all and filter locally for simplicity if DB query isn't updated,
-    // OR ideally, the repository supports it.
-    // Looking at file2, it used datasource.searchBookNotesAdvanced.
-    // Let's assume repository exposes similar capability or we adapt.
-    // If repository.selectBookNotesByBookId does NOT take types, we must filter locally.
 
+    // If hasNote filter is specified, use the specialized method
+    if (hasNote != null) {
+      final notes = await repository.selectBookNotesByBookIdWithNote(
+        bookId,
+        hasNote,
+      );
+
+      // Apply type filter if also specified
+      if (types != null && types.isNotEmpty) {
+        return notes.where((note) => types.contains(note.type)).toList();
+      }
+
+      return notes;
+    }
+
+    // Otherwise use the standard method
     final notes = await repository.selectBookNotesByBookId(bookId);
 
     if (types != null && types.isNotEmpty) {
@@ -39,20 +52,25 @@ class BookNoteNotifier extends _$BookNoteNotifier {
     ref.invalidateSelf();
   }
 
-  Future<void> loadNotes({List<String>? types}) async {
+  Future<void> loadNotes({List<String>? types, bool? hasNote}) async {
     if (_bookId == null) return;
     _types = types;
-    final notes = await _fetchNotes(_bookId!, types: types);
+    _hasNote = hasNote;
+    final notes = await _fetchNotes(_bookId!, types: types, hasNote: hasNote);
     state = AsyncData(notes);
   }
 
   // Add filter methods
   void filterByTypes(List<String> types) {
-    loadNotes(types: types);
+    loadNotes(types: types, hasNote: null);
+  }
+
+  void filterByHasNote(bool hasNote) {
+    loadNotes(types: null, hasNote: hasNote);
   }
 
   void resetFilter() {
-    loadNotes(types: null);
+    loadNotes(types: null, hasNote: null);
   }
 
   Future<BookNote> addNote(BookNote note) async {
@@ -61,7 +79,7 @@ class BookNoteNotifier extends _$BookNoteNotifier {
     final savedNote = note..id = id;
 
     // Reload to ensure consistency and ordering
-    await loadNotes(types: _types);
+    await loadNotes(types: _types, hasNote: _hasNote);
 
     return savedNote;
   }
@@ -84,7 +102,7 @@ class BookNoteNotifier extends _$BookNoteNotifier {
       await repository.deleteBookNoteById(target.id!);
 
       // Reload to ensure consistency
-      await loadNotes(types: _types);
+      await loadNotes(types: _types, hasNote: _hasNote);
     } catch (e, st) {
       state = AsyncError(e, st);
     }

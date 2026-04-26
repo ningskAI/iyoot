@@ -1,17 +1,20 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:battery_plus/battery_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i_reader/config/app_config.dart';
+import 'package:i_reader/data/enums/reading_info.dart';
 import 'package:i_reader/data/enums/translation_enums.dart';
 import 'package:i_reader/data/models/book.dart';
 import 'package:i_reader/data/models/book_note.dart';
 import 'package:i_reader/data/models/book_style.dart';
 import 'package:i_reader/data/models/font_model.dart';
+import 'package:i_reader/data/models/reading_info.dart';
 import 'package:i_reader/data/models/reading_theme.dart';
 import 'package:i_reader/data/models/toc.dart';
 import 'package:i_reader/providers/book_toc.dart';
@@ -25,7 +28,9 @@ import 'package:i_reader/ui/pages/reading/models/diagram.dart';
 import 'package:i_reader/ui/pages/reading/models/types_and_icons.dart';
 import 'package:i_reader/ui/pages/reading/reading_page.dart';
 import 'package:i_reader/ui/pages/reading/widgets/context_menu/excerpt_menu.dart';
+import 'package:i_reader/ui/pages/reading/widgets/minute_clock.dart';
 import 'package:i_reader/utils/color_utils.dart';
+import 'package:icons_plus/icons_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:i_reader/core/webview/generate_url.dart';
 
@@ -456,7 +461,7 @@ class EpubPlayerState extends ConsumerState<EpubPlayer>
         .read(bookNoteRepositoryProvider)
         .selectBookNotesByBookId(widget.book.id);
     String allAnnotations = jsonEncode(
-      annotationList.map((e) => e.toJson()).toList(),
+      annotationList.map((e) => e.toFoliateJson()).toList(),
     ).replaceAll('\'', '\\\'');
 
     // 直接将 allAnnotations 作为参数传递给 renderAnnotations 函数
@@ -695,6 +700,143 @@ class EpubPlayerState extends ConsumerState<EpubPlayer>
     await ref.read(bookshelfBooksProvider.notifier).updateBook(updatedBook);
   }
 
+  Widget readingInfoWidget() {
+    if (chapterCurrentPage == 0 && percentage == 0.0) {
+      return const SizedBox();
+    }
+
+    final readingInfoColor = Color(int.parse('0x$textColor')).withAlpha(150);
+    final iconColor = Color(int.parse('0x$textColor'));
+
+    Widget getWidget(ReadingInfoEnum readingInfoEnum, TextStyle textStyle) {
+      final batteryTextStyle = TextStyle(
+        color: iconColor,
+        fontSize: (textStyle.fontSize ?? 10) - 1,
+      );
+      final batteryIconSize = (textStyle.fontSize ?? 10) * 2.7;
+
+      final chapterTitleWidget = Text(
+        (chapterCurrentPage == 1 ? widget.book.title : chapterTitle),
+        style: textStyle,
+      );
+
+      final chapterProgressWidget = Text(
+        '$chapterCurrentPage/$chapterTotalPages',
+        style: textStyle,
+      );
+
+      final bookProgressWidget = Text(
+        '${(percentage * 100).toStringAsFixed(2)}%',
+        style: textStyle,
+      );
+
+      final timeWidget = MinuteClock(textStyle: textStyle);
+
+      final batteryWidget = FutureBuilder(
+        future: Battery().batteryLevel,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return Stack(
+              alignment: Alignment.center,
+              children: [
+                Padding(
+                  padding: EdgeInsets.fromLTRB(
+                    0,
+                    (textStyle.fontSize ?? 10) * 0.08,
+                    2,
+                    0,
+                  ),
+                  child: Text('${snapshot.data}', style: batteryTextStyle),
+                ),
+                Icon(
+                  HeroIcons.battery_0,
+                  size: batteryIconSize,
+                  color: iconColor,
+                ),
+              ],
+            );
+          } else {
+            return const SizedBox();
+          }
+        },
+      );
+
+      Widget batteryAndTimeWidget() => Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [batteryWidget, const SizedBox(width: 5), timeWidget],
+      );
+
+      switch (readingInfoEnum) {
+        case ReadingInfoEnum.chapterTitle:
+          return chapterTitleWidget;
+        case ReadingInfoEnum.chapterProgress:
+          return chapterProgressWidget;
+        case ReadingInfoEnum.bookProgress:
+          return bookProgressWidget;
+        case ReadingInfoEnum.battery:
+          return batteryWidget;
+        case ReadingInfoEnum.time:
+          return timeWidget;
+        case ReadingInfoEnum.batteryAndTime:
+          return batteryAndTimeWidget();
+        case ReadingInfoEnum.none:
+          return const SizedBox(width: 30);
+      }
+    }
+
+    final readingInfo = ReadingInfoModel();
+
+    final headerTextStyle = TextStyle(
+      color: readingInfoColor,
+      fontSize: readingInfo.header.fontSize,
+    );
+    final footerTextStyle = TextStyle(
+      color: readingInfoColor,
+      fontSize: readingInfo.footer.fontSize,
+    );
+
+    List<Widget> headerWidgets = [
+      getWidget(readingInfo.header.left, headerTextStyle),
+      getWidget(readingInfo.header.center, headerTextStyle),
+      getWidget(readingInfo.header.right, headerTextStyle),
+    ];
+
+    List<Widget> footerWidgets = [
+      getWidget(readingInfo.footer.left, footerTextStyle),
+      getWidget(readingInfo.footer.center, footerTextStyle),
+      getWidget(readingInfo.footer.right, footerTextStyle),
+    ];
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: EdgeInsets.only(
+            top: readingInfo.header.verticalMargin,
+            left: readingInfo.header.leftMargin,
+            right: readingInfo.header.rightMargin,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: headerWidgets,
+          ),
+        ),
+        const Spacer(),
+        Padding(
+          padding: EdgeInsets.only(
+            bottom: readingInfo.footer.verticalMargin,
+            left: readingInfo.footer.leftMargin,
+            right: readingInfo.footer.rightMargin,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: footerWidgets,
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   void dispose() {
     StatusbarService.instance.hideStatusBar();
@@ -734,10 +876,5 @@ class EpubPlayerState extends ConsumerState<EpubPlayer>
     int row = (y * 3).floor().clamp(0, 2);
     int col = (x * 3).floor().clamp(0, 2);
     return row * 3 + col;
-  }
-
-  // readingInfoWidget 逻辑较长，在实际文件中已包含，此处由于回复长度限制不再赘述
-  Widget readingInfoWidget() {
-    return const SizedBox.shrink(); // 占位
   }
 }

@@ -275,4 +275,23 @@ class AppConfig {
   static int getPageTurningType() {
     return getInt(PreferKey.pageTurningType, defaultValue: 0);
   }
+
+  // ========== 标注相关配置 ==========
+  /// 获取上次选择的标注类型（highlight 或 underline）
+  static String getLastAnnotationType() {
+    return getString(PreferKey.lastAnnotationType, defaultValue: 'highlight');
+  }
+
+  static Future<bool> setLastAnnotationType(String type) {
+    return setString(PreferKey.lastAnnotationType, type);
+  }
+
+  /// 获取上次选择的标注颜色
+  static String getLastAnnotationColor() {
+    return getString(PreferKey.lastAnnotationColor, defaultValue: 'FFD700');
+  }
+
+  static Future<bool> setLastAnnotationColor(String color) {
+    return setString(PreferKey.lastAnnotationColor, color);
+  }
 }

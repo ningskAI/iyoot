@@ -17,7 +17,6 @@ const List<String> notesColors = [
 ];
 
 const List<NoteTypeOption> notesType = [
-  NoteTypeOption(type: 'note', icon: Icons.record_voice_over),
   NoteTypeOption(type: 'underline', icon: Icons.format_underline),
   NoteTypeOption(type: 'highlight', icon: Icons.highlight),
 ];

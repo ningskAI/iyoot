@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:i_reader/config/app_config.dart';
 import 'package:i_reader/data/models/book_note.dart';
 import 'package:i_reader/l10n/generated/L10n.dart';
 import 'package:i_reader/providers/booknote_provider.dart';
@@ -51,14 +52,16 @@ class ExcerptMenuState extends ConsumerState<ExcerptMenu> {
   late String annoType;
   late String annoColor;
   String? _selectedAnnotationType; // 当前选中的标注类型（underline 或 highlight）
+  bool _showAnnotationMenu = false; // 是否显示标注类型和颜色选择菜单
+  bool _showColorPicker = false; // 是否显示颜色选择弹窗
 
   @override
   void initState() {
     super.initState();
-    // Use defaults from existing annotation definitions
-    annoType = 'underline';
-    annoColor = notesColors.isNotEmpty ? notesColors.first : '66CCFF';
-    _selectedAnnotationType = 'underline'; // 默认选中下划线
+    // 从配置中读取上次选择的类型和颜色
+    annoType = AppConfig.getLastAnnotationType();
+    annoColor = AppConfig.getLastAnnotationColor();
+    _selectedAnnotationType = annoType;
     _initializeExistingNote();
   }
 
@@ -124,6 +127,12 @@ class ExcerptMenuState extends ConsumerState<ExcerptMenu> {
     final existingNote = await _fetchLatestNote() ?? _currentNote;
     final now = DateTime.now();
 
+    // 安全检查：确保 epubPlayerKey.currentState 不为空
+    final currentState = epubPlayerKey.currentState;
+    if (currentState == null) {
+      throw StateError('Epub player state is not available');
+    }
+
     final resolvedContent = (content ?? widget.annoContent).trim().isNotEmpty
         ? (content ?? widget.annoContent)
         : (existingNote?.content ?? widget.annoContent);
@@ -132,12 +141,10 @@ class ExcerptMenuState extends ConsumerState<ExcerptMenu> {
 
     final bookNote = BookNote(
       id: existingNote?.id ?? widget.id,
-      bookId:
-          existingNote?.bookId ?? epubPlayerKey.currentState!.widget.book.id,
+      bookId: existingNote?.bookId ?? currentState.widget.book.id,
       content: resolvedContent,
       cfi: existingNote?.cfi ?? widget.annoCfi,
-      chapter:
-          existingNote?.chapter ?? epubPlayerKey.currentState!.chapterTitle,
+      chapter: existingNote?.chapter ?? currentState.chapterTitle,
       type: resolvedType,
       color: resolvedColor,
       readerNote: existingNote?.readerNote,
@@ -150,21 +157,19 @@ class ExcerptMenuState extends ConsumerState<ExcerptMenu> {
     );
     final savedNote = await notifier.addNote(bookNote);
 
+    // 安全检查：确保 widget 仍然挂载
+    if (!mounted) {
+      return savedNote;
+    }
+
     widget.onNoteCreated(savedNote.id!);
 
-    if (mounted) {
-      setState(() {
-        _currentNote = savedNote;
-        noteId = savedNote.id;
-        annoType = resolvedType;
-        annoColor = resolvedColor;
-      });
-    } else {
+    setState(() {
       _currentNote = savedNote;
       noteId = savedNote.id;
       annoType = resolvedType;
       annoColor = resolvedColor;
-    }
+    });
 
     return savedNote;
   }
@@ -179,7 +184,14 @@ class ExcerptMenuState extends ConsumerState<ExcerptMenu> {
     }
 
     final bookNote = await _persistNote(color: color);
-    epubPlayerKey.currentState!.addAnnotation(bookNote);
+
+    // 保存颜色配置
+    await AppConfig.setLastAnnotationColor(color);
+
+    // 安全检查：确保 epubPlayerKey.currentState 不为空且 widget 仍然挂载
+    if (mounted) {
+      epubPlayerKey.currentState?.addAnnotation(bookNote);
+    }
 
     // 不自动关闭菜单，让用户可以自由选择颜色
   }
@@ -196,7 +208,14 @@ class ExcerptMenuState extends ConsumerState<ExcerptMenu> {
     }
 
     final bookNote = await _persistNote(type: type);
-    epubPlayerKey.currentState!.addAnnotation(bookNote);
+
+    // 保存类型配置
+    await AppConfig.setLastAnnotationType(type);
+
+    // 安全检查：确保 epubPlayerKey.currentState 不为空且 widget 仍然挂载
+    if (mounted) {
+      epubPlayerKey.currentState?.addAnnotation(bookNote);
+    }
   }
 
   Widget iconButton({required Icon icon, required Function() onPressed}) {
@@ -209,80 +228,242 @@ class ExcerptMenuState extends ConsumerState<ExcerptMenu> {
     );
   }
 
-  Widget colorButton(String color, {bool isSelected = false}) {
-    return GestureDetector(
-      onTap: () {
-        onColorSelected(color);
+  // 显示移除选项对话框
+  void _showRemoveOptions() {
+    final hasNote = _currentNote?.readerNote?.isNotEmpty == true;
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) {
+        return Container(
+          margin: const EdgeInsets.all(20),
+          padding: const EdgeInsets.symmetric(vertical: 20),
+          decoration: BoxDecoration(
+            color: const Color(0xFF2C2C2E),
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                '移除选项',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 20),
+              // 仅移除笔记
+              if (hasNote)
+                ListTile(
+                  leading: const Icon(
+                    Icons.sticky_note_2_outlined,
+                    color: Colors.white,
+                  ),
+                  title: const Text(
+                    '仅移除笔记',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  onTap: () async {
+                    Navigator.pop(ctx);
+                    final targetId = noteId ?? widget.id;
+                    if (targetId != null) {
+                      final bookId = epubPlayerKey.currentState!.widget.book.id;
+                      final noteToUpdate = BookNote(
+                        id: targetId,
+                        bookId: bookId,
+                        cfi: widget.annoCfi,
+                        content: widget.annoContent,
+                        type: annoType,
+                        color: annoColor,
+                        readerNote: null, // 清除笔记
+                        chapter: epubPlayerKey.currentState!.chapterTitle,
+                        createTime: _currentNote?.createTime ?? DateTime.now(),
+                        updateTime: DateTime.now(),
+                      );
+
+                      await ref
+                          .read(bookNoteNotifierProvider(bookId).notifier)
+                          .addNote(noteToUpdate);
+                      epubPlayerKey.currentState!.addAnnotation(noteToUpdate);
+
+                      // 更新本地状态
+                      setState(() {
+                        _currentNote = noteToUpdate;
+                      });
+                    }
+                  },
+                ),
+              // 移除高亮和笔记
+              ListTile(
+                leading: const Icon(
+                  Icons.delete_outline,
+                  color: Colors.redAccent,
+                ),
+                title: const Text(
+                  '移除高亮和笔记',
+                  style: TextStyle(color: Colors.redAccent),
+                ),
+                onTap: () {
+                  Navigator.pop(ctx);
+                  final targetId = noteId ?? widget.id;
+                  if (targetId != null) {
+                    final notifier = ref.read(
+                      bookNoteNotifierProvider(
+                        epubPlayerKey.currentState!.widget.book.id,
+                      ).notifier,
+                    );
+                    notifier.removeNote(id: targetId);
+                    epubPlayerKey.currentState!.removeAnnotation(
+                      widget.annoCfi,
+                    );
+                  }
+                  widget.onClose();
+                },
+              ),
+            ],
+          ),
+        );
       },
-      child: Container(
-        width: 28,
-        height: 28,
-        decoration: BoxDecoration(
-          color: Color(int.parse('0xff$color')),
-          shape: BoxShape.circle,
-          border: isSelected ? Border.all(color: Colors.white, width: 2) : null,
-        ),
-        child: isSelected
-            ? const Icon(Icons.check, color: Colors.white, size: 16)
-            : null,
-      ),
     );
   }
 
-  Widget _buildAnnotationTypeButton(String type, IconData icon) {
-    final isSelected = _selectedAnnotationType == type;
-    return GestureDetector(
-      onTap: () {
-        onTypeSelected(type);
+  // 显示颜色选择对话框
+  void _showColorPickerDialog() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) {
+        return Container(
+          margin: const EdgeInsets.all(20),
+          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+          decoration: BoxDecoration(
+            color: const Color(0xFF2C2C2E),
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                '选择标注样式',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 20),
+              // 颜色列表
+              Wrap(
+                spacing: 12,
+                runSpacing: 12,
+                alignment: WrapAlignment.center,
+                children: notesColors.map((color) {
+                  final isSelected = annoColor == color;
+                  return GestureDetector(
+                    onTap: () async {
+                      Navigator.pop(ctx);
+                      // 创建或更新标注
+                      await onTypeSelected(
+                        _selectedAnnotationType ?? 'highlight',
+                      );
+                      await onColorSelected(color);
+                      // 关闭所有菜单
+                      widget.onClose();
+                    },
+                    child: Container(
+                      width: 48,
+                      height: 48,
+                      decoration: BoxDecoration(
+                        color: Color(int.parse('0xff$color')),
+                        shape: BoxShape.circle,
+                        border: isSelected
+                            ? Border.all(color: Colors.white, width: 3)
+                            : null,
+                        boxShadow: isSelected
+                            ? [
+                                BoxShadow(
+                                  color: Colors.white.withOpacity(0.5),
+                                  blurRadius: 8,
+                                  spreadRadius: 2,
+                                ),
+                              ]
+                            : null,
+                      ),
+                      child: isSelected
+                          ? const Icon(
+                              Icons.check,
+                              color: Colors.white,
+                              size: 24,
+                            )
+                          : null,
+                    ),
+                  );
+                }).toList(),
+              ),
+              const SizedBox(height: 20),
+              // 下划线按钮
+              GestureDetector(
+                onTap: () async {
+                  Navigator.pop(ctx);
+                  // 设置为下划线类型
+                  await onTypeSelected('underline');
+                  // 使用当前颜色
+                  await onColorSelected(annoColor);
+                  // 关闭所有菜单
+                  widget.onClose();
+                },
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 12,
+                  ),
+                  decoration: BoxDecoration(
+                    color: _selectedAnnotationType == 'underline'
+                        ? Color(int.parse('0xff$annoColor')).withOpacity(0.3)
+                        : Colors.transparent,
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color: _selectedAnnotationType == 'underline'
+                          ? Color(int.parse('0xff$annoColor'))
+                          : Colors.white54,
+                      width: 2,
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.format_underline,
+                        color: _selectedAnnotationType == 'underline'
+                            ? Color(int.parse('0xff$annoColor'))
+                            : Colors.white,
+                        size: 24,
+                      ),
+                      const SizedBox(width: 8),
+                      const Text(
+                        '下划线',
+                        style: TextStyle(color: Colors.white, fontSize: 16),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
       },
-      child: Container(
-        width: 40,
-        height: 40,
-        decoration: BoxDecoration(
-          color: isSelected
-              ? Color(int.parse('0xff$annoColor')).withOpacity(0.3)
-              : Colors.transparent,
-          shape: BoxShape.circle,
-        ),
-        child: Icon(
-          icon,
-          color: isSelected
-              ? Color(int.parse('0xff$annoColor'))
-              : Colors.white70,
-          size: 24,
-        ),
-      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    // 深色背景的标注菜单（类型和颜色）
-    Widget annotationMenu = Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: BoxDecoration(
-        color: const Color(0xFF2C2C2E),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Flex(
-        direction: widget.axis,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // 高亮和下划线两个类型选项
-          _buildAnnotationTypeButton('highlight', Icons.highlight),
-          const SizedBox(width: 8),
-          _buildAnnotationTypeButton('underline', Icons.format_underline),
-          const SizedBox(width: 12),
-          // 颜色选项
-          for (String color in notesColors) ...[
-            colorButton(color, isSelected: annoColor == color),
-            const SizedBox(width: 8),
-          ],
-        ],
-      ),
-    );
+    final hasNote = _currentNote?.readerNote?.isNotEmpty == true;
+    final hasAnnotation = noteId != null || widget.id != null;
 
-    // 深色背景的操作菜单（复制、搜索、添加笔记等）
+    // 深色背景的操作菜单（复制、高亮标记、添加笔记、查询等）
     Widget operatorMenu = Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
       decoration: BoxDecoration(
@@ -305,41 +486,37 @@ class ExcerptMenuState extends ConsumerState<ExcerptMenu> {
               widget.onClose();
             },
           ),
-          // Delete highlight
-          _buildOperatorItem(
-            icon: const Icon(
-              Icons.delete_outline,
-              color: Colors.white,
-              size: 20,
-            ),
-            text: '删除划线',
-            onTap: () {
-              // 使用 noteId 或 widget.id，优先使用 noteId（因为创建标注后会更新）
-              final targetId = noteId ?? widget.id;
-              if (targetId != null) {
-                final notifier = ref.read(
-                  bookNoteNotifierProvider(
-                    epubPlayerKey.currentState!.widget.book.id,
-                  ).notifier,
-                );
-                notifier.removeNote(id: targetId);
-                epubPlayerKey.currentState!.removeAnnotation(widget.annoCfi);
-              }
-              widget.onClose();
-            },
-          ),
-          // Edit note - 使用人在说话的图标
+          // Highlight/Annotation button - 点击弹出颜色选择对话框
           if (!widget.footnote)
             _buildOperatorItem(
-              icon: const Icon(
-                Icons.record_voice_over,
-                color: Colors.white,
+              icon: Icon(
+                Icons.highlight,
+                color: const Color(0xFFFFD700),
                 size: 20,
               ),
-              text: '写想法',
+              text: '高亮标记',
+              onTap: () {
+                _showColorPickerDialog();
+              },
+            ),
+          // Add/Edit Note - 添加笔记按钮
+          if (!widget.footnote)
+            _buildOperatorItem(
+              icon: Icon(
+                hasNote ? Icons.sticky_note_2 : Icons.edit_note,
+                color: hasNote ? const Color(0xFFFFD700) : Colors.white,
+                size: 20,
+              ),
+              text: hasNote ? '编辑笔记' : '添加笔记',
               onTap: () async {
-                epubPlayerKey.currentState?.setSelectionClearLocked(true);
-                await onColorSelected(annoColor, close: false);
+                // 点击添加笔记时，如果还没有标注，使用上次配置创建标注
+                if (noteId == null && widget.id == null) {
+                  // 使用上次保存的类型和颜色
+                  await onTypeSelected(annoType);
+                  await onColorSelected(annoColor);
+                }
+
+                // 然后打开笔记编辑界面
                 final targetId = noteId ?? widget.id;
                 if (targetId != null) {
                   await widget.openReaderNoteMenu(targetId);
@@ -348,7 +525,18 @@ class ExcerptMenuState extends ConsumerState<ExcerptMenu> {
                 }
               },
             ),
-          // Bookmark
+          // Remove Button - 只在已有标注时才显示
+          if (hasAnnotation)
+            _buildOperatorItem(
+              icon: const Icon(
+                Icons.delete_outline,
+                color: Colors.redAccent,
+                size: 20,
+              ),
+              text: '移除',
+              onTap: _showRemoveOptions,
+            ),
+          // Bookmark - 书摘（暂时不做，但按钮必须存在）
           _buildOperatorItem(
             icon: const Icon(
               Icons.bookmark_border,
@@ -357,7 +545,10 @@ class ExcerptMenuState extends ConsumerState<ExcerptMenu> {
             ),
             text: '书摘',
             onTap: () {
-              onTypeSelected('bookmark');
+              // TODO: 实现书摘功能
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(const SnackBar(content: Text('书摘功能开发中...')));
               widget.onClose();
             },
           ),
@@ -375,14 +566,6 @@ class ExcerptMenuState extends ConsumerState<ExcerptMenu> {
               );
             },
           ),
-          // TTS (if needed, currently placeholder)
-          // _buildOperatorItem(
-          //   icon: const Icon(Icons.volume_up, color: Colors.white, size: 20),
-          //   text: '听当前',
-          //   onTap: () {
-          //     // TODO: Implement TTS
-          //   },
-          // ),
         ],
       ),
     );
@@ -390,12 +573,6 @@ class ExcerptMenuState extends ConsumerState<ExcerptMenu> {
     // Build children list and reverse if needed
     var innerChildren = <Widget>[
       SingleChildScrollView(scrollDirection: widget.axis, child: operatorMenu),
-      const SizedBox.square(dimension: 10),
-      if (!widget.footnote)
-        SingleChildScrollView(
-          scrollDirection: widget.axis,
-          child: annotationMenu,
-        ),
     ];
 
     if (widget.reverse) {
