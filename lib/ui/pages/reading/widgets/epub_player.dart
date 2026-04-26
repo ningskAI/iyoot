@@ -839,7 +839,7 @@ class EpubPlayerState extends ConsumerState<EpubPlayer>
 
   @override
   void dispose() {
-    StatusbarService.instance.hideStatusBar();
+    StatusbarService.instance.showStatusBar();
     saveReadingProgress();
     removeOverlay();
     super.dispose();

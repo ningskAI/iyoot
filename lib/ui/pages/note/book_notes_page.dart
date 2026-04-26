@@ -43,13 +43,8 @@ class _BookNotesPageState extends ConsumerState<BookNotesPage> {
 
   @override
   Widget build(BuildContext context) {
-    // Watch the notes provider to get real-time filtered list
-    final bookNoteAsync = ref.watch(
-      bookNoteNotifierProvider(widget.book.bookId),
-    );
+    ref.watch(bookNoteNotifierProvider(widget.book.bookId));
 
-    // Watch the total note count provider for the header statistic
-    // This listens to BookNoteChangedEvent and updates automatically
     final noteCountAsync = ref.watch(bookNoteCountProvider(widget.book.bookId));
 
     // Get total count for header, fallback to book extra if loading/error
@@ -1060,5 +1055,3 @@ class _BookNotesPageState extends ConsumerState<BookNotesPage> {
     );
   }
 }
-
-
