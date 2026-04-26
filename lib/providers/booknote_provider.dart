@@ -1,8 +1,39 @@
 import 'package:i_reader/data/models/book_note.dart';
 import 'package:i_reader/providers/repository_providers.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'dart:async';
 
 part 'booknote_provider.g.dart';
+
+class BookNoteChangedEvent {
+  final int bookId;
+  final DateTime timestamp;
+
+  BookNoteChangedEvent({required this.bookId, DateTime? timestamp})
+      : timestamp = timestamp ?? DateTime.now();
+}
+
+final _bookNoteEventController = StreamController<BookNoteChangedEvent>.broadcast();
+
+@Riverpod(keepAlive: true)
+Stream<BookNoteChangedEvent> bookNoteEventStream(BookNoteEventStreamRef ref) {
+  return _bookNoteEventController.stream;
+}
+
+@Riverpod(keepAlive: true)
+Future<int> bookNoteCount(BookNoteCountRef ref, int bookId) async {
+  // Listen to the event stream to invalidate/refetch when changes occur
+  ref.listen(bookNoteEventStreamProvider, (_, __) {
+    ref.invalidateSelf();
+  });
+
+  final repository = ref.read(bookNoteRepositoryProvider);
+  
+  // Fetch all notes for the book to get the total count
+  // Note: For better performance, consider adding a countBookNotes method to the repository
+  final notes = await repository.selectBookNotesByBookId(bookId);
+  return notes.length;
+}
 
 @Riverpod(keepAlive: true)
 class BookNoteNotifier extends _$BookNoteNotifier {
@@ -103,6 +134,9 @@ class BookNoteNotifier extends _$BookNoteNotifier {
     // Reload to ensure consistency and ordering
     await loadNotes(types: _types, hasNote: _hasNote, color: _color);
 
+    // Notify listeners of the change
+    _bookNoteEventController.add(BookNoteChangedEvent(bookId: note.bookId));
+
     return savedNote;
   }
 
@@ -125,6 +159,9 @@ class BookNoteNotifier extends _$BookNoteNotifier {
 
       // Reload to ensure consistency
       await loadNotes(types: _types, hasNote: _hasNote, color: _color);
+
+      // Notify listeners of the change
+      _bookNoteEventController.add(BookNoteChangedEvent(bookId: target.bookId));
     } catch (e, st) {
       state = AsyncError(e, st);
     }

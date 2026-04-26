@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:i_reader/data/models/book.dart';
 import 'package:i_reader/data/models/book_extra.dart';
 import 'package:i_reader/providers/book_statistics_provider.dart';
-import 'package:i_reader/providers/repository_providers.dart';
 import 'package:i_reader/ui/widgets/book_cover.dart';
 import 'package:i_reader/ui/widgets/card.dart';
 import 'package:i_reader/ui/widgets/highlight_digit.dart';
@@ -20,6 +19,12 @@ class NotePage extends ConsumerStatefulWidget {
 
 class _NotePageState extends ConsumerState<NotePage> {
   final ScrollController _scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +50,9 @@ class _NotePageState extends ConsumerState<NotePage> {
   }
 
   Widget _noteHeader() {
+    // Watch global note count - automatically updates when notes change
     final bookCount = ref.watch(bookNoteCountProvider);
+
     return Row(
       children: [
         const SizedBox(width: 10),
@@ -65,15 +72,19 @@ class _NotePageState extends ConsumerState<NotePage> {
               const SizedBox(height: 5),
               bookCount.when(
                 data: (data) {
+                  final noteCount = data['notes'] ?? 0;
+                  final bookCountVal = data['books'] ?? 0;
                   return Text(
-                    "${data['notes']}个笔记·落在了${data['books']}本书上",
-                    style: TextStyle(fontSize: 12),
+                    "$noteCount个笔记·落在了$bookCountVal本书上",
+                    style: const TextStyle(fontSize: 12),
                   );
                 },
-                loading: () {
-                  return Text("");
-                },
-                error: (error, stack) => Text(''),
+                loading: () =>
+                    const Text("加载中...", style: TextStyle(fontSize: 12)),
+                error: (error, stack) => const Text(
+                  "统计信息加载失败",
+                  style: TextStyle(fontSize: 12, color: Colors.red),
+                ),
               ),
               const SizedBox(height: 5),
             ],
@@ -84,29 +95,54 @@ class _NotePageState extends ConsumerState<NotePage> {
   }
 
   Widget _noteBody() {
+    // Watch book extra list - automatically refreshes when any note changes
     final noteList = ref.watch(bookExtralListProvider);
+
     return noteList.when(
       data: (data) {
         if (data.isEmpty) {
-          return const Center(child: Text('暂无笔记'));
-        } else {
-          return ListView.builder(
-            padding: EdgeInsets.only(bottom: 80),
+          return const Center(
+            child: Text(
+              '暂无笔记',
+              style: TextStyle(color: Colors.white70, fontSize: 16),
+            ),
+          );
+        }
+
+        return RefreshIndicator(
+          onRefresh: () async {
+            ref.refresh(bookExtralListProvider);
+            ref.refresh(bookNoteCountProvider);
+          },
+          child: ListView.builder(
+            padding: const EdgeInsets.only(bottom: 80),
             controller: _scrollController,
             itemCount: data.length,
             itemBuilder: (context, index) {
               return Container(
-                margin: EdgeInsets.only(bottom: 10),
+                margin: const EdgeInsets.only(bottom: 10),
                 child: bookNotesItem(data[index]),
               );
             },
-          );
-        }
+          ),
+        );
       },
-      loading: () => const Center(child: CircularProgressIndicator()),
+      loading: () => const Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            CircularProgressIndicator(color: Colors.white),
+            SizedBox(height: 16),
+            Text("加载中...", style: TextStyle(color: Colors.white)),
+          ],
+        ),
+      ),
       error: (error, stack) => ErrorWidget(
         error: error,
-        onRetry: () => {ref.refresh(bookExtralListProvider)},
+        onRetry: () {
+          ref.refresh(bookExtralListProvider);
+          ref.refresh(bookNoteCountProvider);
+        },
       ),
     );
   }
@@ -127,14 +163,15 @@ class _NotePageState extends ConsumerState<NotePage> {
       fontSize: 12,
       color: Colors.grey,
     );
+
     return InkWell(
       onTap: () {
-        // 跳转到书籍笔记详情页
+        // Navigate to book notes detail page
         context.pushNamed("book_notes", extra: {"bookExtra": bookExtra});
       },
       child: CardView(
         child: Padding(
-          padding: EdgeInsetsGeometry.all(10),
+          padding: const EdgeInsets.all(10),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -151,12 +188,16 @@ class _NotePageState extends ConsumerState<NotePage> {
                     const SizedBox(height: 8),
                     Text(bookExtra.title, style: titleStyle),
                     const SizedBox(height: 18),
-                    // Reading time
+                    // Reading time and progress
                     SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
                       child: Row(
                         children: [
-                          Icon(Icons.access_time, size: 16, color: Colors.grey),
+                          const Icon(
+                            Icons.access_time,
+                            size: 16,
+                            color: Colors.grey,
+                          ),
                           const SizedBox(width: 4),
                           Text(
                             TimeUtils.convertSeconds(
@@ -166,7 +207,11 @@ class _NotePageState extends ConsumerState<NotePage> {
                             style: readingTimeStyle,
                           ),
                           Text(" | ", style: readingTimeStyle),
-                          Icon(Icons.bar_chart, size: 16, color: Colors.grey),
+                          const Icon(
+                            Icons.bar_chart,
+                            size: 16,
+                            color: Colors.grey,
+                          ),
                           const SizedBox(width: 4),
                           Text(
                             '${(bookExtra.readingPercentage * 100).toStringAsFixed(1)}%',
@@ -178,7 +223,6 @@ class _NotePageState extends ConsumerState<NotePage> {
                   ],
                 ),
               ),
-              // Expanded(child: SizedBox()),
               Hero(
                 tag: bookExtra.coverFullPath,
                 child: BookCover(
@@ -209,7 +253,7 @@ class _NotePageState extends ConsumerState<NotePage> {
   }
 }
 
-/// 错误显示Widget
+/// Error display widget with retry functionality
 class ErrorWidget extends StatelessWidget {
   const ErrorWidget({super.key, required this.error, required this.onRetry});
 
@@ -225,7 +269,7 @@ class ErrorWidget extends StatelessWidget {
           children: [
             const Icon(Icons.error_outline, size: 48, color: Colors.red),
             const SizedBox(height: 16),
-            Text('加载失败: $error'),
+            Text('加载失败: $error', textAlign: TextAlign.center),
             const SizedBox(height: 16),
             ElevatedButton(onPressed: onRetry, child: const Text('重试')),
           ],

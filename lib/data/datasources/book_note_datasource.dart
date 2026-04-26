@@ -1,4 +1,5 @@
 import 'package:i_reader/data/datasources/base_datasource.dart';
+import 'package:i_reader/data/models/book_extra.dart';
 import 'package:i_reader/data/models/book_note.dart';
 
 abstract class BookNoteDatasource extends BaseDatasource {
@@ -24,4 +25,5 @@ abstract class BookNoteDatasource extends BaseDatasource {
     List<String>? types,
   });
   Future<BookNote?> selectRandomNote();
+  Future<List<BookExtra>> getBookExtraList();
 }

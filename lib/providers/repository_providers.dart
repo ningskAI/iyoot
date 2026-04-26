@@ -1,6 +1,5 @@
 import 'package:i_reader/data/datasources/impl/book_datasource_impl.dart';
 import 'package:i_reader/data/datasources/impl/book_note_datasource_impl.dart';
-import 'package:i_reader/data/datasources/impl/book_statistics_datasource_impl.dart';
 import 'package:i_reader/data/datasources/impl/reading_time_datasource_impl.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -14,8 +13,4 @@ final bookNoteRepositoryProvider = Provider((ref) {
 
 final readingTimeRepositoryProvider = Provider((ref) {
   return ReadingTimeDatasourceImpl();
-});
-
-final bookStatisticsRepositoryProvider = Provider((ref) {
-  return BookStatisticsDatasourceImpl();
 });

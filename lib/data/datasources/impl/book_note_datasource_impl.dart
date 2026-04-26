@@ -1,5 +1,6 @@
 import 'package:i_reader/data/database/app_database.dart';
 import 'package:i_reader/data/datasources/book_note_datasource.dart';
+import 'package:i_reader/data/models/book_extra.dart';
 import 'package:i_reader/data/models/book_note.dart';
 
 class BookNoteDatasourceImpl extends BookNoteDatasource {
@@ -124,12 +125,12 @@ class BookNoteDatasourceImpl extends BookNoteDatasource {
     if (database == null) throw StateError("database has not inited");
 
     final noteCountResult = await database.rawQuery(
-      'SELECT COUNT(*) as count FROM tb_notes',
+      'SELECT COUNT(*) as count FROM tb_notes WHERE $_typeFilter',
     );
     final noteCount = noteCountResult.first['count'] as int? ?? 0;
 
     final bookCountResult = await database.rawQuery(
-      'SELECT COUNT(DISTINCT bookId) as count FROM tb_notes',
+      'SELECT COUNT(DISTINCT bookId) as count FROM tb_notes WHERE $_typeFilter',
     );
     final bookCount = bookCountResult.first['count'] as int? ?? 0;
 
@@ -209,5 +210,19 @@ class BookNoteDatasourceImpl extends BookNoteDatasource {
 
     if (result.isEmpty) return null;
     return BookNote.fromJson(result.first);
+  }
+
+  @override
+  Future<List<BookExtra>> getBookExtraList() async {
+    String sql =
+        "SELECT b.id AS bookId, b.title, b.coverPath, b.filePath, b.author, b.readingPercentage, COUNT(n.id) AS numberOfNotes, " +
+        "COALESCE(SUM(rt.readingTime), 0) AS readingTime " +
+        "FROM tb_notes n " +
+        "INNER JOIN tb_books b ON b.id = n.bookId " +
+        "LEFT JOIN tb_reading_time rt ON n.bookId = rt.bookId " +
+        "WHERE n.type IN ('${annotationTypes.join("', '")}') " +
+        "GROUP BY b.id";
+
+    return await rawQueryList(sql, mapper: BookExtra.fromJson);
   }
 }
