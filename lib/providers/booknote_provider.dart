@@ -9,6 +9,7 @@ class BookNoteNotifier extends _$BookNoteNotifier {
   int? _bookId;
   List<String>? _types;
   bool? _hasNote;
+  String? _color;
 
   @override
   Future<List<BookNote>> build(int bookId) async {
@@ -20,29 +21,36 @@ class BookNoteNotifier extends _$BookNoteNotifier {
     int bookId, {
     List<String>? types,
     bool? hasNote,
+    String? color,
   }) async {
     final repository = ref.read(bookNoteRepositoryProvider);
 
     // If hasNote filter is specified, use the specialized method
     if (hasNote != null) {
-      final notes = await repository.selectBookNotesByBookIdWithNote(
+      var notes = await repository.selectBookNotesByBookIdWithNote(
         bookId,
         hasNote,
       );
 
-      // Apply type filter if also specified
+      // Apply type and color filter if also specified
       if (types != null && types.isNotEmpty) {
-        return notes.where((note) => types.contains(note.type)).toList();
+        notes = notes.where((note) => types.contains(note.type)).toList();
+      }
+      if (color != null) {
+        notes = notes.where((note) => note.color == color).toList();
       }
 
       return notes;
     }
 
     // Otherwise use the standard method
-    final notes = await repository.selectBookNotesByBookId(bookId);
+    List<BookNote> notes = await repository.selectBookNotesByBookId(bookId);
 
     if (types != null && types.isNotEmpty) {
-      return notes.where((note) => types.contains(note.type)).toList();
+      notes = notes.where((note) => types.contains(note.type)).toList();
+    }
+    if (color != null) {
+      notes = notes.where((note) => note.color == color).toList();
     }
 
     return notes;
@@ -52,11 +60,21 @@ class BookNoteNotifier extends _$BookNoteNotifier {
     ref.invalidateSelf();
   }
 
-  Future<void> loadNotes({List<String>? types, bool? hasNote}) async {
+  Future<void> loadNotes({
+    List<String>? types,
+    bool? hasNote,
+    String? color,
+  }) async {
     if (_bookId == null) return;
     _types = types;
     _hasNote = hasNote;
-    final notes = await _fetchNotes(_bookId!, types: types, hasNote: hasNote);
+    _color = color;
+    final notes = await _fetchNotes(
+      _bookId!,
+      types: types,
+      hasNote: hasNote,
+      color: color,
+    );
     state = AsyncData(notes);
   }
 
@@ -73,13 +91,17 @@ class BookNoteNotifier extends _$BookNoteNotifier {
     loadNotes(types: null, hasNote: null);
   }
 
+  void filterByColor(String color) {
+    loadNotes(types: null, hasNote: null, color: color);
+  }
+
   Future<BookNote> addNote(BookNote note) async {
     final repository = ref.read(bookNoteRepositoryProvider);
     final id = await repository.save(note);
     final savedNote = note..id = id;
 
     // Reload to ensure consistency and ordering
-    await loadNotes(types: _types, hasNote: _hasNote);
+    await loadNotes(types: _types, hasNote: _hasNote, color: _color);
 
     return savedNote;
   }
@@ -102,7 +124,7 @@ class BookNoteNotifier extends _$BookNoteNotifier {
       await repository.deleteBookNoteById(target.id!);
 
       // Reload to ensure consistency
-      await loadNotes(types: _types, hasNote: _hasNote);
+      await loadNotes(types: _types, hasNote: _hasNote, color: _color);
     } catch (e, st) {
       state = AsyncError(e, st);
     }

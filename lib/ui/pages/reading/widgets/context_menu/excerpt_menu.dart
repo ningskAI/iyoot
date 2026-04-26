@@ -337,8 +337,8 @@ class ExcerptMenuState extends ConsumerState<ExcerptMenu> {
       backgroundColor: Colors.transparent,
       builder: (ctx) {
         return Container(
-          margin: const EdgeInsets.all(20),
-          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+          margin: const EdgeInsets.all(10),
+          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
           decoration: BoxDecoration(
             color: const Color(0xFF2C2C2E),
             borderRadius: BorderRadius.circular(16),
@@ -346,110 +346,103 @@ class ExcerptMenuState extends ConsumerState<ExcerptMenu> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text(
-                '选择标注样式',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 20),
-              // 颜色列表
-              Wrap(
-                spacing: 12,
-                runSpacing: 12,
-                alignment: WrapAlignment.center,
-                children: notesColors.map((color) {
-                  final isSelected = annoColor == color;
-                  return GestureDetector(
+              // Color list and Underline button in a Row
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  // Color list
+                  Wrap(
+                    spacing: 12,
+                    runSpacing: 12,
+                    alignment: WrapAlignment.center,
+                    children: notesColors.map((color) {
+                      final isSelected =
+                          annoColor == color &&
+                          _selectedAnnotationType != 'underline';
+                      return GestureDetector(
+                        onTap: () async {
+                          Navigator.pop(ctx);
+                          // Set type to highlight if it was underline, or keep current if already highlight
+                          final targetType =
+                              _selectedAnnotationType == 'underline'
+                              ? 'highlight'
+                              : (_selectedAnnotationType ?? 'highlight');
+                          await onTypeSelected(targetType);
+                          await onColorSelected(color);
+                        },
+                        child: Container(
+                          width: 24,
+                          height: 24,
+                          decoration: BoxDecoration(
+                            color: Color(int.parse('0xff$color')),
+                            shape: BoxShape.circle,
+                            border: isSelected
+                                ? Border.all(color: Colors.white, width: 3)
+                                : null,
+                            boxShadow: isSelected
+                                ? [
+                                    BoxShadow(
+                                      color: Colors.white.withOpacity(0.5),
+                                      blurRadius: 8,
+                                      spreadRadius: 2,
+                                    ),
+                                  ]
+                                : null,
+                          ),
+                          child: isSelected
+                              ? const Icon(
+                                  Icons.check,
+                                  color: Colors.white,
+                                  size: 12,
+                                )
+                              : null,
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                  const SizedBox(width: 16),
+                  // Underline button
+                  GestureDetector(
                     onTap: () async {
                       Navigator.pop(ctx);
-                      // 创建或更新标注
-                      await onTypeSelected(
-                        _selectedAnnotationType ?? 'highlight',
-                      );
-                      await onColorSelected(color);
-                      // 关闭所有菜单
-                      widget.onClose();
+                      // Toggle underline: if already underline, switch to highlight, else switch to underline
+                      final newType = _selectedAnnotationType == 'underline'
+                          ? 'highlight'
+                          : 'underline';
+                      await onTypeSelected(newType);
+                      // Use current color
+                      await onColorSelected(annoColor);
                     },
                     child: Container(
-                      width: 48,
-                      height: 48,
-                      decoration: BoxDecoration(
-                        color: Color(int.parse('0xff$color')),
-                        shape: BoxShape.circle,
-                        border: isSelected
-                            ? Border.all(color: Colors.white, width: 3)
-                            : null,
-                        boxShadow: isSelected
-                            ? [
-                                BoxShadow(
-                                  color: Colors.white.withOpacity(0.5),
-                                  blurRadius: 8,
-                                  spreadRadius: 2,
-                                ),
-                              ]
-                            : null,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
                       ),
-                      child: isSelected
-                          ? const Icon(
-                              Icons.check,
-                              color: Colors.white,
-                              size: 24,
-                            )
-                          : null,
-                    ),
-                  );
-                }).toList(),
-              ),
-              const SizedBox(height: 20),
-              // 下划线按钮
-              GestureDetector(
-                onTap: () async {
-                  Navigator.pop(ctx);
-                  // 设置为下划线类型
-                  await onTypeSelected('underline');
-                  // 使用当前颜色
-                  await onColorSelected(annoColor);
-                  // 关闭所有菜单
-                  widget.onClose();
-                },
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 24,
-                    vertical: 12,
-                  ),
-                  decoration: BoxDecoration(
-                    color: _selectedAnnotationType == 'underline'
-                        ? Color(int.parse('0xff$annoColor')).withOpacity(0.3)
-                        : Colors.transparent,
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(
-                      color: _selectedAnnotationType == 'underline'
-                          ? Color(int.parse('0xff$annoColor'))
-                          : Colors.white54,
-                      width: 2,
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
+                      decoration: BoxDecoration(
+                        color: _selectedAnnotationType == 'underline'
+                            ? Color(
+                                int.parse('0xff$annoColor'),
+                              ).withOpacity(0.3)
+                            : Colors.transparent,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          color: _selectedAnnotationType == 'underline'
+                              ? Color(int.parse('0xff$annoColor'))
+                              : Colors.white54,
+                          width: 2,
+                        ),
+                      ),
+                      child: Icon(
                         Icons.format_underline,
                         color: _selectedAnnotationType == 'underline'
                             ? Color(int.parse('0xff$annoColor'))
                             : Colors.white,
-                        size: 24,
+                        size: 16,
                       ),
-                      const SizedBox(width: 8),
-                      const Text(
-                        '下划线',
-                        style: TextStyle(color: Colors.white, fontSize: 16),
-                      ),
-                    ],
+                    ),
                   ),
-                ),
+                ],
               ),
             ],
           ),
@@ -495,8 +488,16 @@ class ExcerptMenuState extends ConsumerState<ExcerptMenu> {
                 size: 20,
               ),
               text: '高亮标记',
-              onTap: () {
-                _showColorPickerDialog();
+              onTap: () async {
+                // 如果已经存在标注，则打开颜色选择器以允许修改
+                if (hasAnnotation) {
+                  _showColorPickerDialog();
+                } else {
+                  // 如果是新标注，直接使用上次配置立即高亮
+                  await onTypeSelected(annoType);
+                  await onColorSelected(annoColor);
+                  widget.onClose();
+                }
               },
             ),
           // Add/Edit Note - 添加笔记按钮

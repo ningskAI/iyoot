@@ -66,7 +66,7 @@ class _NotePageState extends ConsumerState<NotePage> {
               bookCount.when(
                 data: (data) {
                   return Text(
-                    "${data['numberOfNotes']}个笔记·落在了${data['numberOfBooks']}本书上",
+                    "${data['notes']}个笔记·落在了${data['books']}本书上",
                     style: TextStyle(fontSize: 12),
                   );
                 },

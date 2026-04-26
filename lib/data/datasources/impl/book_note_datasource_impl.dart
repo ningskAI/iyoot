@@ -109,10 +109,12 @@ class BookNoteDatasourceImpl extends BookNoteDatasource {
     );
 
     return result
-        .map((row) => {
-              'bookId': row['bookId'] as int,
-              'count': row['count'] as int,
-            })
+        .map(
+          (row) => {
+            'bookId': row['bookId'] as int,
+            'count': row['count'] as int,
+          },
+        )
         .toList();
   }
 
@@ -122,12 +124,12 @@ class BookNoteDatasourceImpl extends BookNoteDatasource {
     if (database == null) throw StateError("database has not inited");
 
     final noteCountResult = await database.rawQuery(
-      'SELECT COUNT(*) as count FROM tb_notes WHERE $_typeFilter',
+      'SELECT COUNT(*) as count FROM tb_notes',
     );
     final noteCount = noteCountResult.first['count'] as int? ?? 0;
 
     final bookCountResult = await database.rawQuery(
-      'SELECT COUNT(DISTINCT bookId) as count FROM tb_notes WHERE $_typeFilter',
+      'SELECT COUNT(DISTINCT bookId) as count FROM tb_notes',
     );
     final bookCount = bookCountResult.first['count'] as int? ?? 0;
 
