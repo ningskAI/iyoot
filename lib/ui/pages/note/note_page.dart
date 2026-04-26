@@ -152,7 +152,7 @@ class _NotePageState extends ConsumerState<NotePage> {
       fontSize: 20,
       fontWeight: FontWeight.bold,
     );
-    TextStyle textStyle = const TextStyle(fontSize: 20);
+    TextStyle textStyle = const TextStyle(fontSize: 18);
     TextStyle titleStyle = const TextStyle(
       overflow: TextOverflow.ellipsis,
       fontSize: 14,

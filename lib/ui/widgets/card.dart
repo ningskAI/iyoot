@@ -9,7 +9,7 @@ class CardView extends StatelessWidget {
     return Material(
       color: Theme.of(context).brightness == Brightness.dark
           ? Colors.grey.withAlpha(50)
-          : Colors.white70,
+          : Colors.white60,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Container(
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
