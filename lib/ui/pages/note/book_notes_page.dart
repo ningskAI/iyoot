@@ -26,6 +26,11 @@ class _BookNotesPageState extends ConsumerState<BookNotesPage> {
   bool _isSelectionMode = false;
   final Set<int?> _selectedNoteIds = {};
 
+  // Filter Dialog State - Persisted across dialog openings
+  final Set<String> _selectedCategories = {};
+  final Set<String> _selectedAnnotationTypes = {};
+  final Set<String> _selectedColors = {};
+
   @override
   void dispose() {
     // Reset filter when leaving the page to avoid carrying over state
@@ -99,486 +104,446 @@ class _BookNotesPageState extends ConsumerState<BookNotesPage> {
   }
 
   void _showFilterDialog(BuildContext context) {
-    // Use Sets for multi-selection
-    // Top Level Categories: 'underline_only' (no note), 'note' (has note), 'bookmark'
-    final Set<String> selectedCategories = {};
-
-    // Sub-filters for annotations (underline/highlight types and colors)
-    final Set<String> selectedAnnotationTypes = {}; // 'underline', 'highlight'
-    final Set<String> selectedColors = {};
-
-    // Get current theme brightness to adjust UI elements if needed
-    final bool isDark = Theme.of(context).brightness == Brightness.dark;
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-
     showModalBottomSheet(
       context: context,
       isScrollControlled: true, // Allow sheet to take more space if needed
-      backgroundColor:
-          Colors.transparent, // Let inner widgets handle background
       builder: (ctx) {
-        return Theme(
-          data: theme, // Inherit current theme (Light/Dark)
-          child: StatefulBuilder(
-            builder: (context, setModalState) {
-              return HomePageBackground(
-                glowColors: const [Color(0xFF4F7CFF), Color(0xFF7C5CFF)],
-                // Remove fixed padding from container, apply to scrollable content
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Container(
-                      width: 40,
-                      height: 4,
-                      margin: const EdgeInsets.only(top: 10, bottom: 16),
-                      decoration: BoxDecoration(
-                        color: isDark ? Colors.grey[700] : Colors.grey[300],
-                        borderRadius: BorderRadius.circular(2),
-                      ),
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            return HomePageBackground(
+              glowColors: const [Color(0xFF4F7CFF), Color(0xFF7C5CFF)],
+              // Remove fixed padding from container, apply to scrollable content
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 40,
+                    height: 4,
+                    margin: const EdgeInsets.only(top: 10, bottom: 16),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(2),
                     ),
-                    Text(
-                      '筛选你要的笔记',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                        color:
-                            theme.textTheme.titleLarge?.color ??
-                            (isDark ? Colors.white : Colors.black87),
-                      ),
-                    ),
-                    // Wrap the rest of the content in SingleChildScrollView
-                    Flexible(
-                      child: SingleChildScrollView(
-                        padding: const EdgeInsets.fromLTRB(20, 24, 20, 20),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // Unified CardView for Types and Colors
-                            Text(
-                              '类型',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                                color:
-                                    theme.textTheme.bodyMedium?.color ??
-                                    (isDark ? Colors.white70 : Colors.black87),
-                              ),
-                            ),
-                            const SizedBox(height: 12),
-                            Wrap(
-                              spacing: 12,
-                              runSpacing: 12,
-                              children: [
-                                _buildFilterButton(
-                                  '划线', // Represents annotations without notes
-                                  selectedCategories.contains('underline_only'),
-                                  () => setModalState(() {
-                                    if (selectedCategories.contains(
-                                      'underline_only',
-                                    )) {
-                                      selectedCategories.remove(
-                                        'underline_only',
-                                      );
-                                    } else {
-                                      selectedCategories.add('underline_only');
-                                    }
-                                  }),
-                                ),
-                                _buildFilterButton(
-                                  '笔记', // Represents annotations with notes
-                                  selectedCategories.contains('note'),
-                                  () => setModalState(() {
-                                    if (selectedCategories.contains('note')) {
-                                      selectedCategories.remove('note');
-                                    } else {
-                                      selectedCategories.add('note');
-                                    }
-                                  }),
-                                ),
-                                _buildFilterButton(
-                                  '书签',
-                                  selectedCategories.contains('bookmark'),
-                                  () => setModalState(() {
-                                    if (selectedCategories.contains(
-                                      'bookmark',
-                                    )) {
-                                      selectedCategories.remove('bookmark');
-                                    } else {
-                                      selectedCategories.add('bookmark');
-                                    }
-                                  }),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 12),
-                            CardView(
-                              child: Padding(
-                                padding: const EdgeInsets.all(16.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    // 2. Annotation Type Selection (Underline / Highlight style)
-                                    // Only relevant if 'underline_only' or 'note' is selected
-                                    Text(
-                                      '划线样式',
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w500,
-                                        color:
-                                            theme.textTheme.bodyMedium?.color ??
-                                            (isDark
-                                                ? Colors.white70
-                                                : Colors.black87),
-                                      ),
+                  ),
+                  const Text(
+                    '筛选你要的笔记',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                  ),
+                  // Wrap the rest of the content in SingleChildScrollView
+                  Flexible(
+                    child: SingleChildScrollView(
+                      padding: const EdgeInsets.fromLTRB(20, 24, 20, 20),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Unified CardView for Types and Colors
+                          CardView(
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  // 1. Top Level Categories: Underline (No Note), Note, Bookmark
+                                  const Text(
+                                    '类型',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
                                     ),
-                                    const SizedBox(height: 12),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        _buildTypeIcon(
-                                          icon: Icons.format_underline,
-                                          label: '下划线',
-                                          isSelected: selectedAnnotationTypes
-                                              .contains('underline'),
-                                          onTap: () {
-                                            setModalState(() {
-                                              if (selectedAnnotationTypes
-                                                  .contains('underline')) {
-                                                selectedAnnotationTypes.remove(
-                                                  'underline',
-                                                );
-                                              } else {
-                                                selectedAnnotationTypes.add(
-                                                  'underline',
-                                                );
-                                              }
-                                            });
-                                          },
+                                  ),
+                                  const SizedBox(height: 12),
+                                  Wrap(
+                                    spacing: 12,
+                                    runSpacing: 12,
+                                    children: [
+                                      _buildFilterButton(
+                                        '划线', // Represents annotations without notes
+                                        _selectedCategories.contains(
+                                          'underline_only',
                                         ),
-                                        const SizedBox(width: 16),
-                                        _buildTypeIcon(
-                                          icon: Icons.highlight,
-                                          label: '高亮',
-                                          isSelected: selectedAnnotationTypes
-                                              .contains('highlight'),
-                                          onTap: () {
-                                            setModalState(() {
-                                              if (selectedAnnotationTypes
-                                                  .contains('highlight')) {
-                                                selectedAnnotationTypes.remove(
-                                                  'highlight',
-                                                );
-                                              } else {
-                                                selectedAnnotationTypes.add(
-                                                  'highlight',
-                                                );
-                                              }
-                                            });
-                                          },
-                                        ),
-                                      ],
-                                    ),
-
-                                    const SizedBox(height: 20),
-
-                                    // 3. Color Selection
-                                    Text(
-                                      '高亮颜色',
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w500,
-                                        color:
-                                            theme.textTheme.bodyMedium?.color ??
-                                            (isDark
-                                                ? Colors.white70
-                                                : Colors.black87),
+                                        () => setModalState(() {
+                                          if (_selectedCategories.contains(
+                                            'underline_only',
+                                          )) {
+                                            _selectedCategories.remove(
+                                              'underline_only',
+                                            );
+                                          } else {
+                                            _selectedCategories.add(
+                                              'underline_only',
+                                            );
+                                          }
+                                        }),
                                       ),
+                                      _buildFilterButton(
+                                        '笔记', // Represents annotations with notes
+                                        _selectedCategories.contains('note'),
+                                        () => setModalState(() {
+                                          if (_selectedCategories.contains(
+                                            'note',
+                                          )) {
+                                            _selectedCategories.remove('note');
+                                          } else {
+                                            _selectedCategories.add('note');
+                                          }
+                                        }),
+                                      ),
+                                      _buildFilterButton(
+                                        '书签',
+                                        _selectedCategories.contains(
+                                          'bookmark',
+                                        ),
+                                        () => setModalState(() {
+                                          if (_selectedCategories.contains(
+                                            'bookmark',
+                                          )) {
+                                            _selectedCategories.remove(
+                                              'bookmark',
+                                            );
+                                          } else {
+                                            _selectedCategories.add('bookmark');
+                                          }
+                                        }),
+                                      ),
+                                    ],
+                                  ),
+
+                                  const SizedBox(height: 20),
+
+                                  // 2. Annotation Type Selection (Underline / Highlight style)
+                                  // Only relevant if 'underline_only' or 'note' is selected
+                                  const Text(
+                                    '划线样式',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
                                     ),
-                                    const SizedBox(height: 12),
-                                    Wrap(
-                                      spacing: 16,
-                                      runSpacing: 16,
-                                      alignment: WrapAlignment.start,
-                                      children: [
-                                        for (final colorHex in [
-                                          'FF0000', // red
-                                          '800080', // purple
-                                          '0000FF', // blue
-                                          '008000', // green
-                                          'FFA500', // orange
-                                        ])
-                                          GestureDetector(
-                                            onTap: () {
-                                              FocusScope.of(context).unfocus();
-                                              setModalState(
-                                                () =>
-                                                    selectedColors.contains(
-                                                      colorHex,
-                                                    )
-                                                    ? selectedColors.remove(
-                                                        colorHex,
-                                                      )
-                                                    : selectedColors.add(
-                                                        colorHex,
-                                                      ),
+                                  ),
+                                  const SizedBox(height: 12),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      _buildTypeIcon(
+                                        icon: Icons.format_underline,
+                                        label: '下划线',
+                                        isSelected: _selectedAnnotationTypes
+                                            .contains('underline'),
+                                        onTap: () {
+                                          setModalState(() {
+                                            if (_selectedAnnotationTypes
+                                                .contains('underline')) {
+                                              _selectedAnnotationTypes.remove(
+                                                'underline',
                                               );
-                                            },
-                                            child: Container(
-                                              width: 32,
-                                              height: 32,
-                                              decoration: BoxDecoration(
-                                                color: Color(
-                                                  int.parse('0xff$colorHex'),
-                                                ),
-                                                border: Border.all(
-                                                  color:
-                                                      selectedColors.contains(
-                                                        colorHex,
-                                                      )
-                                                      ? const Color(0xFF4A90E2)
-                                                      : (isDark
-                                                            ? Colors.grey[600]
-                                                            : Colors
-                                                                  .grey[300])!,
-                                                  width:
-                                                      selectedColors.contains(
-                                                        colorHex,
-                                                      )
-                                                      ? 2
-                                                      : 1,
-                                                ),
-                                                shape: BoxShape.circle,
-                                              ),
-                                              child:
-                                                  selectedColors.contains(
+                                            } else {
+                                              _selectedAnnotationTypes.add(
+                                                'underline',
+                                              );
+                                            }
+                                          });
+                                        },
+                                      ),
+                                      const SizedBox(width: 16),
+                                      _buildTypeIcon(
+                                        icon: Icons.highlight,
+                                        label: '高亮',
+                                        isSelected: _selectedAnnotationTypes
+                                            .contains('highlight'),
+                                        onTap: () {
+                                          setModalState(() {
+                                            if (_selectedAnnotationTypes
+                                                .contains('highlight')) {
+                                              _selectedAnnotationTypes.remove(
+                                                'highlight',
+                                              );
+                                            } else {
+                                              _selectedAnnotationTypes.add(
+                                                'highlight',
+                                              );
+                                            }
+                                          });
+                                        },
+                                      ),
+                                    ],
+                                  ),
+
+                                  const SizedBox(height: 20),
+
+                                  // 3. Color Selection
+                                  const Text(
+                                    '高亮颜色',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 12),
+                                  Wrap(
+                                    spacing: 16,
+                                    runSpacing: 16,
+                                    alignment: WrapAlignment.start,
+                                    children: [
+                                      for (final colorHex in [
+                                        'FF0000', // red
+                                        '800080', // purple
+                                        '0000FF', // blue
+                                        '008000', // green
+                                        'FFA500', // orange
+                                      ])
+                                        GestureDetector(
+                                          onTap: () {
+                                            FocusScope.of(context).unfocus();
+                                            setModalState(
+                                              () =>
+                                                  _selectedColors.contains(
                                                     colorHex,
                                                   )
-                                                  ? const Icon(
-                                                      Icons.check,
-                                                      color: Colors.white,
-                                                      size: 16,
+                                                  ? _selectedColors.remove(
+                                                      colorHex,
                                                     )
-                                                  : null,
+                                                  : _selectedColors.add(
+                                                      colorHex,
+                                                    ),
+                                            );
+                                          },
+                                          child: Container(
+                                            width: 32,
+                                            height: 32,
+                                            decoration: BoxDecoration(
+                                              color: Color(
+                                                int.parse('0xff$colorHex'),
+                                              ),
+                                              border: Border.all(
+                                                color:
+                                                    _selectedColors.contains(
+                                                      colorHex,
+                                                    )
+                                                    ? const Color(0xFF4A90E2)
+                                                    : (Colors.grey[300] ??
+                                                          Colors.grey),
+                                                width:
+                                                    _selectedColors.contains(
+                                                      colorHex,
+                                                    )
+                                                    ? 2
+                                                    : 1,
+                                              ),
+                                              shape: BoxShape.circle,
                                             ),
+                                            child:
+                                                _selectedColors.contains(
+                                                  colorHex,
+                                                )
+                                                ? const Icon(
+                                                    Icons.check,
+                                                    color: Colors.white,
+                                                    size: 16,
+                                                  )
+                                                : null,
                                           ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
+                                        ),
+                                    ],
+                                  ),
+                                ],
                               ),
                             ),
+                          ),
 
-                            const SizedBox(height: 20),
+                          const SizedBox(height: 20),
 
-                            Row(
-                              children: [
-                                Expanded(
-                                  flex: 2,
-                                  child: OutlinedButton(
-                                    onPressed: () {
-                                      ref
-                                          .read(
-                                            bookNoteNotifierProvider(
-                                              widget.book.bookId,
-                                            ).notifier,
-                                          )
-                                          .resetFilter();
-                                      Navigator.pop(ctx);
-                                    },
-                                    style: OutlinedButton.styleFrom(
-                                      padding: const EdgeInsets.symmetric(
-                                        vertical: 14,
-                                      ),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      side: BorderSide.none,
-                                      backgroundColor: isDark
-                                          ? Colors.grey[800]
-                                          : Colors.grey[100],
+                          Row(
+                            children: [
+                              Expanded(
+                                flex: 2,
+                                child: OutlinedButton(
+                                  onPressed: () {
+                                    ref
+                                        .read(
+                                          bookNoteNotifierProvider(
+                                            widget.book.bookId,
+                                          ).notifier,
+                                        )
+                                        .resetFilter();
+                                    Navigator.pop(ctx);
+                                  },
+                                  style: OutlinedButton.styleFrom(
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 14,
                                     ),
-                                    child: Text(
-                                      '重置',
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w500,
-                                        color:
-                                            theme.textTheme.bodyMedium?.color ??
-                                            (isDark
-                                                ? Colors.white70
-                                                : Colors.black87),
-                                      ),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    side: BorderSide.none,
+                                    backgroundColor: Colors.grey[100],
+                                  ),
+                                  child: const Text(
+                                    '重置',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
                                     ),
                                   ),
                                 ),
-                                const SizedBox(width: 12),
-                                Expanded(
-                                  flex: 5,
-                                  child: ElevatedButton(
-                                    onPressed: () {
-                                      final notifier = ref.read(
-                                        bookNoteNotifierProvider(
-                                          widget.book.bookId,
-                                        ).notifier,
-                                      );
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                flex: 5,
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    final notifier = ref.read(
+                                      bookNoteNotifierProvider(
+                                        widget.book.bookId,
+                                      ).notifier,
+                                    );
 
-                                      // Logic to map UI selections to Provider parameters
-                                      // Provider signature: loadNotes({List<String>? types, bool? hasNote, String? color})
+                                    // Logic to map UI selections to Provider parameters
+                                    // Provider signature: loadNotes({List<String>? types, bool? hasNote, String? color})
 
-                                      List<String>? types;
-                                      bool? hasNote;
-                                      String? color;
+                                    List<String>? types;
+                                    bool? hasNote;
+                                    String? color;
 
-                                      final bool hasCategorySelection =
-                                          selectedCategories.isNotEmpty;
-                                      final bool onlyBookmark =
-                                          hasCategorySelection &&
-                                          selectedCategories.contains(
-                                            'bookmark',
-                                          ) &&
-                                          !selectedCategories.contains(
-                                            'underline_only',
-                                          ) &&
-                                          !selectedCategories.contains('note');
+                                    final bool hasCategorySelection =
+                                        _selectedCategories.isNotEmpty;
+                                    final bool onlyBookmark =
+                                        hasCategorySelection &&
+                                        _selectedCategories.contains(
+                                          'bookmark',
+                                        ) &&
+                                        !_selectedCategories.contains(
+                                          'underline_only',
+                                        ) &&
+                                        !_selectedCategories.contains('note');
 
-                                      final bool onlyUnderlineOnly =
-                                          hasCategorySelection &&
-                                          selectedCategories.contains(
-                                            'underline_only',
-                                          ) &&
-                                          !selectedCategories.contains(
-                                            'note',
-                                          ) &&
-                                          !selectedCategories.contains(
-                                            'bookmark',
-                                          );
+                                    final bool onlyUnderlineOnly =
+                                        hasCategorySelection &&
+                                        _selectedCategories.contains(
+                                          'underline_only',
+                                        ) &&
+                                        !_selectedCategories.contains('note') &&
+                                        !_selectedCategories.contains(
+                                          'bookmark',
+                                        );
 
-                                      final bool onlyNote =
-                                          hasCategorySelection &&
-                                          selectedCategories.contains('note') &&
-                                          !selectedCategories.contains(
-                                            'underline_only',
-                                          ) &&
-                                          !selectedCategories.contains(
-                                            'bookmark',
-                                          );
+                                    final bool onlyNote =
+                                        hasCategorySelection &&
+                                        _selectedCategories.contains('note') &&
+                                        !_selectedCategories.contains(
+                                          'underline_only',
+                                        ) &&
+                                        !_selectedCategories.contains(
+                                          'bookmark',
+                                        );
 
-                                      // If "Bookmark" is selected along with others, or alone, we need to handle type filtering.
-                                      // Since provider 'types' filters by annotation type (underline/highlight/bookmark),
-                                      // and 'hasNote' filters by content existence.
+                                    // If "Bookmark" is selected along with others, or alone, we need to handle type filtering.
+                                    // Since provider 'types' filters by annotation type (underline/highlight/bookmark),
+                                    // and 'hasNote' filters by content existence.
 
-                                      // 1. Determine 'hasNote'
-                                      // If 'note' is selected AND 'underline_only' is NOT selected -> hasNote = true
-                                      // If 'underline_only' is selected AND 'note' is NOT selected -> hasNote = false
-                                      // If both or neither are selected -> hasNote = null (don't filter by note existence)
+                                    // 1. Determine 'hasNote'
+                                    // If 'note' is selected AND 'underline_only' is NOT selected -> hasNote = true
+                                    // If 'underline_only' is selected AND 'note' is NOT selected -> hasNote = false
+                                    // If both or neither are selected -> hasNote = null (don't filter by note existence)
 
-                                      if (selectedCategories.contains('note') &&
-                                          !selectedCategories.contains(
-                                            'underline_only',
-                                          )) {
-                                        hasNote = true;
-                                      } else if (selectedCategories.contains(
-                                            'underline_only',
-                                          ) &&
-                                          !selectedCategories.contains(
-                                            'note',
-                                          )) {
-                                        hasNote = false;
-                                      } else {
-                                        hasNote = null;
-                                      }
+                                    if (_selectedCategories.contains('note') &&
+                                        !_selectedCategories.contains(
+                                          'underline_only',
+                                        )) {
+                                      hasNote = true;
+                                    } else if (_selectedCategories.contains(
+                                          'underline_only',
+                                        ) &&
+                                        !_selectedCategories.contains('note')) {
+                                      hasNote = false;
+                                    } else {
+                                      hasNote = null;
+                                    }
 
-                                      // 2. Determine 'types'
-                                      // If 'bookmark' is selected, we must include 'bookmark' in types.
-                                      // If 'underline_only' or 'note' is selected, we might also want to filter by specific annotation styles (underline/highlight) if selected.
-                                      // However, 'bookmark' is a distinct type.
+                                    // 2. Determine 'types'
+                                    // If 'bookmark' is selected, we must include 'bookmark' in types.
+                                    // If 'underline_only' or 'note' is selected, we might also want to filter by specific annotation styles (underline/highlight) if selected.
+                                    // However, 'bookmark' is a distinct type.
 
-                                      final List<String> typeList = [];
+                                    final List<String> typeList = [];
 
-                                      if (selectedCategories.contains(
-                                        'bookmark',
-                                      )) {
-                                        typeList.add('bookmark');
-                                      }
+                                    if (_selectedCategories.contains(
+                                      'bookmark',
+                                    )) {
+                                      typeList.add('bookmark');
+                                    }
 
-                                      // If we are filtering for non-bookmarks (underline_only or note), we can further filter by style
-                                      if (selectedCategories.contains(
-                                            'underline_only',
-                                          ) ||
-                                          selectedCategories.contains('note')) {
-                                        if (selectedAnnotationTypes.contains(
-                                          'underline',
-                                        ))
-                                          typeList.add('underline');
-                                        if (selectedAnnotationTypes.contains(
-                                          'highlight',
-                                        ))
-                                          typeList.add('highlight');
-                                      }
+                                    // If we are filtering for non-bookmarks (underline_only or note), we can further filter by style
+                                    if (_selectedCategories.contains(
+                                          'underline_only',
+                                        ) ||
+                                        _selectedCategories.contains('note')) {
+                                      if (_selectedAnnotationTypes.contains(
+                                        'underline',
+                                      ))
+                                        typeList.add('underline');
+                                      if (_selectedAnnotationTypes.contains(
+                                        'highlight',
+                                      ))
+                                        typeList.add('highlight');
+                                    }
 
-                                      // If no specific types added from categories or sub-filters, keep null (all types)
-                                      // Exception: If only bookmark was selected, typeList has 'bookmark'.
-                                      // If only underline/note selected but no style selected, typeList is empty -> null (all annotation styles)
+                                    // If no specific types added from categories or sub-filters, keep null (all types)
+                                    // Exception: If only bookmark was selected, typeList has 'bookmark'.
+                                    // If only underline/note selected but no style selected, typeList is empty -> null (all annotation styles)
 
-                                      types = typeList.isEmpty
-                                          ? null
-                                          : typeList;
+                                    types = typeList.isEmpty ? null : typeList;
 
-                                      // 3. Determine 'color'
-                                      // Color usually applies to highlights/underlines.
-                                      if (selectedColors.length == 1) {
-                                        color = selectedColors.first;
-                                      } else {
-                                        color = null;
-                                      }
+                                    // 3. Determine 'color'
+                                    // Color usually applies to highlights/underlines.
+                                    if (_selectedColors.length == 1) {
+                                      color = _selectedColors.first;
+                                    } else {
+                                      color = null;
+                                    }
 
-                                      // Edge case: If user selects ONLY 'bookmark', hasNote should probably be null (bookmarks might not have notes or might, but usually distinct)
-                                      // Our logic above sets hasNote=null if both/neither note/underline_only selected.
-                                      // If only bookmark selected, hasNote=null is correct.
+                                    // Edge case: If user selects ONLY 'bookmark', hasNote should probably be null (bookmarks might not have notes or might, but usually distinct)
+                                    // Our logic above sets hasNote=null if both/neither note/underline_only selected.
+                                    // If only bookmark selected, hasNote=null is correct.
 
-                                      notifier.loadNotes(
-                                        types: types,
-                                        hasNote: hasNote,
-                                        color: color,
-                                      );
+                                    notifier.loadNotes(
+                                      types: types,
+                                      hasNote: hasNote,
+                                      color: color,
+                                    );
 
-                                      Navigator.pop(ctx);
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: const Color(0xFF4A90E2),
-                                      foregroundColor: Colors.white,
-                                      padding: const EdgeInsets.symmetric(
-                                        vertical: 14,
-                                      ),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      elevation: 0,
+                                    Navigator.pop(ctx);
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: const Color(0xFF4A90E2),
+                                    foregroundColor: Colors.white,
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 14,
                                     ),
-                                    child: const Text(
-                                      '查看',
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w600,
-                                      ),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    elevation: 0,
+                                  ),
+                                  child: const Text(
+                                    '查看',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
                                     ),
                                   ),
                                 ),
-                              ],
-                            ),
-                            const SizedBox(height: 8),
-                          ],
-                        ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                        ],
                       ),
                     ),
-                  ],
-                ),
-              );
-            },
-          ),
+                  ),
+                ],
+              ),
+            );
+          },
         );
       },
     );
@@ -600,10 +565,10 @@ class _BookNotesPageState extends ConsumerState<BookNotesPage> {
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
               color: isSelected
-                  ? const Color.fromARGB(255, 8, 117, 241).withOpacity(0.4)
+                  ? const Color(0xFFE8F2FF)
                   : theme.brightness == Brightness.light
-                  ? Colors.white
-                  : const Color(0xFF666666),
+                  ? const Color(0xFF666666)
+                  : Colors.white,
               borderRadius: BorderRadius.circular(8),
               border: Border.all(
                 color: isSelected
@@ -616,9 +581,7 @@ class _BookNotesPageState extends ConsumerState<BookNotesPage> {
               icon,
               color: isSelected
                   ? const Color.fromARGB(255, 7, 111, 230)
-                  : theme.brightness == Brightness.light
-                  ? const Color(0xFF666666)
-                  : Colors.white,
+                  : const Color(0xFF666666),
               size: 20,
             ),
           ),
@@ -646,11 +609,7 @@ class _BookNotesPageState extends ConsumerState<BookNotesPage> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          color: isSelected
-              ? const Color(0xFF4A90E2).withOpacity(0.4)
-              : theme.brightness == Brightness.light
-              ? Colors.white
-              : const Color(0xFF666666),
+          color: isSelected ? const Color(0xFFE8F2FF) : Colors.transparent,
           borderRadius: BorderRadius.circular(4),
           border: isSelected
               ? Border.all(color: const Color(0xFF4A90E2), width: 1)
@@ -961,10 +920,7 @@ class _BookNotesPageState extends ConsumerState<BookNotesPage> {
                                     : Colors.grey,
                               ),
                             )
-                          : Padding(
-                              padding: const EdgeInsets.only(left: 8.0),
-                              child: const SizedBox(width: 24),
-                            ), // Placeholder for alignment
+                          : null,
                       // Highlight selected item background
                       backgroundColor: isSelected
                           ? const Color(0xFFE8F2FF).withOpacity(0.5)
