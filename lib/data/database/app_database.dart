@@ -16,7 +16,7 @@ class AppDatabase {
       return _database;
     }
     try {
-      _database = await _initDB("ireader.db");
+      _database = await _initDB("iReader.db");
       return _database;
     } catch (e) {
       return null;
